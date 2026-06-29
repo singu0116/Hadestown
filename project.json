@@ -1,7 +1,7 @@
 {
   "project": "Hadestown",
   "actorSize": 54,
-  "current": 3,
+  "current": 4,
   "charts": [
     {
       "code": "RTH-01",
@@ -75,6 +75,20 @@
           "z": 10
         }
       ],
+      "props": [],
+      "arrowPoints": [],
+      "arrows": [],
+      "groups": [],
+      "notes": "",
+      "scriptPage": 1
+    },
+    {
+      "code": "RTH-05",
+      "name": "차트 제목을 입력하세요",
+      "scene": "",
+      "page": "",
+      "date": "",
+      "actors": [],
       "props": [],
       "arrowPoints": [],
       "arrows": [],
