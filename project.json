@@ -1,7 +1,7 @@
 {
   "project": "Hadestown",
   "actorSize": 54,
-  "current": 0,
+  "current": 3,
   "charts": [
     {
       "code": "RTH-01",
@@ -10,6 +10,71 @@
       "page": "",
       "date": "",
       "actors": [],
+      "props": [],
+      "arrowPoints": [],
+      "arrows": [],
+      "groups": [],
+      "notes": "",
+      "scriptPage": 1
+    },
+    {
+      "code": "RTH-02",
+      "name": "차트 제목을 입력하세요",
+      "scene": "",
+      "page": "",
+      "date": "",
+      "actors": [],
+      "props": [],
+      "arrowPoints": [],
+      "arrows": [],
+      "groups": [],
+      "notes": "",
+      "scriptPage": 1
+    },
+    {
+      "code": "RTH-03",
+      "name": "차트 제목을 입력하세요",
+      "scene": "",
+      "page": "",
+      "date": "",
+      "actors": [],
+      "props": [],
+      "arrowPoints": [],
+      "arrows": [],
+      "groups": [],
+      "notes": "",
+      "scriptPage": 1
+    },
+    {
+      "code": "RTH-04",
+      "name": "차트 제목을 입력하세요",
+      "scene": "",
+      "page": "",
+      "date": "",
+      "actors": [
+        {
+          "id": "a1",
+          "name": "Actor 1",
+          "x": 45,
+          "y": 45,
+          "color": "#d96b7d",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10
+        },
+        {
+          "id": "a2",
+          "name": "Actor 2",
+          "x": 36.025401319479684,
+          "y": 52.320599978418045,
+          "color": "#1e88e5",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10
+        }
+      ],
       "props": [],
       "arrowPoints": [],
       "arrows": [],
