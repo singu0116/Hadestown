@@ -1,24 +1,25 @@
 {
-  "project": "Stage Blocking Project",
-  "current": 0,
+  "project": "Hadestown",
   "actorSize": 54,
-  "scriptText": "",
-  "scriptTextName": "",
-  "scriptPdfData": null,
-  "scriptPdfName": "",
+  "current": 0,
   "charts": [
     {
       "code": "RTH-01",
-      "name": "차트 1",
+      "name": "차트 제목을 입력하세요",
+      "scene": "",
+      "page": "",
+      "date": "",
       "actors": [],
       "props": [],
       "arrowPoints": [],
       "arrows": [],
       "groups": [],
-      "prevSnapshot": null,
-      "scriptPage": 1,
-      "cueLocal": null,
-      "notes": ""
+      "notes": "",
+      "scriptPage": 1
     }
-  ]
+  ],
+  "scriptPdfData": null,
+  "scriptPdfName": "",
+  "scriptText": "",
+  "scriptTextName": ""
 }
