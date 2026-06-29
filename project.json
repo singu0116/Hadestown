@@ -1,0 +1,24 @@
+{
+  "project": "Stage Blocking Project",
+  "current": 0,
+  "actorSize": 54,
+  "scriptText": "",
+  "scriptTextName": "",
+  "scriptPdfData": null,
+  "scriptPdfName": "",
+  "charts": [
+    {
+      "code": "RTH-01",
+      "name": "차트 1",
+      "actors": [],
+      "props": [],
+      "arrowPoints": [],
+      "arrows": [],
+      "groups": [],
+      "prevSnapshot": null,
+      "scriptPage": 1,
+      "cueLocal": null,
+      "notes": ""
+    }
+  ]
+}
