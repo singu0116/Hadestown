@@ -143,6 +143,15 @@ textarea{width:100%;height:120px;background:#111;color:#eee;border:1px solid #44
 .arrowPoint.selected{outline:3px solid #fff}
 .prop{position:absolute;width:80px;height:44px;border:2px solid #ddd;background:rgba(120,80,40,.88);color:white;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;line-height:1.05;cursor:grab;z-index:9;user-select:none;border-radius:6px;box-shadow:0 2px 10px #000;padding:3px}
 .prop.selected{outline:4px solid #ffe94a}
+
+.stageMemo{position:absolute;min-width:84px;min-height:34px;background:rgba(255,246,179,.88);color:#24170a;border:1px solid rgba(120,80,20,.28);border-radius:8px;padding:7px 9px;font-size:13px;line-height:1.35;z-index:12;box-shadow:0 4px 12px rgba(0,0,0,.24);cursor:grab;user-select:none;white-space:pre-wrap;overflow:hidden;overflow-wrap:anywhere;word-break:break-word}
+.stageMemoText{width:100%;height:100%;overflow:hidden;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word}
+.stageMemoText::before{content:"📝";margin-right:4px}
+.stageMemo.selected{outline:2px solid rgba(232,160,75,.95)}
+.stageMemo.multi{outline:2px solid rgba(75,151,229,.95)!important}
+.stageMemoResize{position:absolute;right:2px;bottom:2px;width:12px;height:12px;border-right:2px solid rgba(36,23,10,.45);border-bottom:2px solid rgba(36,23,10,.45);cursor:nwse-resize;z-index:3}
+.stageMemoResize:hover{border-color:#24170a}
+.mobileStageMemo{position:absolute;min-width:42px;max-width:160px;background:rgba(255,246,179,.88);color:#24170a;border:1px solid rgba(120,80,20,.25);border-radius:6px;padding:4px 5px;font-size:9px;font-weight:800;line-height:1.25;box-shadow:0 2px 8px rgba(0,0,0,.36);white-space:pre-wrap;overflow:hidden;overflow-wrap:anywhere;word-break:break-word}
 .actor.multi,.prop.multi{outline:4px solid #5db7ff !important}
 .selectionBox{position:absolute;border:2px dashed #5db7ff;background:rgba(93,183,255,.18);z-index:60;display:none;pointer-events:none}
 .actor.groupedItem,.prop.groupedItem{outline:3px dashed #c77dff}
@@ -1560,6 +1569,13 @@ function renderMobileView(){
     html += '<div class="mobileProp" style="left:'+p.x+'%;top:'+p.y+'%;width:'+w+'%;height:'+h+'%;transform:rotate('+((p.rot||0))+'deg);">'+mobileEscapeHtml(p.name||'')+'</div>';
   });
 
+  (chart.stageMemos||[]).forEach(m=>{
+    const mw=Math.max(5,((m.w||150)/1616*100));
+    const mh=m.h?Math.max(3,((m.h||56)/1000*100)):null;
+    const memoStyle='left:'+m.x+'%;top:'+m.y+'%;width:'+mw+'%;'+(mh?'height:'+mh+'%;':'');
+    html += '<div class="mobileStageMemo" style="'+memoStyle+'">'+mobileEscapeHtml(m.text||'메모')+'</div>';
+  });
+
   (chart.actors||[]).forEach(a=>{
     if(a.hidden) return;
     const size=Math.max(18, Math.min(42, (a.size||state.actorSize||54)*0.52));
@@ -1908,6 +1924,8 @@ function normalizeLoadedProjectV167(data){
     if(!c.name) c.name='차트 '+(i+1);
     c.actors=c.actors||[];
     c.props=c.props||[];
+    c.stageMemos=c.stageMemos||[];
+    c.stageMemos.forEach(m=>{m.w=m.w||150; m.h=m.h||56;});
     c.arrowPoints=c.arrowPoints||[];
     c.arrows=c.arrows||[];
     c.groups=c.groups||[];
@@ -2185,6 +2203,7 @@ window.addEventListener('load',()=>setTimeout(()=>{applyShowAudioSource(); rende
       <button class="tool active" id="selectTool" onclick="setTool('select')">↖ 선택</button>
       <button class="tool" onclick="quickAddActor()">＋ 배우</button>
       <button class="tool" onclick="quickAddProp()">＋ 소품</button>
+      <button class="tool" onclick="quickAddStageMemo()">＋ 무대 메모</button>
       <button class="tool" id="arrowTool" onclick="setTool('arrow')">➜ 동선</button>
       <button class="tool" onclick="deleteSelected()">⌫ 삭제</button>
       <button class="tool" onclick="duplicateActor()">⧉ 복제</button>
@@ -2384,7 +2403,7 @@ window.addEventListener('load',()=>setTimeout(()=>{applyShowAudioSource(); rende
 
 <script>
 const colors=['#d96b7d','#1e88e5','#5dbb52','#e6d83f','#9c42c6','#e77b22','#3db7bd','#aaa'];
-let state={project:'Hadestown', actorSize:54, current:0, charts:[{code:'RTH-01',name:'차트 제목을 입력하세요',scene:'',page:'',date:'',actors:[],props:[],arrowPoints:[],arrows:[],groups:[],notes:''}]};
+let state={project:'Hadestown', actorSize:54, current:0, charts:[{code:'RTH-01',name:'차트 제목을 입력하세요',scene:'',page:'',date:'',actors:[],props:[],stageMemos:[],arrowPoints:[],arrows:[],groups:[],notes:''}]};
 let selected=null, multiSelected=[], tool='select', arrowFrom=null, idSeq=1, history=[];
 let suppressBoxClick=false;
 let stageZoom=1;
@@ -2394,7 +2413,7 @@ const stage=document.getElementById('stage');
 
 function cur(){return state.charts[state.current]}
 function isMultiSelected(id){return multiSelected && multiSelected.includes(id)}
-function findAnyObject(id){return cur().actors.find(x=>x.id===id)||(cur().props||[]).find(x=>x.id===id)||(cur().arrowPoints||[]).find(x=>x.id===id)}
+function findAnyObject(id){return cur().actors.find(x=>x.id===id)||(cur().props||[]).find(x=>x.id===id)||(cur().stageMemos||[]).find(x=>x.id===id)||(cur().arrowPoints||[]).find(x=>x.id===id)}
 function getSelectedMovableIds(){
   const ids=(multiSelected&&multiSelected.length)?multiSelected:(selected?[selected]:[]);
   return [...new Set(ids)].filter(id=>{
@@ -2420,9 +2439,37 @@ function renderArrowPoints(){
     el.className='arrowPoint'+(p.id===selected?' selected':''); el.dataset.baseTransform='translate(-50%,-50%)';
     el.style.left=p.x+'%'; el.style.top=p.y+'%'; el.style.zIndex=p.z||9;
     el.dataset.id=p.id;
+    el.addEventListener('mousedown',arrowPointDragStart);
     el.addEventListener('click',arrowPointClick);
     stage.appendChild(el);
   });
+}
+function arrowPointDragStart(e){
+  if(e.detail>=2) return;
+  if(tool==='arrow') return;
+  e.stopPropagation();
+  e.preventDefault();
+  const id=e.currentTarget.dataset.id;
+  const p=(cur().arrowPoints||[]).find(x=>x.id===id);
+  if(!p) return;
+  selected=id;
+  let moved=false;
+  pushHistory();
+
+  function move(ev){
+    moved=true;
+    const pt=getStagePoint(ev);
+    p.x=pt.x;
+    p.y=pt.y;
+    render();
+  }
+  function up(){
+    window.removeEventListener('mousemove',move);
+    window.removeEventListener('mouseup',up);
+    if(moved) render();
+  }
+  window.addEventListener('mousemove',move);
+  window.addEventListener('mouseup',up);
 }
 function arrowPointClick(e){
   e.stopPropagation();
@@ -2494,23 +2541,33 @@ function renderZones(){
 
 
 
+function getArrowLayerRect(){
+  // 화살표는 실제 화면에 보이는 SVG 레이어 기준으로 좌표를 잡아야 한다.
+  // stageZoom, transform-origin, CSS 보정이 섞여도 getBoundingClientRect가 최종 화면 좌표를 준다.
+  const layer=document.getElementById('arrows') || stage;
+  const rect=layer.getBoundingClientRect();
+  if(rect && rect.width && rect.height) return rect;
+  return stage.getBoundingClientRect();
+}
+function clampPercent(n){
+  return Math.max(0, Math.min(100, n));
+}
 function getStagePoint(e){
-  const rect=stage.getBoundingClientRect();
-  const cx=rect.left+rect.width/2;
-  const cy=rect.top+rect.height/2;
-  const px=(e.clientX-cx)/stageZoom + rect.width/2;
-  const py=(e.clientY-cy)/stageZoom + rect.height/2;
+  const rect=getArrowLayerRect();
+  const px=e.clientX-rect.left;
+  const py=e.clientY-rect.top;
   return {
     px, py,
-    x:(px/rect.width)*100,
-    y:(py/rect.height)*100,
+    x:clampPercent((px/rect.width)*100),
+    y:clampPercent((py/rect.height)*100),
     rect
   };
 }
 function getStageDeltaPercent(ev, sx, sy, rect){
+  const r=rect || getArrowLayerRect();
   return {
-    dx:((ev.clientX-sx)/stageZoom)/rect.width*100,
-    dy:((ev.clientY-sy)/stageZoom)/rect.height*100
+    dx:((ev.clientX-sx)/r.width)*100,
+    dy:((ev.clientY-sy)/r.height)*100
   };
 }
 const BG_BASE_SCALE=1.055;
@@ -2525,7 +2582,7 @@ function applyStageZoom(){
 
   const scale='scale('+stageZoom+')';
   const bgScale='scale('+(stageZoom*BG_BASE_SCALE)+')';
-  st.querySelectorAll('#bg,#arrows,.actor,.prop,.arrowPoint,.zoneGrid,.prevGhost,.prevTrace').forEach(el=>{
+  st.querySelectorAll('#bg,#arrows,.actor,.prop,.stageMemo,.arrowPoint,.zoneGrid,.prevGhost,.prevTrace').forEach(el=>{
     el.classList.add('zoomedStageLayer');
     el.style.transformOrigin='50% 50%';
 
@@ -3177,10 +3234,11 @@ function render(){
   if(ph && selectedProp){ ph.value=selectedProp.h||44; }
   if(pr && selectedProp){ pr.value=selectedProp.rot||0; }
   const sh=document.getElementById('actorShape'); if(sh){ const a=cur().actors.find(x=>x.id===selected); sh.value=a?(a.shape||'circle'):'circle'; }
-  document.querySelectorAll('.actor,.prop,.arrowPoint,.zoneGrid').forEach(e=>e.remove());
+  document.querySelectorAll('.actor,.prop,.stageMemo,.arrowPoint,.zoneGrid').forEach(e=>e.remove());
   renderZones();
   renderArrows();
   c.props=(c.props||[]);
+  c.stageMemos=(c.stageMemos||[]);
   c.arrowPoints=(c.arrowPoints||[]);
   c.props.forEach(p=>{
     const el=document.createElement('div');
@@ -3193,6 +3251,22 @@ function render(){
     el.addEventListener('mousedown',propDragStart);
     el.addEventListener('click',propClick);
     el.addEventListener('dblclick',renameProp);
+    stage.appendChild(el);
+  });
+  c.stageMemos.forEach(m=>{
+    const el=document.createElement('div');
+    el.className='stageMemo'+(m.id===selected?' selected':'')+(isMultiSelected(m.id)&&m.id!==selected?' multi':'');
+    el.style.left=(m.x||45)+'%'; el.style.top=(m.y||45)+'%';
+    el.style.width=(m.w||150)+'px';
+    if(m.h) el.style.height=m.h+'px';
+    el.style.zIndex=m.z||12;
+    el.dataset.id=m.id;
+    el.innerHTML='<div class="stageMemoText">'+escapeHtml(m.text||'메모')+'</div>'+(m.id===selected?'<span class="stageMemoResize" title="크기 조절"></span>':'');
+    el.addEventListener('mousedown',stageMemoDragStart);
+    el.addEventListener('click',stageMemoClick);
+    el.addEventListener('dblclick',renameStageMemo);
+    const resizeHandle=el.querySelector('.stageMemoResize');
+    if(resizeHandle) resizeHandle.addEventListener('mousedown',stageMemoResizeStart);
     stage.appendChild(el);
   });
   c.actors.forEach(a=>{
@@ -3385,6 +3459,79 @@ function renameProp(e){
   if(n){pushHistory(); p.name=n; render();}
 }
 
+function quickAddStageMemo(){
+  const text=prompt('무대에 표시할 메모를 입력하세요','메모');
+  if(!text)return;
+  pushHistory();
+  cur().stageMemos=cur().stageMemos||[];
+  const id='m'+Date.now()+Math.floor(Math.random()*1000);
+  cur().stageMemos.push({id,text,x:42,y:42,w:150,h:56,z:12});
+  selected=id;
+  multiSelected=[];
+  render();
+}
+function stageMemoClick(e){
+  e.stopPropagation();
+  selected=e.currentTarget.dataset.id;
+  multiSelected=[];
+  render();
+}
+function stageMemoDragStart(e){
+  if(e.detail>=2) return;
+  e.stopPropagation();
+  if(tool==='arrow')return;
+  if(e.target && e.target.classList && e.target.classList.contains('stageMemoResize')) return;
+  const id=e.currentTarget.dataset.id;
+  selected=id;
+  const m=(cur().stageMemos||[]).find(x=>x.id===id);
+  if(!m)return;
+  const rect=stage.getBoundingClientRect();
+  const sx=e.clientX, sy=e.clientY, ox=m.x||45, oy=m.y||45;
+  pushHistory();
+  function move(ev){
+    const d=getStageDeltaPercent(ev,sx,sy,rect);
+    m.x=Math.max(0,Math.min(98,ox+d.dx));
+    m.y=Math.max(0,Math.min(98,oy+d.dy));
+    render();
+  }
+  function up(){window.removeEventListener('mousemove',move);window.removeEventListener('mouseup',up);render();}
+  window.addEventListener('mousemove',move);
+  window.addEventListener('mouseup',up);
+}
+function stageMemoResizeStart(e){
+  e.stopPropagation();
+  e.preventDefault();
+  const el=e.currentTarget.closest('.stageMemo');
+  const id=el&&el.dataset.id;
+  const m=(cur().stageMemos||[]).find(x=>x.id===id);
+  if(!m)return;
+  selected=id;
+  const sx=e.clientX, sy=e.clientY;
+  const sw=m.w||el.offsetWidth||150;
+  const sh=m.h||el.offsetHeight||56;
+  pushHistory();
+  function move(ev){
+    m.w=Math.max(84,Math.min(360,sw+(ev.clientX-sx)));
+    m.h=Math.max(34,Math.min(240,sh+(ev.clientY-sy)));
+    render();
+  }
+  function up(){
+    window.removeEventListener('mousemove',move);
+    window.removeEventListener('mouseup',up);
+    render();
+  }
+  window.addEventListener('mousemove',move);
+  window.addEventListener('mouseup',up);
+}
+function renameStageMemo(e){
+  e.stopPropagation();
+  const id=e.currentTarget.dataset.id;
+  const m=(cur().stageMemos||[]).find(x=>x.id===id);
+  if(!m)return;
+  const text=prompt('무대 메모 수정',m.text||'');
+  if(text!==null){pushHistory(); m.text=text; render();}
+}
+
 function quickAddActor(){
   const name=prompt('배우/배역 이름을 입력하세요','Actor '+idSeq); if(!name)return;
   pushHistory();
@@ -3393,7 +3540,7 @@ function quickAddActor(){
 }
 function deleteSelected(){
   const ids=(multiSelected&&multiSelected.length)?multiSelected:[selected]; if(!ids.length)return; pushHistory();
-  cur().actors=cur().actors.filter(a=>!ids.includes(a.id)); cur().props=(cur().props||[]).filter(p=>!ids.includes(p.id)); cur().arrowPoints=(cur().arrowPoints||[]).filter(p=>!ids.includes(p.id)); cur().arrows=cur().arrows.filter(a=>!ids.includes(a.from)&&!ids.includes(a.to)); cur().groups=(cur().groups||[]).map(g=>({...g,ids:(g.ids||[]).filter(id=>!ids.includes(id))})).filter(g=>(g.ids||[]).length>1); selected=null; multiSelected=[]; render();
+  cur().actors=cur().actors.filter(a=>!ids.includes(a.id)); cur().props=(cur().props||[]).filter(p=>!ids.includes(p.id)); cur().stageMemos=(cur().stageMemos||[]).filter(m=>!ids.includes(m.id)); cur().arrowPoints=(cur().arrowPoints||[]).filter(p=>!ids.includes(p.id)); cur().arrows=cur().arrows.filter(a=>!ids.includes(a.from)&&!ids.includes(a.to)); cur().groups=(cur().groups||[]).map(g=>({...g,ids:(g.ids||[]).filter(id=>!ids.includes(id))})).filter(g=>(g.ids||[]).length>1); selected=null; multiSelected=[]; render();
 }
 function duplicateActor(){
   const a=cur().actors.find(x=>x.id===selected); if(!a)return; pushHistory();
@@ -3440,6 +3587,8 @@ function getLayerTargets(){
     if(actor) return actor;
     const prop=(cur().props||[]).find(p=>p.id===id);
     if(prop) return prop;
+    const memo=(cur().stageMemos||[]).find(m=>m.id===id);
+    if(memo) return memo;
     return null;
   }).filter(Boolean);
 }
@@ -3704,9 +3853,15 @@ function renderSelected(){
   if(cp) cp.innerHTML='';
   const a=cur().actors.find(x=>x.id===selected);
   const p=(cur().props||[]).find(x=>x.id===selected);
+  const m=(cur().stageMemos||[]).find(x=>x.id===selected);
 
-  if(!a && !p){
-    if(box) box.textContent=tool==='arrow'&&arrowFrom?'도착 배우/소품/공간을 클릭하세요.':'배우나 소품을 선택하세요.';
+  if(!a && !p && !m){
+    if(box) box.textContent=tool==='arrow'&&arrowFrom?'도착 배우/소품/공간을 클릭하세요.':'배우나 소품, 무대 메모를 선택하세요.';
+    return;
+  }
+
+  if(m){
+    if(box) box.innerHTML=`선택됨: <b>무대 메모</b><br>${escapeHtml(m.text||'메모')}<br>위치: ${Math.round(m.x||0)}, ${Math.round(m.y||0)}<br>레이어: ${m.z||12}<br><span style="color:#8d7e6a">더블클릭하면 내용을 수정합니다.</span>`;
     return;
   }
 
@@ -3734,7 +3889,7 @@ function toggleDirs(){document.querySelectorAll('.dir').forEach(d=>d.style.displ
 function saveFile(){
   const bg=document.getElementById('bg'); if(bg && !state.backgroundData) state.backgroundData=bg.src;const pn=document.getElementById('projectName'); if(pn) state.project=pn.value||'Hadestown'; const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='project.json';a.click();}
 function loadFileClick(){fileInput.click();}
-function loadFile(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{state=JSON.parse(r.result); state.charts.forEach(c=>{c.groups=c.groups||[]; c.props=c.props||[]; c.props.forEach(p=>{p.w=p.w||80; p.h=p.h||44; p.rot=p.rot||0; p.z=p.z||9;}); c.arrowPoints=c.arrowPoints||[];}); state.project=state.project||'Hadestown'; state.actorSize=state.actorSize||54; state.charts.forEach(c=>c.actors.forEach(a=>{a.size=a.size||state.actorSize||54; a.shape=a.shape||'circle'; a.z=a.z||10; a.shape=a.shape||'circle';})); idSeq=1+Math.max(0,...state.charts.flatMap(c=>c.actors.map(a=>Number(String(a.id).replace('a',''))||0)));selected=null;render();};r.readAsText(f);}
+function loadFile(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{state=JSON.parse(r.result); state.charts.forEach(c=>{c.groups=c.groups||[]; c.props=c.props||[]; c.stageMemos=c.stageMemos||[]; c.stageMemos.forEach(m=>{m.w=m.w||150; m.h=m.h||56;}); c.props.forEach(p=>{p.w=p.w||80; p.h=p.h||44; p.rot=p.rot||0; p.z=p.z||9;}); c.arrowPoints=c.arrowPoints||[];}); state.project=state.project||'Hadestown'; state.actorSize=state.actorSize||54; state.charts.forEach(c=>c.actors.forEach(a=>{a.size=a.size||state.actorSize||54; a.shape=a.shape||'circle'; a.z=a.z||10; a.shape=a.shape||'circle';})); idSeq=1+Math.max(0,...state.charts.flatMap(c=>c.actors.map(a=>Number(String(a.id).replace('a',''))||0)));selected=null;render();};r.readAsText(f);}
 function preview(){alert('현재는 브라우저 캡처(Win+Shift+S)로 공유하는 게 가장 안정적이야.');}
 const projectInput=document.getElementById('projectName'); if(projectInput){projectInput.addEventListener('input',()=>{state.project=projectInput.value;});}
 
@@ -3859,6 +4014,7 @@ function normalizeAfterHistory(){
   state.charts=state.charts||[];
   state.charts.forEach(c=>{
     c.props=c.props||[];
+    c.stageMemos=c.stageMemos||[];
     c.arrowPoints=c.arrowPoints||[];
     c.actors=c.actors||[]; c.groups=c.groups||[];
     c.arrows=c.arrows||[];
