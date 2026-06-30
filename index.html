@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Stage Blocking v1.73</title>
+<title>Stage Blocking v1.74</title>
 <style>
 :root {
   --bg:#080808;--panel:#121212;--panel2:#181818;--line:#333;--text:#eee;--muted:#aaa;--yellow:#ffe94a;--red:#ff4d4d;
@@ -1129,6 +1129,17 @@ body.mobile-view #mobileViewer{
 .audioHint{font-size:11px;color:#8d7e6a;line-height:1.45;margin-top:6px}
 .audioNow{font-size:12px;color:#e8a04b;font-weight:800;margin-top:6px}
 
+
+/* ===== Audio large seek bar v1.74 ===== */
+.audioHint{font-size:11px;color:#8d7e6a;line-height:1.45;margin-top:6px}
+.audioNow{font-size:12px;color:#e8a04b;font-weight:800;margin-top:6px}
+.audioBigSeek{margin-top:8px;padding:9px;border:1px solid rgba(255,236,210,.10);background:rgba(0,0,0,.18);border-radius:10px}
+.audioSeekTop{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;color:#cdbfa9;margin-bottom:8px}
+.audioSeekRange{width:100%;height:30px;accent-color:#e8a04b;cursor:pointer}
+.audioSeekBtns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:8px}
+.audioSeekBtns button{background:rgba(0,0,0,.22);border:1px solid rgba(255,236,210,.13);color:#cdbfa9;border-radius:8px;padding:8px 6px;cursor:pointer;font-size:12px;font-weight:800}
+.audioSeekBtns button:hover{background:rgba(255,236,210,.07);color:#f3ead9;border-color:rgba(232,160,75,.45)}
+
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js">
 /* ===== FINAL CUE OVERRIDE v1.62 ===== */
@@ -2180,6 +2191,20 @@ window.addEventListener('load',()=>setTimeout(()=>{applyShowAudioSource(); rende
         <input id="showAudioUrlInput" placeholder="GitHub 오디오 경로 예: audio/full_show.mp3" onchange="setShowAudioUrl(this.value)">
         <button onclick="setShowAudioUrlFromInput()">경로 적용</button>
       </div>
+      
+      <div class="audioBigSeek">
+        <div class="audioSeekTop">
+          <span id="audioSeekCurrent">00:00</span>
+          <span id="audioSeekDuration">--:--</span>
+        </div>
+        <input id="audioSeekRange" class="audioSeekRange" type="range" min="0" max="0" step="0.1" value="0" oninput="audioSeekPreview(this.value)" onchange="audioSeekTo(this.value)">
+        <div class="audioSeekBtns">
+          <button onclick="audioNudge(-10)">-10초</button>
+          <button onclick="audioTogglePlay()">재생/정지</button>
+          <button onclick="audioNudge(10)">+10초</button>
+        </div>
+      </div>
+
       <div class="audioGrid">
         <button onclick="setChartAudioFromCurrent()">현재 재생 위치 연결</button>
         <button onclick="jumpToChartAudio()">차트 위치로 이동</button>
@@ -5094,6 +5119,132 @@ window.addEventListener('keydown',function(e){
   if(audio.paused) audio.play().catch(()=>{});
   else audio.pause();
 });
+
+
+/* ===== Dropbox/external URL + big seek final override v1.74 ===== */
+function isExternalAudioUrlV174(url){
+  return /^https?:\/\//i.test(String(url||''));
+}
+function getPublishSafeState(){
+  const copy=JSON.parse(JSON.stringify(state));
+  delete copy.showAudioData;
+  if(typeof pendingAudioFileV173!=='undefined' && pendingAudioFileV173){
+    copy.showAudioUrl=getAudioGithubPathV173();
+    copy.showAudioName=pendingAudioFileNameV173 || copy.showAudioName || 'full_show';
+  }
+  return copy;
+}
+function setShowAudioUrl(v){
+  ensureAudioState();
+  const url=String(v||'').trim();
+  pushHistory();
+  state.showAudioUrl=url;
+  state.showAudioName=url ? (url.split('/').pop()||url) : '';
+  state.showAudioData=null;
+  if(typeof pendingAudioFileV173!=='undefined') pendingAudioFileV173=null;
+  if(typeof pendingAudioFileNameV173!=='undefined') pendingAudioFileNameV173='';
+  applyShowAudioSource();
+  setAudioStatus(url ? '오디오 경로 적용: '+url : '오디오 경로 없음', url?'ok':'');
+}
+async function publishProjectToGitHub(){
+  const s=getGitHubSettings();
+  if(!s.owner || !s.repo || !s.token){
+    setGitHubPublishStatus('GitHub 게시 설정을 먼저 입력하세요.', 'fail');
+    const box=document.getElementById('githubPublishSettings');
+    if(box) box.style.display='grid';
+    loadGitHubPublishSettingsIntoForm();
+    return;
+  }
+  const branch=s.branch||'main';
+  const projectPath=s.path||'project.json';
+  try{
+    if(typeof pendingAudioFileV173!=='undefined' && pendingAudioFileV173){
+      const audioPath=getAudioGithubPathV173();
+      setGitHubPublishStatus('오디오 업로드 중: '+audioPath, '');
+      const buffer=await pendingAudioFileV173.arrayBuffer();
+      await putGitHubContentV173(s.owner,s.repo,branch,s.token,audioPath,arrayBufferToBase64V173(buffer),'Update full show audio from Stage Blocking App');
+      state.showAudioUrl=audioPath;
+      state.showAudioName=pendingAudioFileNameV173 || state.showAudioName || audioPath;
+      state.showAudioData=null;
+      pendingAudioFileV173=null;
+      pendingAudioFileNameV173='';
+      setAudioStatus('오디오 게시 완료: '+audioPath, 'ok');
+    }
+    setGitHubPublishStatus('project.json 게시 중...', '');
+    const jsonText=JSON.stringify(getPublishSafeState(),null,2);
+    const jsonB64=btoa(unescape(encodeURIComponent(jsonText)));
+    if(typeof putGitHubContentV173==='function'){
+      await putGitHubContentV173(s.owner,s.repo,branch,s.token,projectPath,jsonB64,'Update project.json from Stage Blocking App');
+    }else{
+      const path=projectPath.replace(/^\/+/,'');
+      const apiUrl='https://api.github.com/repos/'+encodeURIComponent(s.owner)+'/'+encodeURIComponent(s.repo)+'/contents/'+path;
+      let sha=null;
+      const getRes=await fetch(apiUrl+'?ref='+encodeURIComponent(branch)+'&v='+Date.now(),{headers:{'Authorization':'Bearer '+s.token,'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}});
+      if(getRes.ok){ sha=(await getRes.json()).sha; }
+      const putRes=await fetch(apiUrl,{method:'PUT',headers:{'Authorization':'Bearer '+s.token,'Accept':'application/vnd.github+json','Content-Type':'application/json','X-GitHub-Api-Version':'2022-11-28'},body:JSON.stringify({message:'Update project.json from Stage Blocking App',content:jsonB64,branch,sha:sha||undefined})});
+      if(!putRes.ok){ const t=await putRes.text(); throw new Error('게시 실패: '+putRes.status+' '+t.slice(0,220)); }
+    }
+    setGitHubPublishStatus('게시 완료. Dropbox/외부 오디오 링크와 project.json이 저장되었습니다.', 'ok');
+    setTimeout(()=>loadRemoteProject(true),900);
+  }catch(err){
+    console.error(err);
+    setGitHubPublishStatus(String(err.message||err), 'fail');
+  }
+}
+function audioTogglePlay(){
+  const audio=getAudioElement && getAudioElement();
+  if(!audio) return;
+  applyShowAudioSource();
+  if(audio.paused) audio.play().catch(()=>{});
+  else audio.pause();
+}
+function audioNudge(sec){
+  const audio=getAudioElement && getAudioElement();
+  if(!audio) return;
+  applyShowAudioSource();
+  const dur=Number.isFinite(audio.duration)?audio.duration:Infinity;
+  audio.currentTime=Math.max(0,Math.min(dur,(Number(audio.currentTime)||0)+sec));
+  updateAudioSeekUIV174();
+}
+function audioSeekTo(v){
+  const audio=getAudioElement && getAudioElement();
+  if(!audio) return;
+  applyShowAudioSource();
+  audio.currentTime=Number(v)||0;
+  updateAudioSeekUIV174();
+}
+function audioSeekPreview(v){
+  const el=document.getElementById('audioSeekCurrent');
+  if(el) el.textContent=formatTime(Number(v)||0);
+}
+function updateAudioSeekUIV174(){
+  const audio=getAudioElement && getAudioElement();
+  if(!audio) return;
+  const range=document.getElementById('audioSeekRange');
+  const curEl=document.getElementById('audioSeekCurrent');
+  const durEl=document.getElementById('audioSeekDuration');
+  const cur=Number(audio.currentTime)||0;
+  const dur=Number.isFinite(audio.duration)?audio.duration:0;
+  if(range){
+    range.max=dur||0;
+    if(document.activeElement!==range) range.value=cur;
+  }
+  if(curEl) curEl.textContent=formatTime(cur);
+  if(durEl) durEl.textContent=dur?formatTime(dur):'--:--';
+  const now=document.getElementById('audioNowText');
+  if(now) now.textContent='현재 위치: '+formatTime(cur);
+}
+window.addEventListener('load',()=>{
+  setTimeout(()=>{
+    const audio=getAudioElement && getAudioElement();
+    if(audio && !audio.dataset.bigSeekReady){
+      audio.dataset.bigSeekReady='1';
+      ['timeupdate','loadedmetadata','durationchange','seeked','play','pause'].forEach(ev=>audio.addEventListener(ev,updateAudioSeekUIV174));
+      updateAudioSeekUIV174();
+    }
+  },300);
+});
+setInterval(()=>{try{updateAudioSeekUIV174();}catch(e){}},700);
 
 </script>
 
