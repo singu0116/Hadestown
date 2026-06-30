@@ -5857,6 +5857,20 @@ window.addEventListener('load',()=>{
   font-size:10px;
   pointer-events:none;
 }
+
+/* ===== Mobile memo visibility safe fix ===== */
+.mobileStageMemo{
+  z-index:45!important;
+  box-sizing:border-box!important;
+  border:1px solid rgba(120,80,20,.35)!important;
+  background:rgba(255,246,179,.92)!important;
+  color:#24170a!important;
+  white-space:pre-wrap!important;
+  overflow:hidden!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
+  pointer-events:none!important;
+}
 </style>
 <script>
 /* ===== Mobile readability patch: auto size + pinch zoom + visual spread ===== */
@@ -5982,7 +5996,7 @@ window.addEventListener('load',()=>{
       if(!m) return;
       const w=Math.max(6, Math.min(35, ((m.w||160)/1616*100)));
       const h=Math.max(3, Math.min(22, ((m.h||70)/1000*100)));
-      html += '<div class="mobileStageMemo" style="left:'+(m.x||5)+'%;top:'+(m.y||5)+'%;width:'+w+'%;height:'+h+'%;">'+mobileEscapeHtmlLocal(m.text||'메모')+'</div>';
+      html += '<div class="mobileStageMemo" style="left:'+(m.x||5)+'%;top:'+(m.y||5)+'%;width:'+w+'%;min-height:'+h+'%;z-index:45;">'+mobileEscapeHtmlLocal(m.text||'메모')+'</div>';
     });
 
     const visibleActors=(chart.actors||[]).filter(a=>!a.hidden);
@@ -6092,93 +6106,6 @@ window.addEventListener('load',()=>{
 
   window.addEventListener('load',()=>setTimeout(()=>{ try{ renderMobileView(); }catch(e){} },180));
   window.addEventListener('resize',()=>setTimeout(()=>{ try{ renderMobileView(); }catch(e){} },80));
-})();
-</script>
-
-
-
-<style>
-/* ===== SAFE mobile memo overlay only ===== */
-.mobileStageMemo.mobileMemoOverlay{
-  position:absolute!important;
-  z-index:80!important;
-  display:block!important;
-  box-sizing:border-box!important;
-  min-width:42px;
-  min-height:18px;
-  max-width:42%;
-  background:rgba(255,246,179,.90);
-  color:#24170a;
-  border:1px solid rgba(120,80,20,.22);
-  border-radius:6px;
-  padding:4px 5px;
-  font-size:9px;
-  font-weight:800;
-  line-height:1.25;
-  box-shadow:0 2px 8px rgba(0,0,0,.36);
-  white-space:pre-wrap;
-  overflow:hidden;
-  overflow-wrap:anywhere;
-  word-break:break-word;
-  pointer-events:none;
-}
-</style>
-<script>
-/* ===== SAFE mobile memo overlay only: does not replace mobile renderer ===== */
-(function(){
-  function esc(s){
-    if(typeof mobileEscapeHtml === 'function') return mobileEscapeHtml(s);
-    return String(s||'').replace(/[&<>\"]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[ch]||ch;});
-  }
-  function getMemoList(chart){
-    if(!chart) return [];
-    if(Array.isArray(chart.stageMemos) && chart.stageMemos.length) return chart.stageMemos;
-    if(Array.isArray(chart.memos) && chart.memos.length) return chart.memos;
-    return [];
-  }
-  window.renderMobileMemoOverlay=function(){
-    try{
-      if(!window.state || !state.charts || !state.charts.length) return;
-      const chart=state.charts[state.current] || state.charts[0];
-      const stage=document.getElementById('mobileStage');
-      if(!stage) return;
-      const host=document.getElementById('mobileStageInner') || stage;
-      host.querySelectorAll('.mobileMemoOverlay').forEach(function(el){el.remove();});
-      const memos=getMemoList(chart);
-      if(!memos.length) return;
-      memos.forEach(function(m){
-        if(!m) return;
-        const el=document.createElement('div');
-        el.className='mobileStageMemo mobileMemoOverlay';
-        const x=Number(m.x); const y=Number(m.y);
-        const w=Number(m.w||150); const h=Number(m.h||56);
-        const pctW=Math.max(8, Math.min(42, w/1616*100));
-        const pctH=Math.max(3, Math.min(24, h/1000*100));
-        el.style.left=(isFinite(x)?x:5)+'%';
-        el.style.top=(isFinite(y)?y:5)+'%';
-        el.style.width=pctW+'%';
-        el.style.height=pctH+'%';
-        el.innerHTML=esc(m.text || '메모');
-        host.appendChild(el);
-      });
-    }catch(e){ console.warn('mobile memo overlay failed', e); }
-  };
-  function hook(){
-    if(window.__mobileMemoOverlayHooked) return;
-    if(typeof window.renderMobileView !== 'function') return;
-    window.__mobileMemoOverlayHooked=true;
-    const old=window.renderMobileView;
-    window.renderMobileView=function(){
-      const r=old.apply(this,arguments);
-      setTimeout(window.renderMobileMemoOverlay,0);
-      return r;
-    };
-    setTimeout(window.renderMobileMemoOverlay,50);
-  }
-  window.addEventListener('load',function(){ setTimeout(hook,0); setTimeout(window.renderMobileMemoOverlay,300); });
-  window.addEventListener('resize',function(){ setTimeout(window.renderMobileMemoOverlay,80); });
-  setTimeout(hook,100);
-  setTimeout(hook,700);
 })();
 </script>
 
