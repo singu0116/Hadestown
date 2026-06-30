@@ -1,7 +1,7 @@
 {
   "project": "Hadestown",
   "actorSize": 54,
-  "current": 3,
+  "current": 6,
   "charts": [
     {
       "code": "RTH-01",
@@ -107,7 +107,77 @@
       "groups": [],
       "notes": "",
       "scriptPage": 1,
-      "audioTime": 2926.2
+      "audioTime": 2926.2,
+      "cueLocal": null
+    },
+    {
+      "code": "RTH-05",
+      "name": "차트 제목을 입력하세요",
+      "scene": "",
+      "page": "",
+      "date": "",
+      "actors": [],
+      "props": [],
+      "arrowPoints": [],
+      "arrows": [],
+      "groups": [],
+      "notes": "",
+      "scriptPage": 1,
+      "audioTime": 2928.046238
+    },
+    {
+      "code": "RTH-06",
+      "name": "차트 제목을 입력하세요",
+      "scene": "",
+      "page": "",
+      "date": "",
+      "actors": [],
+      "props": [],
+      "arrowPoints": [],
+      "arrows": [],
+      "groups": [],
+      "notes": "",
+      "scriptPage": 1,
+      "audioTime": 2928.046238
+    },
+    {
+      "code": "RTH-07",
+      "name": "차트 제목을 입력하세요 copy",
+      "scene": "",
+      "page": "",
+      "date": "",
+      "actors": [],
+      "props": [
+        {
+          "id": "p1782809132141934",
+          "name": "소품",
+          "x": 45,
+          "y": 45,
+          "w": 80,
+          "h": 44,
+          "rot": 0,
+          "z": 9
+        }
+      ],
+      "arrowPoints": [
+        {
+          "id": "pt1782809134229237",
+          "x": 62.68054823570682,
+          "y": 59.779169988253436
+        }
+      ],
+      "arrows": [
+        {
+          "from": "p1782809132141934",
+          "to": "pt1782809134229237"
+        }
+      ],
+      "groups": [],
+      "notes": "",
+      "scriptPage": 1,
+      "audioTime": 2928.046238,
+      "prevSnapshot": null,
+      "cueLocal": null
     }
   ],
   "scriptPdfData": null,
