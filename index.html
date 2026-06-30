@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Stage Blocking v1.74</title>
+<title>Stage Blocking v1.75</title>
 <style>
 :root {
   --bg:#080808;--panel:#121212;--panel2:#181818;--line:#333;--text:#eee;--muted:#aaa;--yellow:#ffe94a;--red:#ff4d4d;
@@ -1786,7 +1786,7 @@ async function fetchProjectJsonV167(forceStatus){
       if(forceStatus && typeof setRemoteStatus==='function') setRemoteStatus('최신 project.json 불러오는 중: '+base, '');
       const res=await fetch(url, {
         cache:'no-store',
-        headers:{'Cache-Control':'no-cache'}
+        headers:{}
       });
       if(!res.ok) throw new Error('HTTP '+res.status);
       const data=await res.json();
@@ -4565,7 +4565,7 @@ async function fetchProjectJsonV167(forceStatus){
       if(forceStatus && typeof setRemoteStatus==='function') setRemoteStatus('최신 project.json 불러오는 중: '+base, '');
       const res=await fetch(url, {
         cache:'no-store',
-        headers:{'Cache-Control':'no-cache'}
+        headers:{}
       });
       if(!res.ok) throw new Error('HTTP '+res.status);
       const data=await res.json();
@@ -4889,7 +4889,6 @@ async function putProjectJsonToGitHubV168(apiUrl, branch, token, sha){
       'Authorization':'Bearer '+token,
       'Accept':'application/vnd.github+json',
       'Content-Type':'application/json',
-      'Cache-Control':'no-cache',
       'X-GitHub-Api-Version':'2022-11-28'
     },
     body:JSON.stringify({
@@ -4947,7 +4946,7 @@ function arrayBufferToBase64V173(buffer){
 async function getGitHubFileShaGenericV173(apiUrl, branch, token){
   const res=await fetch(apiUrl+'?ref='+encodeURIComponent(branch)+'&v='+Date.now(),{
     cache:'no-store',
-    headers:{'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json','Cache-Control':'no-cache','X-GitHub-Api-Version':'2022-11-28'}
+    headers:{'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'}
   });
   if(res.status===404) return null;
   if(!res.ok){ const t=await res.text(); throw new Error('파일 확인 실패: '+res.status+' '+t.slice(0,180)); }
@@ -4959,14 +4958,14 @@ async function putGitHubContentV173(owner, repo, branch, token, path, base64Cont
   let sha=await getGitHubFileShaGenericV173(apiUrl, branch, token);
   let res=await fetch(apiUrl,{
     method:'PUT',
-    headers:{'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json','Content-Type':'application/json','Cache-Control':'no-cache','X-GitHub-Api-Version':'2022-11-28'},
+    headers:{'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json','Content-Type':'application/json','X-GitHub-Api-Version':'2022-11-28'},
     body:JSON.stringify({message,content:base64Content,branch,sha:sha||undefined})
   });
   if(res.status===409){
     sha=await getGitHubFileShaGenericV173(apiUrl, branch, token);
     res=await fetch(apiUrl,{
       method:'PUT',
-      headers:{'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json','Content-Type':'application/json','Cache-Control':'no-cache','X-GitHub-Api-Version':'2022-11-28'},
+      headers:{'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json','Content-Type':'application/json','X-GitHub-Api-Version':'2022-11-28'},
       body:JSON.stringify({message,content:base64Content,branch,sha:sha||undefined})
     });
   }
@@ -5245,6 +5244,33 @@ window.addEventListener('load',()=>{
   },300);
 });
 setInterval(()=>{try{updateAudioSeekUIV174();}catch(e){}},700);
+
+
+/* ===== GitHub fetch/CORS header fix v1.75 ===== */
+function cleanGitHubTokenV175(t){
+  return String(t||'').trim().replace(/\s+/g,'');
+}
+function saveGitHubPublishSettings(){
+  const val=id=>(document.getElementById(id)?.value||'').trim();
+  const settings={
+    owner:val('ghOwner'),
+    repo:val('ghRepo'),
+    branch:val('ghBranch')||'main',
+    path:val('ghPath')||'project.json',
+    token:cleanGitHubTokenV175(document.getElementById('ghToken')?.value||'')
+  };
+  localStorage.setItem('stageBlockingGitHubSettings',JSON.stringify(settings));
+  setGitHubPublishStatus('GitHub 게시 설정 저장 완료', 'ok');
+}
+function getGitHubSettings(){
+  try{
+    const s=JSON.parse(localStorage.getItem('stageBlockingGitHubSettings')||'{}');
+    if(s.token) s.token=cleanGitHubTokenV175(s.token);
+    return s;
+  }catch(e){
+    return {};
+  }
+}
 
 </script>
 
