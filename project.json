@@ -1,6 +1,6 @@
 {
   "project": "Hadestown",
-  "actorSize": 54,
+  "actorSize": 53,
   "current": 17,
   "charts": [
     {
@@ -1929,7 +1929,7 @@
           "y": 55.10338902638197,
           "color": "#d96b7d",
           "hidden": false,
-          "size": 54,
+          "size": 37,
           "shape": "circle",
           "z": 10,
           "label": "15"
@@ -2186,7 +2186,7 @@
           "y": 66.12566346807105,
           "color": "#d96b7d",
           "hidden": false,
-          "size": 54,
+          "size": 36,
           "shape": "circle",
           "z": 10,
           "label": "15"
@@ -2433,7 +2433,7 @@
           "y": 66.12566346807105,
           "color": "#d96b7d",
           "hidden": false,
-          "size": 54,
+          "size": 36,
           "shape": "circle",
           "z": 10,
           "label": "15"
@@ -2664,11 +2664,11 @@
         {
           "id": "a1",
           "name": "Orph.",
-          "x": 42.20278063428995,
+          "x": 42.431125072307104,
           "y": 94,
           "color": "#d96b7d",
           "hidden": false,
-          "size": 54,
+          "size": 36,
           "shape": "circle",
           "z": 10,
           "label": "1"
@@ -2907,18 +2907,6 @@
       "date": "2026.06.30",
       "actors": [
         {
-          "id": "a1",
-          "name": "Orph",
-          "x": 47.85430547521434,
-          "y": 73.15109194854125,
-          "color": "#d96b7d",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10,
-          "label": "1"
-        },
-        {
           "id": "a30",
           "name": "F1",
           "x": 30.842644842936892,
@@ -3073,6 +3061,18 @@
           "shape": "circle",
           "z": 10,
           "label": "2"
+        },
+        {
+          "id": "a43",
+          "name": "Orph.",
+          "x": 48.93894155579579,
+          "y": 71.21380403225524,
+          "color": "#d96b7d",
+          "hidden": false,
+          "size": 36,
+          "shape": "circle",
+          "z": 10,
+          "label": "1"
         }
       ],
       "props": [
@@ -3120,7 +3120,7 @@
       "arrowPoints": [],
       "arrows": [
         {
-          "from": "a1",
+          "from": "a43",
           "to": "p1782812856310351"
         }
       ],
@@ -3159,12 +3159,12 @@
       "actors": [
         {
           "id": "a24",
-          "name": "Orph",
+          "name": "Orph.",
           "x": 29.529664324338302,
           "y": 49.903636953109356,
           "color": "#d96b7d",
           "hidden": false,
-          "size": 54,
+          "size": 35,
           "shape": "circle",
           "z": 10,
           "label": "1"
@@ -3414,18 +3414,6 @@
       "date": "2026.06.30",
       "actors": [
         {
-          "id": "a24",
-          "name": "Orph",
-          "x": 50.48026651241153,
-          "y": 72.50532930977926,
-          "color": "#d96b7d",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10,
-          "label": "1"
-        },
-        {
           "id": "a32",
           "name": "F1",
           "x": 30.842644842936892,
@@ -3580,6 +3568,18 @@
           "shape": "circle",
           "z": 10,
           "label": "2"
+        },
+        {
+          "id": "a45",
+          "name": "Orph.",
+          "x": 51.0511276074544,
+          "y": 73.42784736515353,
+          "color": "#d96b7d",
+          "hidden": false,
+          "size": 36,
+          "shape": "circle",
+          "z": 10,
+          "label": "1"
         }
       ],
       "props": [
@@ -3660,18 +3660,6 @@
       "page": "3/41",
       "date": "2026.06.30",
       "actors": [
-        {
-          "id": "a24",
-          "name": "Orph",
-          "x": 50.48026651241153,
-          "y": 72.50532930977926,
-          "color": "#d96b7d",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10,
-          "label": "1"
-        },
         {
           "id": "a31",
           "name": "F1",
@@ -3827,6 +3815,18 @@
           "shape": "circle",
           "z": 10,
           "label": "2"
+        },
+        {
+          "id": "a44",
+          "name": "Orph.",
+          "x": 51.0511276074544,
+          "y": 73.42784736515353,
+          "color": "#d96b7d",
+          "hidden": false,
+          "size": 36,
+          "shape": "circle",
+          "z": 10,
+          "label": "1"
         }
       ],
       "props": [
@@ -3896,18 +3896,6 @@
       "page": "3/41",
       "date": "2026.06.30",
       "actors": [
-        {
-          "id": "a24",
-          "name": "Orph",
-          "x": 50.48026651241153,
-          "y": 72.50532930977926,
-          "color": "#d96b7d",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10,
-          "label": "1"
-        },
         {
           "id": "a26",
           "name": "F1",
@@ -4063,6 +4051,18 @@
           "shape": "circle",
           "z": 10,
           "label": "2"
+        },
+        {
+          "id": "a41",
+          "name": "Orph.",
+          "x": 51.0511276074544,
+          "y": 73.42784736515353,
+          "color": "#d96b7d",
+          "hidden": false,
+          "size": 36,
+          "shape": "circle",
+          "z": 10,
+          "label": "1"
         }
       ],
       "props": [
@@ -4124,9 +4124,9 @@
           "y": 71.67965290258167
         },
         {
-          "id": "pt1782835044530996",
-          "x": 63.751214771622934,
-          "y": 59.410162766103724
+          "id": "pt1782838082137321",
+          "x": 63.94557823129252,
+          "y": 59.13340734949144
         }
       ],
       "arrows": [
@@ -4143,8 +4143,8 @@
           "to": "pt1782834698648633"
         },
         {
-          "from": "a24",
-          "to": "pt1782835044530996"
+          "from": "a41",
+          "to": "pt1782838082137321"
         }
       ],
       "groups": [],
@@ -4170,18 +4170,6 @@
       "page": "3/41",
       "date": "2026.06.30",
       "actors": [
-        {
-          "id": "a24",
-          "name": "Orph",
-          "x": 62.69669394632889,
-          "y": 56.82252236841647,
-          "color": "#d96b7d",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10,
-          "label": "1"
-        },
         {
           "id": "a26",
           "name": "F1",
@@ -4337,6 +4325,18 @@
           "shape": "circle",
           "z": 10,
           "label": "2"
+        },
+        {
+          "id": "a40",
+          "name": "Orph.",
+          "x": 63.83841613641462,
+          "y": 57.2837813961036,
+          "color": "#d96b7d",
+          "hidden": false,
+          "size": 36,
+          "shape": "circle",
+          "z": 10,
+          "label": "1"
         }
       ],
       "props": [
