@@ -36,7 +36,7 @@ position:relative;flex:1;min-height:0;padding:8px;display:flex;align-items:cente
 .ds{bottom:18px;left:50%;transform:translateX(-50%);border:1px dashed #999;padding:4px 14px;background:rgba(0,0,0,.35)}
 .sl{top:42%;left:14px;border:1px dashed #999;padding:8px 14px;background:rgba(0,0,0,.35)}
 .sr{top:42%;right:14px;border:1px dashed #999;padding:8px 14px;background:rgba(0,0,0,.35)}
-.actor{position:absolute;width:48px;height:48px;border-radius:50%;border:1px solid #fff;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;line-height:1.05;color:white;cursor:grab;z-index:10;box-shadow:0 2px 12px #000;background:#777;user-select:none}
+.actor{position:absolute;width:58px;height:58px;border-radius:50%;border:3px solid #fff;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;line-height:1.05;color:white;cursor:grab;z-index:10;box-shadow:0 2px 12px #000;background:#777;user-select:none}
 .actor.selected{outline:4px solid var(--yellow)}
 .actor.hidden{display:none}
 .actor.square{border-radius:8px !important;}
@@ -72,7 +72,7 @@ position:relative;flex:1;min-height:0;padding:8px;display:flex;align-items:cente
 .thumb{flex:0 0 120px;border:1px solid #444;background:#151515;position:relative;cursor:pointer;border-radius:3px;overflow:hidden}
 .thumb.active{border:2px solid var(--yellow)}
 .thumb img{position:absolute;inset:22px 8px 8px;width:calc(100% - 16px);height:calc(100% - 30px);object-fit:cover;opacity:.55}
-.thumb .num{position:absolute;top:6px;left:8px;font-size:7px;font-weight:bold}
+.thumb .num{position:absolute;top:6px;left:8px;font-size:18px;font-weight:bold}
 .thumb .label{position:absolute;top:8px;right:8px;font-size:11px;color:var(--yellow)}
 .addThumb{display:flex;align-items:center;justify-content:center;font-size:36px;color:#aaa;border-style:dashed}
 .castRow{display:grid;grid-template-columns:28px 1fr 28px 28px;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #292929}
@@ -109,7 +109,7 @@ textarea{width:100%;height:120px;background:#111;color:#eee;border:1px solid #44
 
 .actor.triangle .name{
   transform:translateY(8%);
-  font-size:7px;
+  font-size:10px;
   max-width:80%;
   text-align:center;
   overflow:visible;
@@ -155,10 +155,10 @@ textarea{width:100%;height:120px;background:#111;color:#eee;border:1px solid #44
 .actor.multi,.prop.multi{outline:4px solid #5db7ff !important}
 .selectionBox{position:absolute;border:2px dashed #5db7ff;background:rgba(93,183,255,.18);z-index:60;display:none;pointer-events:none}
 .actor.groupedItem,.prop.groupedItem{outline:3px dashed #c77dff}
-.groupNameBadge{position:absolute;left:-6px;bottom:-16px;font-size:7px;background:#231133;color:#e9c8ff;border:1px solid #c77dff;border-radius:8px;padding:1px 5px;z-index:30;pointer-events:none;white-space:nowrap}
+.groupNameBadge{position:absolute;left:-6px;bottom:-16px;font-size:10px;background:#231133;color:#e9c8ff;border:1px solid #c77dff;border-radius:8px;padding:1px 5px;z-index:30;pointer-events:none;white-space:nowrap}
 .castRow.selectedCast{background:rgba(255,233,74,.12);outline:1px solid #ffe94a}
-.castType{font-size:7px;color:#aaa;border:1px solid #444;border-radius:7px;padding:1px 4px;margin-left:4px}
-.castGroup{font-size:7px;color:#c77dff;margin-top:2px}
+.castType{font-size:10px;color:#aaa;border:1px solid #444;border-radius:7px;padding:1px 4px;margin-left:4px}
+.castGroup{font-size:10px;color:#c77dff;margin-top:2px}
 .castName{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .eye svg{display:inline-block!important;position:static!important;inset:auto!important;width:18px!important;height:18px!important;color:#ddd;vertical-align:middle;pointer-events:none}
 .eye:hover svg{color:#ffe94a}
@@ -876,14 +876,14 @@ body.mobile-view #mobileViewer{
 .mobileActor{
   position:absolute;
   border-radius:50%;
-  border:2px solid rgba(255,255,255,.92);
+  border:1px solid rgba(255,255,255,.92);
   box-shadow:0 3px 12px rgba(0,0,0,.5);
   transform:translate(-50%,-50%);
   display:flex;
   align-items:center;
   justify-content:center;
   color:#fff;
-  font-size:7px;
+  font-size:10px;
   font-weight:900;
   text-shadow:0 1px 3px rgba(0,0,0,.8);
   overflow:hidden;
@@ -1214,7 +1214,7 @@ body.mobile-view #mobileViewer{
 .mobileChartChip .sub{
   display:block;
   margin-top:2px;
-  font-size:7px;
+  font-size:10px;
   color:#8d7e6a;
   font-weight:700;
 }
@@ -1255,7 +1255,7 @@ body.mobile-view #mobileViewer{
   position:relative;
   z-index:3;
   font-weight:900;
-  font-size:7px;
+  font-size:18px;
   line-height:1;
   text-shadow:0 1px 3px rgba(0,0,0,.75);
   pointer-events:none;
@@ -1263,7 +1263,7 @@ body.mobile-view #mobileViewer{
 .actor .actorBelowName{
   position:absolute;
   left:50%;
-  top:calc(100% + 1px);
+  top:calc(100% + 3px);
   transform:translateX(-50%);
   z-index:20;
   max-width:112px;
@@ -1271,7 +1271,7 @@ body.mobile-view #mobileViewer{
   border-radius:5px;
   background:rgba(0,0,0,.48);
   color:#f3ead9;
-  font-size:7px;
+  font-size:10px;
   font-weight:800;
   line-height:1.15;
   white-space:nowrap;
@@ -1283,8 +1283,8 @@ body.mobile-view #mobileViewer{
 .mobileActor{
   width:16px!important;
   height:16px!important;
-  min-width:22px!important;
-  min-height:22px!important;
+  min-width:16px!important;
+  min-height:16px!important;
   overflow:visible!important;
   font-size:7px!important;
   line-height:1!important;
@@ -1296,14 +1296,14 @@ body.mobile-view #mobileViewer{
 .mobileActorName{
   position:absolute;
   left:50%;
-  top:calc(100% + 2px);
+  top:calc(100% + 1px);
   transform:translateX(-50%);
   max-width:74px;
   padding:1px 3px;
   border-radius:4px;
   background:rgba(0,0,0,.50);
   color:#f3ead9;
-  font-size:7px;
+  font-size:6px;
   font-weight:800;
   line-height:1.1;
   white-space:nowrap;
