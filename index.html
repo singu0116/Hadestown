@@ -1576,12 +1576,17 @@ function renderMobileView(){
     html += '<div class="mobileStageMemo" style="'+memoStyle+'">'+mobileEscapeHtml(m.text||'메모')+'</div>';
   });
 
+  const visibleActorCount=(chart.actors||[]).filter(a=>!a.hidden).length;
+  const mobileActorBaseSize = visibleActorCount>=18 ? 18 : (visibleActorCount>=12 ? 20 : (visibleActorCount>=7 ? 24 : 30));
+
   (chart.actors||[]).forEach(a=>{
     if(a.hidden) return;
-    const size=Math.max(18, Math.min(42, (a.size||state.actorSize||54)*0.52));
-    const cx=a.x + (((a.size||state.actorSize||54)/2)/1616*100);
-    const cy=a.y + (((a.size||state.actorSize||54)/2)/1000*100);
-    html += '<div class="mobileActor" style="left:'+cx+'%;top:'+cy+'%;width:'+size+'px;height:'+size+'px;background:'+(a.color||'#777')+';">'+mobileEscapeHtml(a.name||'')+'</div>';
+    const size=mobileActorBaseSize;
+    const originalSize=(a.size||state.actorSize||54);
+    const cx=a.x + ((originalSize/2)/1616*100);
+    const cy=a.y + ((originalSize/2)/1000*100);
+    const fontSize=Math.max(7, Math.min(10, Math.round(size*0.34)));
+    html += '<div class="mobileActor" style="left:'+cx+'%;top:'+cy+'%;width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px;background:'+(a.color||'#777')+';">'+mobileEscapeHtml(a.name||'')+'</div>';
   });
 
   stageEl.innerHTML=html;
@@ -4589,12 +4594,17 @@ function renderMobileView(){
     html += '<div class="mobileProp" style="left:'+p.x+'%;top:'+p.y+'%;width:'+w+'%;height:'+h+'%;transform:rotate('+((p.rot||0))+'deg);">'+mobileEscapeHtml(p.name||'')+'</div>';
   });
 
+  const visibleActorCount=(chart.actors||[]).filter(a=>!a.hidden).length;
+  const mobileActorBaseSize = visibleActorCount>=18 ? 18 : (visibleActorCount>=12 ? 20 : (visibleActorCount>=7 ? 24 : 30));
+
   (chart.actors||[]).forEach(a=>{
     if(a.hidden) return;
-    const size=Math.max(18, Math.min(42, (a.size||state.actorSize||54)*0.52));
-    const cx=a.x + (((a.size||state.actorSize||54)/2)/1616*100);
-    const cy=a.y + (((a.size||state.actorSize||54)/2)/1000*100);
-    html += '<div class="mobileActor" style="left:'+cx+'%;top:'+cy+'%;width:'+size+'px;height:'+size+'px;background:'+(a.color||'#777')+';">'+mobileEscapeHtml(a.name||'')+'</div>';
+    const size=mobileActorBaseSize;
+    const originalSize=(a.size||state.actorSize||54);
+    const cx=a.x + ((originalSize/2)/1616*100);
+    const cy=a.y + ((originalSize/2)/1000*100);
+    const fontSize=Math.max(7, Math.min(10, Math.round(size*0.34)));
+    html += '<div class="mobileActor" style="left:'+cx+'%;top:'+cy+'%;width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px;background:'+(a.color||'#777')+';">'+mobileEscapeHtml(a.name||'')+'</div>';
   });
 
   stageEl.innerHTML=html;
