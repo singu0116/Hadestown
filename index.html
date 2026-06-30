@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Stage Blocking v1.81 View Only</title>
+<title>Stage Blocking v1.77</title>
 <style>
 :root {
   --bg:#080808;--panel:#121212;--panel2:#181818;--line:#333;--text:#eee;--muted:#aaa;--yellow:#ffe94a;--red:#ff4d4d;
@@ -1317,38 +1317,6 @@ body.mobile-view #mobileViewer{
   margin-left:5px;
   padding:3px 5px!important;
   text-align:center;
-}
-
-
-/* ===== FORCE VIEW ONLY MODE v1.81 ===== */
-html.view-only, body.view-only{
-  width:100%!important;
-  height:100%!important;
-  overflow:hidden!important;
-  background:#080706!important;
-}
-body.view-only .top,
-body.view-only .app,
-body.view-only .bottom,
-body.view-only .left,
-body.view-only .right,
-body.view-only .stageWrap,
-body.view-only .status{
-  display:none!important;
-  visibility:hidden!important;
-  pointer-events:none!important;
-}
-body.view-only #mobileViewer{
-  position:fixed!important;
-  inset:0!important;
-  display:flex!important;
-  flex-direction:column!important;
-  z-index:2147483647!important;
-  visibility:visible!important;
-  pointer-events:auto!important;
-}
-body.edit-mode #mobileViewer{
-  display:none!important;
 }
 
 </style>
@@ -5945,96 +5913,6 @@ window.addEventListener('load',()=>{
     <button onclick="mobileNextChart()">다음</button>
   </div>
 </div>
-
-
-<script>
-/* ===== FORCE VIEW ONLY ROUTER v1.81 ===== */
-(function(){
-  function q(){ return new URLSearchParams(location.search); }
-  function editRequested(){
-    const p=q();
-    return p.has('edit') || p.get('mode')==='edit' || p.get('admin')==='1';
-  }
-  function viewRequested(){
-    const p=q();
-    // 기본 주소도 보기 전용. 편집은 오직 ?edit=1
-    return !editRequested();
-  }
-
-  window.__STAGE_VIEW_ONLY__ = viewRequested();
-
-  function forceMode(){
-    const view=viewRequested();
-    document.documentElement.classList.toggle('view-only', view);
-    document.documentElement.classList.toggle('edit-mode', !view);
-    document.body.classList.toggle('view-only', view);
-    document.body.classList.toggle('edit-mode', !view);
-
-    // 기존 앱 클래스와 충돌 방지
-    document.body.classList.toggle('mobile-view', view);
-    document.body.classList.toggle('force-mobile-view', view);
-    document.body.classList.toggle('desktop-edit', !view);
-
-    const pcSelectors=['.top','.app','.bottom','.left','.right','.stageWrap','.status'];
-    pcSelectors.forEach(sel=>{
-      document.querySelectorAll(sel).forEach(el=>{
-        if(view){
-          el.style.setProperty('display','none','important');
-          el.style.setProperty('visibility','hidden','important');
-          el.style.setProperty('pointer-events','none','important');
-        }else{
-          el.style.removeProperty('display');
-          el.style.removeProperty('visibility');
-          el.style.removeProperty('pointer-events');
-        }
-      });
-    });
-
-    const mv=document.getElementById('mobileViewer');
-    if(mv){
-      if(view){
-        mv.style.setProperty('position','fixed','important');
-        mv.style.setProperty('inset','0','important');
-        mv.style.setProperty('display','flex','important');
-        mv.style.setProperty('flex-direction','column','important');
-        mv.style.setProperty('z-index','2147483647','important');
-        mv.style.setProperty('visibility','visible','important');
-        mv.style.setProperty('pointer-events','auto','important');
-        if(typeof window.renderMobileView==='function'){
-          try{ window.renderMobileView(); }catch(e){ console.error(e); }
-        }
-      }else{
-        mv.style.setProperty('display','none','important');
-      }
-    }
-  }
-
-  // 중복 정의된 기존 함수들을 마지막에서 강제 덮어씀
-  window.isMobileViewRequested=function(){ return viewRequested(); };
-  window.applyMobileViewMode=function(){ forceMode(); };
-
-  // 편집 동작 차단: 보기모드에서는 혹시 PC UI가 살아도 편집 함수 무력화
-  const blockNames=[
-    'publishProjectToGitHub','saveGitHubPublishSettings','toggleGitHubPublishSettings',
-    'addChart','duplicateChart','deleteChart','addActor','addProp','addStageMemo',
-    'exportProjectJson','importProjectJson','loadProjectJson','pushHistory'
-  ];
-  setTimeout(()=>{
-    if(!viewRequested()) return;
-    blockNames.forEach(name=>{
-      if(typeof window[name]==='function'){
-        window[name]=function(){ alert('보기 전용 링크입니다. 편집은 ?edit=1 링크에서만 가능합니다.'); };
-      }
-    });
-  },700);
-
-  document.addEventListener('DOMContentLoaded',()=>setTimeout(forceMode,20));
-  window.addEventListener('load',()=>setTimeout(forceMode,50));
-  window.addEventListener('resize',()=>setTimeout(forceMode,50));
-  setTimeout(forceMode,200);
-  setTimeout(forceMode,800);
-})();
-</script>
 
 </body>
 </html>
