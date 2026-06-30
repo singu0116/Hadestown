@@ -1,7 +1,7 @@
 {
   "project": "Hadestown",
   "actorSize": 54,
-  "current": 0,
+  "current": 2,
   "charts": [
     {
       "code": "RTH-01",
@@ -37,6 +37,47 @@
         "text": "와 페르세포네는 따로 자리에 앉는다 .",
         "source": "하데스 타운 대본 Act 1.pdf · 추출 텍스트"
       },
+      "audioTime": 844.8
+    },
+    {
+      "code": "RTH-02",
+      "name": "차트 제목을 입력하세요",
+      "scene": "",
+      "page": "",
+      "date": "",
+      "actors": [],
+      "props": [],
+      "arrowPoints": [],
+      "arrows": [],
+      "groups": [],
+      "notes": "",
+      "scriptPage": 1,
+      "audioTime": 2216.1
+    },
+    {
+      "code": "RTH-03",
+      "name": "차트 제목을 입력하세요",
+      "scene": "",
+      "page": "",
+      "date": "",
+      "actors": [],
+      "props": [
+        {
+          "id": "p1782810031643774",
+          "name": "소품",
+          "x": 45,
+          "y": 45,
+          "w": 80,
+          "h": 44,
+          "rot": 0,
+          "z": 9
+        }
+      ],
+      "arrowPoints": [],
+      "arrows": [],
+      "groups": [],
+      "notes": "",
+      "scriptPage": 1,
       "audioTime": 844.8
     }
   ],
