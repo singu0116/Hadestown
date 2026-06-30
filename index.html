@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Stage Blocking v1.77</title>
+<title>Stage Blocking v1.80 View Edit</title>
 <style>
 :root {
   --bg:#080808;--panel:#121212;--panel2:#181818;--line:#333;--text:#eee;--muted:#aaa;--yellow:#ffe94a;--red:#ff4d4d;
@@ -1317,6 +1317,24 @@ body.mobile-view #mobileViewer{
   margin-left:5px;
   padding:3px 5px!important;
   text-align:center;
+}
+
+
+/* ===== Mobile coordinate alignment final v1.79 ===== */
+.mobileActor.mobilePcCoord,
+.mobileProp.mobilePcCoord,
+.mobileStageMemo.mobilePcCoord{
+  transform:none!important;
+}
+.mobileActor.mobilePcCoord{
+  width:var(--pcw)!important;
+  height:var(--pch)!important;
+  min-width:0!important;
+  min-height:0!important;
+  overflow:visible!important;
+}
+.mobileProp.mobilePcCoord{
+  transform-origin:center center!important;
 }
 
 </style>
@@ -5913,6 +5931,184 @@ window.addEventListener('load',()=>{
     <button onclick="mobileNextChart()">다음</button>
   </div>
 </div>
+
+
+<script>
+/* ===== Mobile coordinate alignment final v1.79 ===== */
+(function(){
+  const STAGE_W=1616, STAGE_H=1000;
+  function esc(s){
+    return String(s||'').replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+  }
+  function sx(px){ return (Number(px||0)/STAGE_W*100); }
+  function sy(px){ return (Number(px||0)/STAGE_H*100); }
+  function getChart(){
+    if(!window.state || !state.charts) return null;
+    return state.charts[state.current] || state.charts[0] || null;
+  }
+  function labelOf(a){
+    try{
+      if(typeof ensureActorLabel==='function') ensureActorLabel(a);
+      if(typeof actorLabelText==='function') return actorLabelText(a);
+    }catch(e){}
+    return a.label || a.actorLabel || a.name || '';
+  }
+  function nameOf(a){
+    try{
+      if(typeof actorNameText==='function') return actorNameText(a);
+    }catch(e){}
+    return a.name || '';
+  }
+  function centerOf(chart,id){
+    const a=(chart.actors||[]).find(o=>o.id===id);
+    if(a){
+      const s=Number(a.size || state.actorSize || 54);
+      return {x:Number(a.x||0)+sx(s)/2, y:Number(a.y||0)+sy(s)/2};
+    }
+    const p=(chart.props||[]).find(o=>o.id===id);
+    if(p){
+      return {x:Number(p.x||0)+sx(p.w||80)/2, y:Number(p.y||0)+sy(p.h||44)/2};
+    }
+    const ap=(chart.arrowPoints||[]).find(o=>o.id===id);
+    if(ap) return {x:Number(ap.x||0), y:Number(ap.y||0)};
+    return null;
+  }
+
+  window.renderMobileView=function(){
+    const viewer=document.getElementById('mobileViewer');
+    if(!viewer || !window.state || !state.charts) return;
+
+    const chart=getChart();
+    if(!chart) return;
+
+    const nameEl=document.getElementById('mobileChartName');
+    const subEl=document.getElementById('mobileSub');
+    const stageEl=document.getElementById('mobileStage');
+    const cueEl=document.getElementById('mobileCueText');
+    const pageEl=document.getElementById('mobileCuePage');
+
+    if(nameEl) nameEl.textContent=(chart.name || chart.code || ('Chart '+(state.current+1)));
+    if(subEl) subEl.textContent=(state.current+1)+' / '+state.charts.length;
+
+    const cue=chart.cueLocal || null;
+    if(pageEl) pageEl.textContent=cue&&cue.page ? 'p.'+cue.page : '';
+    if(cueEl){
+      if(cue && (cue.text || cue.preview)){
+        cueEl.classList.remove('mobileCueEmpty');
+        cueEl.textContent=cue.text || cue.preview;
+      }else{
+        cueEl.classList.add('mobileCueEmpty');
+        cueEl.textContent='현재 큐 없음';
+      }
+    }
+
+    if(!stageEl) return;
+    const bg=document.getElementById('bg');
+    let html='';
+    if(bg && bg.src) html += '<img src="'+bg.src+'">';
+
+    const arrowEls=[];
+    (chart.arrows||[]).forEach(ar=>{
+      if(ar.x1!==undefined && ar.y1!==undefined && ar.x2!==undefined && ar.y2!==undefined){
+        arrowEls.push('<line x1="'+Number(ar.x1)+'%" y1="'+Number(ar.y1)+'%" x2="'+Number(ar.x2)+'%" y2="'+Number(ar.y2)+'%" stroke="'+(ar.color||'#e8a04b')+'" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#mArrowHead)"/>');
+      }else if(ar.from && ar.to){
+        const a=centerOf(chart,ar.from), b=centerOf(chart,ar.to);
+        if(a&&b) arrowEls.push('<line x1="'+a.x+'%" y1="'+a.y+'%" x2="'+b.x+'%" y2="'+b.y+'%" stroke="#e8a04b" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#mArrowHead)"/>');
+      }
+    });
+    if(arrowEls.length){
+      html += '<svg class="mobileArrowSvg" viewBox="0 0 100 100" preserveAspectRatio="none"><defs><marker id="mArrowHead" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#e8a04b"/></marker></defs>'+arrowEls.join('')+'</svg>';
+    }
+
+    (chart.props||[]).forEach(p=>{
+      const w=sx(p.w||80), h=sy(p.h||44);
+      html += '<div class="mobileProp mobilePcCoord" style="left:'+Number(p.x||0)+'%;top:'+Number(p.y||0)+'%;width:'+w+'%;height:'+h+'%;transform:rotate('+Number(p.rot||0)+'deg);">'+esc(p.name||'')+'</div>';
+    });
+
+    (chart.stageMemos||[]).forEach(m=>{
+      const w=sx(m.w||150);
+      const h=m.h?sy(m.h):null;
+      html += '<div class="mobileStageMemo mobilePcCoord" style="left:'+Number(m.x||0)+'%;top:'+Number(m.y||0)+'%;width:'+w+'%;'+(h?'height:'+h+'%;':'')+'">'+esc(m.text||'메모')+'</div>';
+    });
+
+    (chart.actors||[]).forEach(a=>{
+      if(a.hidden) return;
+      const size=Number(a.size || state.actorSize || 54);
+      const w=sx(size), h=sy(size);
+      const label=labelOf(a);
+      const nm=nameOf(a) || ('Actor '+label);
+      html += '<div class="mobileActor mobilePcCoord" style="left:'+Number(a.x||0)+'%;top:'+Number(a.y||0)+'%;--pcw:'+w+'%;--pch:'+h+'%;background:'+(a.color||'#777')+';"><span class="mobileActorLabel">'+esc(label)+'</span><span class="mobileActorName">'+esc(nm)+'</span></div>';
+    });
+
+    stageEl.innerHTML=html;
+
+    try{
+      if(typeof renderMobileChartStripV177==='function') renderMobileChartStripV177();
+      if(typeof renderMobileAudio==='function') renderMobileAudio();
+      if(typeof updateMobileAudioButtonV177==='function') updateMobileAudioButtonV177();
+    }catch(e){}
+  };
+
+  window.addEventListener('load',()=>setTimeout(()=>{try{renderMobileView();}catch(e){}},250));
+})();
+</script>
+
+
+<script>
+/* ===== View/Edit mode route fix v1.80 ===== */
+(function(){
+  function params(){
+    return new URLSearchParams(location.search);
+  }
+  function isEditModeV180(){
+    const q=params();
+    return q.has('edit') || q.get('mode') === 'edit';
+  }
+  function isViewModeV180(){
+    const q=params();
+    // 기본 주소도 보기모드. 편집은 ?edit=1에서만.
+    return !isEditModeV180() || q.has('view') || q.get('mode') === 'view';
+  }
+
+  window.isMobileViewRequested = function(){
+    return isViewModeV180();
+  };
+
+  window.applyMobileViewMode = function(){
+    const view = isViewModeV180();
+    document.body.classList.toggle('mobile-view', view);
+    document.body.classList.toggle('force-mobile-view', view);
+    document.body.classList.toggle('desktop-edit', !view);
+    if(view && typeof renderMobileView === 'function'){
+      try{ renderMobileView(); }catch(e){}
+    }
+  };
+
+  function applyViewEditModeV180(){
+    const view = isViewModeV180();
+    document.body.classList.toggle('mobile-view', view);
+    document.body.classList.toggle('force-mobile-view', view);
+    document.body.classList.toggle('desktop-edit', !view);
+
+    // 편집 모드에서는 PC UI 강제 표시
+    if(!view){
+      const mv=document.getElementById('mobileViewer');
+      if(mv) mv.style.display='none';
+    }else{
+      const mv=document.getElementById('mobileViewer');
+      if(mv) mv.style.display='';
+      if(typeof renderMobileView === 'function'){
+        try{ renderMobileView(); }catch(e){}
+      }
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded',()=>setTimeout(applyViewEditModeV180,50));
+  window.addEventListener('load',()=>setTimeout(applyViewEditModeV180,150));
+  window.addEventListener('resize',()=>setTimeout(applyViewEditModeV180,50));
+  setTimeout(applyViewEditModeV180,500);
+})();
+</script>
 
 </body>
 </html>
