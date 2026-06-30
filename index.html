@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Stage Blocking v1.67</title>
+<title>Stage Blocking v1.73</title>
 <style>
 :root {
   --bg:#080808;--panel:#121212;--panel2:#181818;--line:#333;--text:#eee;--muted:#aaa;--yellow:#ffe94a;--red:#ff4d4d;
@@ -30,7 +30,7 @@ h3{margin:0 0 10px;font-size:15px}
 position:relative;display:flex;flex-direction:column;min-width:0;background:#1c1c1c}
 position:relative;flex:1;min-height:0;padding:8px;display:flex;align-items:center;justify-content:center}
 #stage{position:relative;width:min(100%,calc((100vh - 198px)*1.616));aspect-ratio:1616/1000;overflow:hidden;border:1px solid #444;background:#000}
-#bg{transform-origin:50% 50%!important;display:block!important;visibility:visible!important;opacity:1!important;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none;user-select:none}
+#bg{transform-origin:50% 50%!important;display:block!important;visibility:visible!important;opacity:1!important;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center center;background:#000;z-index:0;pointer-events:none;user-select:none}
 .dir{position:absolute;z-index:3;color:white;font-weight:bold;text-shadow:0 2px 4px #000;font-size:22px}
 .us{top:8px;left:50%;transform:translateX(-50%)}
 .ds{bottom:18px;left:50%;transform:translateX(-50%);border:1px dashed #999;padding:4px 14px;background:rgba(0,0,0,.35)}
@@ -858,7 +858,10 @@ body.mobile-view #mobileViewer{
   inset:0;
   width:100%;
   height:100%;
-  object-fit:cover;
+  object-fit:contain;
+  object-position:center center;
+  transform:scale(1.055);
+  transform-origin:center center;
   opacity:1;
 }
 .mobileActor{
@@ -1022,6 +1025,109 @@ body.mobile-view #mobileViewer{
 }
 .publishStatus.ok{color:#e8a04b}
 .publishStatus.fail{color:#f08a80}
+
+
+/* ===== Full show audio cue v1.71 ===== */
+.audioBox{
+  border:1px solid rgba(232,160,75,.28);
+  background:rgba(232,160,75,.06);
+  border-radius:12px;
+  padding:10px;
+  margin-bottom:10px;
+}
+.audioBox audio{
+  width:100%;
+  margin-top:8px;
+}
+.audioGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
+  margin-top:6px;
+}
+.audioGrid button,
+.audioBox button{
+  background:rgba(0,0,0,.22);
+  border:1px solid rgba(255,236,210,.13);
+  color:#cdbfa9;
+  border-radius:8px;
+  padding:7px 6px;
+  cursor:pointer;
+  font-size:12px;
+}
+.audioGrid button:hover,
+.audioBox button:hover{
+  background:rgba(255,236,210,.07);
+  color:#f3ead9;
+  border-color:rgba(232,160,75,.45);
+}
+.audioTimeRow{
+  display:flex;
+  gap:6px;
+  align-items:center;
+  margin-top:6px;
+}
+.audioTimeRow input{
+  flex:1;
+  background:rgba(0,0,0,.24);
+  border:1px solid rgba(255,236,210,.12);
+  color:#f3ead9;
+  border-radius:8px;
+  padding:7px 8px;
+  font-size:12px;
+}
+.audioStatus{
+  font-size:11px;
+  line-height:1.45;
+  color:#a99a86;
+  margin-top:6px;
+}
+.audioStatus.ok{color:#e8a04b}
+.audioStatus.fail{color:#f08a80}
+.audioBadge{
+  position:absolute;
+  top:30px;
+  right:7px;
+  font-size:11px;
+  background:rgba(0,0,0,.45);
+  border:1px solid rgba(232,160,75,.35);
+  border-radius:8px;
+  padding:2px 5px;
+  color:#e8a04b;
+  z-index:4;
+}
+.mobileAudio{
+  flex:0 0 auto;
+  padding:10px 12px;
+  background:#17130f;
+  border-top:1px solid rgba(255,236,210,.10);
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+  align-items:center;
+}
+.mobileAudioInfo{
+  min-width:0;
+  color:#cdbfa9;
+  font-size:12px;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+.mobileAudio button{
+  border:1px solid rgba(232,160,75,.30);
+  background:rgba(232,160,75,.10);
+  color:#f3ead9;
+  border-radius:10px;
+  padding:10px 12px;
+  font-size:13px;
+  font-weight:900;
+}
+
+
+/* ===== Final audio workflow v1.73 ===== */
+.audioHint{font-size:11px;color:#8d7e6a;line-height:1.45;margin-top:6px}
+.audioNow{font-size:12px;color:#e8a04b;font-weight:800;margin-top:6px}
 
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js">
@@ -1730,6 +1836,196 @@ window.addEventListener('DOMContentLoaded',()=>setTimeout(bootWithRemoteProjectV
 window.addEventListener('load',()=>setTimeout(bootWithRemoteProjectV167,150));
 setTimeout(bootWithRemoteProjectV167,500);
 
+
+/* ===== Full show audio cue controller v1.71 ===== */
+function ensureAudioState(){
+  state.showAudioData = state.showAudioData || null;
+  state.showAudioName = state.showAudioName || '';
+  state.showAudioUrl = state.showAudioUrl || '';
+}
+function formatTime(sec){
+  sec=Number(sec)||0;
+  const h=Math.floor(sec/3600);
+  const m=Math.floor((sec%3600)/60);
+  const s=Math.floor(sec%60);
+  const ms=Math.round((sec-Math.floor(sec))*10);
+  const base=(h?String(h).padStart(2,'0')+':':'')+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  return ms?base+'.'+ms:base;
+}
+function parseTimeInput(v){
+  const s=String(v||'').trim();
+  if(!s) return null;
+  if(/^\d+(\.\d+)?$/.test(s)) return Number(s);
+  const parts=s.split(':').map(x=>Number(x));
+  if(parts.some(n=>Number.isNaN(n))) return null;
+  if(parts.length===2) return parts[0]*60+parts[1];
+  if(parts.length===3) return parts[0]*3600+parts[1]*60+parts[2];
+  return null;
+}
+function setAudioStatus(text, cls){
+  const el=document.getElementById('showAudioStatus');
+  if(!el) return;
+  el.className='audioStatus '+(cls||'');
+  el.textContent=text;
+}
+function audioFileClick(){
+  const input=document.getElementById('showAudioInput');
+  if(input) input.click();
+}
+function getAudioElement(){
+  return document.getElementById('showAudio');
+}
+function applyShowAudioSource(){
+  ensureAudioState();
+  const audio=getAudioElement();
+  if(!audio) return;
+  const src=state.showAudioData || state.showAudioUrl || '';
+  if(src && audio.src!==src){
+    audio.src=src;
+  }
+  renderAudioPanel();
+  renderMobileView();
+}
+function loadShowAudio(event){
+  const file=event.target.files && event.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(){
+    pushHistory();
+    ensureAudioState();
+    state.showAudioData=reader.result;
+    state.showAudioName=file.name;
+    state.showAudioUrl='';
+    applyShowAudioSource();
+    setAudioStatus('오디오 포함 완료: '+file.name+' / project.json 저장·게시 시 함께 저장됩니다.', 'ok');
+    const input=document.getElementById('showAudioInput');
+    if(input) input.value='';
+  };
+  reader.readAsDataURL(file);
+}
+function setChartAudioFromCurrent(){
+  const audio=getAudioElement();
+  if(!audio || !audio.src) return setAudioStatus('먼저 전체 오디오를 불러오세요.', 'fail');
+  pushHistory();
+  cur().audioTime=Number(audio.currentTime)||0;
+  renderAudioPanel();
+  renderThumbs();
+  renderMobileView();
+  setAudioStatus('현재 차트에 '+formatTime(cur().audioTime)+' 연결 완료', 'ok');
+}
+function setChartAudioTimeManual(v){
+  const t=parseTimeInput(v);
+  if(t===null) return setAudioStatus('시간 형식이 올바르지 않습니다. 예: 01:23 또는 83.5', 'fail');
+  pushHistory();
+  cur().audioTime=t;
+  renderAudioPanel();
+  renderThumbs();
+  renderMobileView();
+}
+function clearChartAudio(){
+  if(cur().audioTime===undefined || cur().audioTime===null) return;
+  pushHistory();
+  delete cur().audioTime;
+  renderAudioPanel();
+  renderThumbs();
+  renderMobileView();
+}
+function jumpToChartAudio(autoplay){
+  const audio=getAudioElement();
+  if(!audio) return;
+  applyShowAudioSource();
+  if(cur().audioTime===undefined || cur().audioTime===null){
+    setAudioStatus('현재 차트에 연결된 오디오 시간이 없습니다.', 'fail');
+    return;
+  }
+  audio.currentTime=Number(cur().audioTime)||0;
+  setAudioStatus('차트 위치로 이동: '+formatTime(audio.currentTime), 'ok');
+  if(autoplay){
+    audio.play().catch(()=>{});
+  }
+}
+function renderAudioPanel(){
+  ensureAudioState();
+  const input=document.getElementById('chartAudioTimeInput');
+  const audio=getAudioElement();
+  if(input) input.value=(cur().audioTime!==undefined && cur().audioTime!==null)?formatTime(cur().audioTime):'';
+  if(audio && (state.showAudioData || state.showAudioUrl) && !audio.src){
+    audio.src=state.showAudioData || state.showAudioUrl;
+  }
+  if(state.showAudioName){
+    setAudioStatus('오디오: '+state.showAudioName+((cur().audioTime!==undefined&&cur().audioTime!==null)?' / 현재 차트 '+formatTime(cur().audioTime):' / 현재 차트 시간 없음'), '');
+  }else if(state.showAudioUrl){
+    setAudioStatus('오디오 URL 사용 중'+((cur().audioTime!==undefined&&cur().audioTime!==null)?' / 현재 차트 '+formatTime(cur().audioTime):''), '');
+  }
+}
+function mobileToggleAudio(){
+  const audio=getAudioElement();
+  if(!audio) return;
+  applyShowAudioSource();
+  if(cur().audioTime!==undefined && cur().audioTime!==null && Math.abs((audio.currentTime||0)-Number(cur().audioTime))>2){
+    audio.currentTime=Number(cur().audioTime)||0;
+  }
+  if(audio.paused) audio.play().catch(()=>{});
+  else audio.pause();
+}
+function renderMobileAudio(){
+  const el=document.getElementById('mobileAudioInfo');
+  if(!el) return;
+  const hasAudio=!!(state.showAudioData || state.showAudioUrl);
+  if(!hasAudio){
+    el.textContent='오디오 없음';
+    return;
+  }
+  if(cur().audioTime!==undefined && cur().audioTime!==null){
+    el.textContent='🎵 '+formatTime(cur().audioTime)+'부터 재생';
+  }else{
+    el.textContent='🎵 현재 차트 오디오 위치 없음';
+  }
+}
+
+
+/* ===== Audio final render hook v1.71 ===== */
+if(typeof render==='function' && !window.__audioRenderHooked){
+  window.__audioRenderHooked=true;
+  const __oldRenderAudio=render;
+  render=function(){
+    const result=__oldRenderAudio.apply(this,arguments);
+    try{ applyShowAudioSource(); renderAudioPanel(); renderMobileAudio(); }catch(e){}
+    return result;
+  };
+}
+if(typeof renderMobileView==='function' && !window.__audioMobileHooked){
+  window.__audioMobileHooked=true;
+  const __oldMobile=renderMobileView;
+  renderMobileView=function(){
+    const result=__oldMobile.apply(this,arguments);
+    try{ renderMobileAudio(); }catch(e){}
+    return result;
+  };
+}
+if(typeof renderThumbs==='function' && !window.__audioThumbHooked){
+  window.__audioThumbHooked=true;
+  const __oldThumbs=renderThumbs;
+  renderThumbs=function(){
+    const result=__oldThumbs.apply(this,arguments);
+    try{
+      const list=document.getElementById('thumbs');
+      if(list){
+        [...list.querySelectorAll('.thumb')].forEach((d,i)=>{
+          const c=state.charts[i];
+          if(!c || c.audioTime===undefined || c.audioTime===null || d.querySelector('.audioBadge')) return;
+          const b=document.createElement('div');
+          b.className='audioBadge';
+          b.textContent='♪ '+formatTime(c.audioTime);
+          d.appendChild(b);
+        });
+      }
+    }catch(e){}
+    return result;
+  };
+}
+window.addEventListener('load',()=>setTimeout(()=>{applyShowAudioSource(); renderAudioPanel(); renderMobileAudio();},300));
+
 </script>
 </head>
 <body>
@@ -1874,6 +2170,29 @@ setTimeout(bootWithRemoteProjectV167,500);
   <aside class="right">
 
     
+    
+    <div class="audioBox">
+      <h3>전체 오디오</h3>
+      <button class="wide" onclick="audioFileClick()">전체 오디오 불러오기</button>
+      <input id="showAudioInput" type="file" accept="audio/*,.mp3,.m4a,.wav" style="display:none" onchange="loadShowAudio(event)">
+      <audio id="showAudio" controls preload="metadata"></audio>
+      <div class="audioTimeRow">
+        <input id="showAudioUrlInput" placeholder="GitHub 오디오 경로 예: audio/full_show.mp3" onchange="setShowAudioUrl(this.value)">
+        <button onclick="setShowAudioUrlFromInput()">경로 적용</button>
+      </div>
+      <div class="audioGrid">
+        <button onclick="setChartAudioFromCurrent()">현재 재생 위치 연결</button>
+        <button onclick="jumpToChartAudio()">차트 위치로 이동</button>
+      </div>
+      <div class="audioTimeRow">
+        <input id="chartAudioTimeInput" placeholder="예: 01:23 또는 83.5" onchange="setChartAudioTimeManual(this.value)">
+        <button onclick="clearChartAudio()">해제</button>
+      </div>
+      <div id="audioNowText" class="audioNow">현재 위치: 00:00</div>
+      <div class="audioHint">오디오 재생 중 새 차트를 만들면 현재 시간이 자동 연결됩니다. Space로 재생/정지.</div>
+      <div id="showAudioStatus" class="audioStatus">MP3는 GitHub에 따로 올리고 경로만 project.json에 저장합니다.</div>
+    </div>
+
     <div class="cueBox">
       <h3>현재 큐</h3>
       <div id="currentCueText" class="cueText">대본 탭에서 문장을 드래그한 뒤<br>“선택 문장 연결”을 누르세요.</div>
@@ -2070,6 +2389,7 @@ function getStageDeltaPercent(ev, sx, sy, rect){
     dy:((ev.clientY-sy)/stageZoom)/rect.height*100
   };
 }
+const BG_BASE_SCALE=1.055;
 function applyStageZoom(){
   const st=document.getElementById('stage');
   if(!st) return;
@@ -2080,11 +2400,14 @@ function applyStageZoom(){
   st.style.marginRight='';
 
   const scale='scale('+stageZoom+')';
+  const bgScale='scale('+(stageZoom*BG_BASE_SCALE)+')';
   st.querySelectorAll('#bg,#arrows,.actor,.prop,.arrowPoint,.zoneGrid,.prevGhost,.prevTrace').forEach(el=>{
     el.classList.add('zoomedStageLayer');
     el.style.transformOrigin='50% 50%';
 
-    if(el.id==='bg' || el.id==='arrows' || el.classList.contains('zoneGrid') || el.classList.contains('prevTrace')){
+    if(el.id==='bg'){
+      el.style.transform=bgScale;
+    }else if(el.id==='arrows' || el.classList.contains('zoneGrid') || el.classList.contains('prevTrace')){
       el.style.transform=scale;
     }else{
       const base=el.dataset.baseTransform || '';
@@ -4278,6 +4601,500 @@ window.addEventListener('DOMContentLoaded',()=>setTimeout(bootWithRemoteProjectV
 window.addEventListener('load',()=>setTimeout(bootWithRemoteProjectV167,150));
 setTimeout(bootWithRemoteProjectV167,500);
 
+
+/* ===== Full show audio cue controller v1.71 ===== */
+function ensureAudioState(){
+  state.showAudioData = state.showAudioData || null;
+  state.showAudioName = state.showAudioName || '';
+  state.showAudioUrl = state.showAudioUrl || '';
+}
+function formatTime(sec){
+  sec=Number(sec)||0;
+  const h=Math.floor(sec/3600);
+  const m=Math.floor((sec%3600)/60);
+  const s=Math.floor(sec%60);
+  const ms=Math.round((sec-Math.floor(sec))*10);
+  const base=(h?String(h).padStart(2,'0')+':':'')+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  return ms?base+'.'+ms:base;
+}
+function parseTimeInput(v){
+  const s=String(v||'').trim();
+  if(!s) return null;
+  if(/^\d+(\.\d+)?$/.test(s)) return Number(s);
+  const parts=s.split(':').map(x=>Number(x));
+  if(parts.some(n=>Number.isNaN(n))) return null;
+  if(parts.length===2) return parts[0]*60+parts[1];
+  if(parts.length===3) return parts[0]*3600+parts[1]*60+parts[2];
+  return null;
+}
+function setAudioStatus(text, cls){
+  const el=document.getElementById('showAudioStatus');
+  if(!el) return;
+  el.className='audioStatus '+(cls||'');
+  el.textContent=text;
+}
+function audioFileClick(){
+  const input=document.getElementById('showAudioInput');
+  if(input) input.click();
+}
+function getAudioElement(){
+  return document.getElementById('showAudio');
+}
+function applyShowAudioSource(){
+  ensureAudioState();
+  const audio=getAudioElement();
+  if(!audio) return;
+  const src=state.showAudioData || state.showAudioUrl || '';
+  if(src && audio.src!==src){
+    audio.src=src;
+  }
+  renderAudioPanel();
+  renderMobileView();
+}
+function loadShowAudio(event){
+  const file=event.target.files && event.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(){
+    pushHistory();
+    ensureAudioState();
+    state.showAudioData=reader.result;
+    state.showAudioName=file.name;
+    state.showAudioUrl='';
+    applyShowAudioSource();
+    setAudioStatus('오디오 포함 완료: '+file.name+' / project.json 저장·게시 시 함께 저장됩니다.', 'ok');
+    const input=document.getElementById('showAudioInput');
+    if(input) input.value='';
+  };
+  reader.readAsDataURL(file);
+}
+function setChartAudioFromCurrent(){
+  const audio=getAudioElement();
+  if(!audio || !audio.src) return setAudioStatus('먼저 전체 오디오를 불러오세요.', 'fail');
+  pushHistory();
+  cur().audioTime=Number(audio.currentTime)||0;
+  renderAudioPanel();
+  renderThumbs();
+  renderMobileView();
+  setAudioStatus('현재 차트에 '+formatTime(cur().audioTime)+' 연결 완료', 'ok');
+}
+function setChartAudioTimeManual(v){
+  const t=parseTimeInput(v);
+  if(t===null) return setAudioStatus('시간 형식이 올바르지 않습니다. 예: 01:23 또는 83.5', 'fail');
+  pushHistory();
+  cur().audioTime=t;
+  renderAudioPanel();
+  renderThumbs();
+  renderMobileView();
+}
+function clearChartAudio(){
+  if(cur().audioTime===undefined || cur().audioTime===null) return;
+  pushHistory();
+  delete cur().audioTime;
+  renderAudioPanel();
+  renderThumbs();
+  renderMobileView();
+}
+function jumpToChartAudio(autoplay){
+  const audio=getAudioElement();
+  if(!audio) return;
+  applyShowAudioSource();
+  if(cur().audioTime===undefined || cur().audioTime===null){
+    setAudioStatus('현재 차트에 연결된 오디오 시간이 없습니다.', 'fail');
+    return;
+  }
+  audio.currentTime=Number(cur().audioTime)||0;
+  setAudioStatus('차트 위치로 이동: '+formatTime(audio.currentTime), 'ok');
+  if(autoplay){
+    audio.play().catch(()=>{});
+  }
+}
+function renderAudioPanel(){
+  ensureAudioState();
+  const input=document.getElementById('chartAudioTimeInput');
+  const audio=getAudioElement();
+  if(input) input.value=(cur().audioTime!==undefined && cur().audioTime!==null)?formatTime(cur().audioTime):'';
+  if(audio && (state.showAudioData || state.showAudioUrl) && !audio.src){
+    audio.src=state.showAudioData || state.showAudioUrl;
+  }
+  if(state.showAudioName){
+    setAudioStatus('오디오: '+state.showAudioName+((cur().audioTime!==undefined&&cur().audioTime!==null)?' / 현재 차트 '+formatTime(cur().audioTime):' / 현재 차트 시간 없음'), '');
+  }else if(state.showAudioUrl){
+    setAudioStatus('오디오 URL 사용 중'+((cur().audioTime!==undefined&&cur().audioTime!==null)?' / 현재 차트 '+formatTime(cur().audioTime):''), '');
+  }
+}
+function mobileToggleAudio(){
+  const audio=getAudioElement();
+  if(!audio) return;
+  applyShowAudioSource();
+  if(cur().audioTime!==undefined && cur().audioTime!==null && Math.abs((audio.currentTime||0)-Number(cur().audioTime))>2){
+    audio.currentTime=Number(cur().audioTime)||0;
+  }
+  if(audio.paused) audio.play().catch(()=>{});
+  else audio.pause();
+}
+function renderMobileAudio(){
+  const el=document.getElementById('mobileAudioInfo');
+  if(!el) return;
+  const hasAudio=!!(state.showAudioData || state.showAudioUrl);
+  if(!hasAudio){
+    el.textContent='오디오 없음';
+    return;
+  }
+  if(cur().audioTime!==undefined && cur().audioTime!==null){
+    el.textContent='🎵 '+formatTime(cur().audioTime)+'부터 재생';
+  }else{
+    el.textContent='🎵 현재 차트 오디오 위치 없음';
+  }
+}
+
+
+/* ===== Audio final render hook v1.71 ===== */
+if(typeof render==='function' && !window.__audioRenderHooked){
+  window.__audioRenderHooked=true;
+  const __oldRenderAudio=render;
+  render=function(){
+    const result=__oldRenderAudio.apply(this,arguments);
+    try{ applyShowAudioSource(); renderAudioPanel(); renderMobileAudio(); }catch(e){}
+    return result;
+  };
+}
+if(typeof renderMobileView==='function' && !window.__audioMobileHooked){
+  window.__audioMobileHooked=true;
+  const __oldMobile=renderMobileView;
+  renderMobileView=function(){
+    const result=__oldMobile.apply(this,arguments);
+    try{ renderMobileAudio(); }catch(e){}
+    return result;
+  };
+}
+if(typeof renderThumbs==='function' && !window.__audioThumbHooked){
+  window.__audioThumbHooked=true;
+  const __oldThumbs=renderThumbs;
+  renderThumbs=function(){
+    const result=__oldThumbs.apply(this,arguments);
+    try{
+      const list=document.getElementById('thumbs');
+      if(list){
+        [...list.querySelectorAll('.thumb')].forEach((d,i)=>{
+          const c=state.charts[i];
+          if(!c || c.audioTime===undefined || c.audioTime===null || d.querySelector('.audioBadge')) return;
+          const b=document.createElement('div');
+          b.className='audioBadge';
+          b.textContent='♪ '+formatTime(c.audioTime);
+          d.appendChild(b);
+        });
+      }
+    }catch(e){}
+    return result;
+  };
+}
+window.addEventListener('load',()=>setTimeout(()=>{applyShowAudioSource(); renderAudioPanel(); renderMobileAudio();},300));
+
+
+/* ===== Audio publish size fix v1.72 ===== */
+var showAudioObjectUrlV172 = null;
+
+function getPublishSafeState(){
+  const copy=JSON.parse(JSON.stringify(state));
+  delete copy.showAudioData;
+  return copy;
+}
+function setShowAudioUrl(v){
+  ensureAudioState();
+  const url=String(v||'').trim();
+  pushHistory();
+  state.showAudioUrl=url;
+  state.showAudioName=url ? url.split('/').pop() : '';
+  state.showAudioData=null;
+  applyShowAudioSource();
+  setAudioStatus(url ? '오디오 경로 적용: '+url : '오디오 경로 없음', url?'ok':'');
+}
+function setShowAudioUrlFromInput(){
+  const el=document.getElementById('showAudioUrlInput');
+  setShowAudioUrl(el?el.value:'');
+}
+function applyShowAudioSource(){
+  ensureAudioState();
+  const audio=getAudioElement();
+  if(!audio) return;
+  const src=state.showAudioUrl || state.showAudioData || '';
+  if(src && audio.src!==src){
+    audio.src=src;
+  }
+  const urlInput=document.getElementById('showAudioUrlInput');
+  if(urlInput && state.showAudioUrl) urlInput.value=state.showAudioUrl;
+  renderAudioPanel();
+  renderMobileView();
+}
+function loadShowAudio(event){
+  const file=event.target.files && event.target.files[0];
+  if(!file) return;
+
+  if(showAudioObjectUrlV172) URL.revokeObjectURL(showAudioObjectUrlV172);
+  showAudioObjectUrlV172=URL.createObjectURL(file);
+
+  pushHistory();
+  ensureAudioState();
+  state.showAudioData=showAudioObjectUrlV172;
+  state.showAudioName=file.name;
+  applyShowAudioSource();
+  setAudioStatus('로컬 오디오 불러옴: '+file.name+' / 공유하려면 MP3를 GitHub에 따로 올리고 경로를 입력하세요.', 'ok');
+
+  const input=document.getElementById('showAudioInput');
+  if(input) input.value='';
+}
+function exportProjectJson(){
+  const filename='project.json';
+  const safe=getPublishSafeState();
+  const blob=new Blob([JSON.stringify(safe,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},500);
+}
+async function putProjectJsonToGitHubV168(apiUrl, branch, token, sha){
+  const jsonText=JSON.stringify(getPublishSafeState(),null,2);
+  const content=btoa(unescape(encodeURIComponent(jsonText)));
+  return await fetch(apiUrl,{
+    method:'PUT',
+    headers:{
+      'Authorization':'Bearer '+token,
+      'Accept':'application/vnd.github+json',
+      'Content-Type':'application/json',
+      'Cache-Control':'no-cache',
+      'X-GitHub-Api-Version':'2022-11-28'
+    },
+    body:JSON.stringify({
+      message:'Update project.json from Stage Blocking App',
+      content:content,
+      branch:branch,
+      sha:sha || undefined
+    })
+  });
+}
+function renderAudioPanel(){
+  ensureAudioState();
+  const input=document.getElementById('chartAudioTimeInput');
+  const urlInput=document.getElementById('showAudioUrlInput');
+  const audio=getAudioElement();
+
+  if(input) input.value=(cur().audioTime!==undefined && cur().audioTime!==null)?formatTime(cur().audioTime):'';
+  if(urlInput && state.showAudioUrl) urlInput.value=state.showAudioUrl;
+
+  if(audio && (state.showAudioUrl || state.showAudioData) && !audio.src){
+    audio.src=state.showAudioUrl || state.showAudioData;
+  }
+
+  if(state.showAudioUrl){
+    setAudioStatus('공유 오디오 경로: '+state.showAudioUrl+((cur().audioTime!==undefined&&cur().audioTime!==null)?' / 현재 차트 '+formatTime(cur().audioTime):' / 현재 차트 시간 없음'), '');
+  }else if(state.showAudioName){
+    setAudioStatus('로컬 오디오: '+state.showAudioName+' / project.json에는 포함되지 않습니다.', '');
+  }else{
+    setAudioStatus('GitHub에 MP3를 올리고 경로를 입력하거나, 로컬 테스트용 오디오를 불러오세요.', '');
+  }
+}
+
+
+/* ===== Final audio workflow controller v1.73 ===== */
+var pendingAudioFileV173 = null;
+var pendingAudioFileNameV173 = '';
+
+function getAudioExtV173(name){
+  const m=String(name||'').match(/\.([a-zA-Z0-9]+)$/);
+  return m ? m[1].toLowerCase() : 'mp3';
+}
+function getAudioGithubPathV173(){
+  const ext=getAudioExtV173(pendingAudioFileNameV173 || state.showAudioName || state.showAudioUrl || 'full_show.mp3');
+  return 'audio/full_show.'+ext;
+}
+function arrayBufferToBase64V173(buffer){
+  const bytes=new Uint8Array(buffer);
+  let binary='';
+  const chunk=0x8000;
+  for(let i=0;i<bytes.length;i+=chunk){
+    binary += String.fromCharCode.apply(null, bytes.subarray(i,i+chunk));
+  }
+  return btoa(binary);
+}
+async function getGitHubFileShaGenericV173(apiUrl, branch, token){
+  const res=await fetch(apiUrl+'?ref='+encodeURIComponent(branch)+'&v='+Date.now(),{
+    cache:'no-store',
+    headers:{'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json','Cache-Control':'no-cache','X-GitHub-Api-Version':'2022-11-28'}
+  });
+  if(res.status===404) return null;
+  if(!res.ok){ const t=await res.text(); throw new Error('파일 확인 실패: '+res.status+' '+t.slice(0,180)); }
+  const data=await res.json();
+  return data.sha || null;
+}
+async function putGitHubContentV173(owner, repo, branch, token, path, base64Content, message){
+  const apiUrl='https://api.github.com/repos/'+encodeURIComponent(owner)+'/'+encodeURIComponent(repo)+'/contents/'+path.replace(/^\/+/,'');
+  let sha=await getGitHubFileShaGenericV173(apiUrl, branch, token);
+  let res=await fetch(apiUrl,{
+    method:'PUT',
+    headers:{'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json','Content-Type':'application/json','Cache-Control':'no-cache','X-GitHub-Api-Version':'2022-11-28'},
+    body:JSON.stringify({message,content:base64Content,branch,sha:sha||undefined})
+  });
+  if(res.status===409){
+    sha=await getGitHubFileShaGenericV173(apiUrl, branch, token);
+    res=await fetch(apiUrl,{
+      method:'PUT',
+      headers:{'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json','Content-Type':'application/json','Cache-Control':'no-cache','X-GitHub-Api-Version':'2022-11-28'},
+      body:JSON.stringify({message,content:base64Content,branch,sha:sha||undefined})
+    });
+  }
+  if(!res.ok){ const t=await res.text(); throw new Error(path+' 업로드 실패: '+res.status+' '+t.slice(0,240)); }
+  return await res.json();
+}
+function loadShowAudio(event){
+  const file=event.target.files && event.target.files[0];
+  if(!file) return;
+  if(showAudioObjectUrlV172) URL.revokeObjectURL(showAudioObjectUrlV172);
+  showAudioObjectUrlV172=URL.createObjectURL(file);
+  pendingAudioFileV173=file;
+  pendingAudioFileNameV173=file.name;
+  pushHistory();
+  ensureAudioState();
+  state.showAudioData=showAudioObjectUrlV172;
+  state.showAudioName=file.name;
+  state.showAudioUrl=getAudioGithubPathV173();
+  applyShowAudioSource();
+  const urlInput=document.getElementById('showAudioUrlInput');
+  if(urlInput) urlInput.value=state.showAudioUrl;
+  setAudioStatus('오디오 선택 완료: '+file.name+' / 게시 시 '+state.showAudioUrl+' 로 함께 업로드됩니다.', 'ok');
+  const input=document.getElementById('showAudioInput');
+  if(input) input.value='';
+}
+function getPublishSafeState(){
+  const copy=JSON.parse(JSON.stringify(state));
+  delete copy.showAudioData;
+  if(pendingAudioFileV173){
+    copy.showAudioUrl=getAudioGithubPathV173();
+    copy.showAudioName=pendingAudioFileNameV173 || copy.showAudioName || 'full_show';
+  }
+  return copy;
+}
+async function publishProjectToGitHub(){
+  const s=getGitHubSettings();
+  if(!s.owner || !s.repo || !s.token){
+    setGitHubPublishStatus('GitHub 게시 설정을 먼저 입력하세요.', 'fail');
+    const box=document.getElementById('githubPublishSettings');
+    if(box) box.style.display='grid';
+    loadGitHubPublishSettingsIntoForm();
+    return;
+  }
+  const branch=s.branch||'main';
+  const projectPath=s.path||'project.json';
+  try{
+    if(pendingAudioFileV173){
+      const audioPath=getAudioGithubPathV173();
+      setGitHubPublishStatus('오디오 업로드 중: '+audioPath, '');
+      const buffer=await pendingAudioFileV173.arrayBuffer();
+      await putGitHubContentV173(s.owner,s.repo,branch,s.token,audioPath,arrayBufferToBase64V173(buffer),'Update full show audio from Stage Blocking App');
+      state.showAudioUrl=audioPath;
+      state.showAudioName=pendingAudioFileNameV173 || state.showAudioName || audioPath;
+      state.showAudioData=null;
+      pendingAudioFileV173=null;
+      setAudioStatus('오디오 게시 완료: '+audioPath, 'ok');
+    }
+    setGitHubPublishStatus('project.json 게시 중...', '');
+    const jsonText=JSON.stringify(getPublishSafeState(),null,2);
+    const jsonB64=btoa(unescape(encodeURIComponent(jsonText)));
+    await putGitHubContentV173(s.owner,s.repo,branch,s.token,projectPath,jsonB64,'Update project.json from Stage Blocking App');
+    setGitHubPublishStatus('게시 완료. 오디오와 project.json이 적용되었습니다.', 'ok');
+    setTimeout(()=>loadRemoteProject(true),900);
+  }catch(err){
+    console.error(err);
+    setGitHubPublishStatus(String(err.message||err), 'fail');
+  }
+}
+function updateAudioNowV173(){
+  const audio=getAudioElement && getAudioElement();
+  const el=document.getElementById('audioNowText');
+  if(el && audio) el.textContent='현재 위치: '+formatTime(audio.currentTime||0);
+}
+function saveCurrentAudioTimeToChartV173(chart){
+  const audio=getAudioElement && getAudioElement();
+  if(!audio || !audio.src) return;
+  chart.audioTime=Number(audio.currentTime)||0;
+}
+function jumpToChartAudioSilentlyV173(){
+  const audio=getAudioElement && getAudioElement();
+  if(!audio) return;
+  applyShowAudioSource();
+  if(cur().audioTime!==undefined && cur().audioTime!==null){
+    try{ audio.currentTime=Number(cur().audioTime)||0; }catch(e){}
+  }
+}
+window.addEventListener('load',()=>{
+  setInterval(updateAudioNowV173,500);
+  const a=getAudioElement && getAudioElement();
+  if(a){
+    a.addEventListener('timeupdate',updateAudioNowV173);
+    a.addEventListener('loadedmetadata',updateAudioNowV173);
+  }
+});
+if(typeof addChart==='function' && !window.__audioAddChartHookedV173){
+  window.__audioAddChartHookedV173=true;
+  const __oldAddChartV173=addChart;
+  addChart=function(){
+    const result=__oldAddChartV173.apply(this,arguments);
+    try{
+      saveCurrentAudioTimeToChartV173(cur());
+      renderAudioPanel(); renderThumbs(); renderMobileView();
+      if(cur().audioTime!==undefined) setAudioStatus('새 차트에 현재 오디오 시간 자동 연결: '+formatTime(cur().audioTime||0), 'ok');
+    }catch(e){}
+    return result;
+  };
+}
+if(typeof duplicateChart==='function' && !window.__audioDuplicateHookedV173){
+  window.__audioDuplicateHookedV173=true;
+  const __oldDupV173=duplicateChart;
+  duplicateChart=function(){
+    const result=__oldDupV173.apply(this,arguments);
+    try{
+      cur().audioTime=null;
+      saveCurrentAudioTimeToChartV173(cur());
+      renderAudioPanel(); renderThumbs(); renderMobileView();
+    }catch(e){}
+    return result;
+  };
+}
+if(typeof renderThumbs==='function' && !window.__audioThumbJumpHookedV173){
+  window.__audioThumbJumpHookedV173=true;
+  const __oldRenderThumbsJumpV173=renderThumbs;
+  renderThumbs=function(){
+    const result=__oldRenderThumbsJumpV173.apply(this,arguments);
+    try{
+      const list=document.getElementById('thumbs');
+      if(list){
+        [...list.querySelectorAll('.thumb')].forEach((thumb,i)=>{
+          if(i>=state.charts.length) return;
+          const old=thumb.onclick;
+          thumb.onclick=function(ev){
+            if(old) old.call(this,ev);
+            setTimeout(jumpToChartAudioSilentlyV173,60);
+          };
+        });
+      }
+    }catch(e){}
+    return result;
+  };
+}
+window.addEventListener('keydown',function(e){
+  if(e.code!=='Space') return;
+  const tag=(document.activeElement && document.activeElement.tagName || '').toLowerCase();
+  if(['input','textarea','select','button'].includes(tag)) return;
+  const audio=getAudioElement && getAudioElement();
+  if(!audio) return;
+  e.preventDefault();
+  applyShowAudioSource();
+  if(audio.paused) audio.play().catch(()=>{});
+  else audio.pause();
+});
+
 </script>
 
 <div id="mobileViewer">
@@ -4292,6 +5109,12 @@ setTimeout(bootWithRemoteProjectV167,500);
   <div id="mobileStageWrap" class="mobileStageWrap">
     <div id="mobileStage" class="mobileStage"></div>
   </div>
+  
+  <div class="mobileAudio">
+    <div id="mobileAudioInfo" class="mobileAudioInfo">오디오 연결 없음</div>
+    <button onclick="mobileToggleAudio()">▶ / ⏸</button>
+  </div>
+
   <div class="mobileCue">
     <div class="mobileCueLabel">🎭 현재 큐 <span id="mobileCuePage"></span></div>
     <div id="mobileCueText" class="mobileCueText mobileCueEmpty">현재 큐 없음</div>
