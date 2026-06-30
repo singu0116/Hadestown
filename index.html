@@ -4109,8 +4109,13 @@ function pasteSelection(){
   const newIds=[];
   clipboardItems.forEach(item=>{
     const copy=JSON.parse(JSON.stringify(item));
-    copy.x=Math.min(98,(copy.x||0)+3);
-    copy.y=Math.min(98,(copy.y||0)+3);
+
+    // 붙여넣기는 복사한 원본 좌표를 그대로 사용한다.
+    // 예전처럼 +3%씩 밀어 넣으면 차트마다 배우/소품 위치가 달라져서
+    // 뒤늦게 추가한 배우나 소품을 같은 자리에 맞추기 어려웠다.
+    copy.x=Math.max(0, Math.min(100, Number(copy.x)||0));
+    copy.y=Math.max(0, Math.min(100, Number(copy.y)||0));
+
     if(copy.__kind==='actor' || (copy.id||'').startsWith('a') || copy.color || copy.type==='actor'){
       const nums=cur().actors.map(a=>Number(String(a.id).replace('a',''))||0);
       const next=1+Math.max(0,...nums);
@@ -4133,13 +4138,9 @@ function pasteSelection(){
   });
   multiSelected=newIds;
   selected=newIds[newIds.length-1]||null;
-  // 다음에 또 붙여넣으면 복사본 기준으로 조금 더 이동
-  clipboardItems=clipboardItems.map(item=>{
-    const next=JSON.parse(JSON.stringify(item));
-    next.x=Math.min(98,(next.x||0)+3);
-    next.y=Math.min(98,(next.y||0)+3);
-    return next;
-  });
+
+  // 클립보드는 움직이지 않고 유지한다.
+  // 여러 차트에서 Ctrl+V를 반복해도 항상 같은 좌표에 붙는다.
   render();
 }
 
