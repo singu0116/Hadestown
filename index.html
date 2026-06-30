@@ -2413,6 +2413,46 @@ const stage=document.getElementById('stage');
 
 function cur(){return state.charts[state.current]}
 function isMultiSelected(id){return multiSelected && multiSelected.includes(id)}
+function getSelectableIds(){
+  return [
+    ...cur().actors.filter(a=>!a.hidden).map(a=>a.id),
+    ...(cur().props||[]).map(p=>p.id),
+    ...(cur().stageMemos||[]).map(m=>m.id)
+  ];
+}
+function setSingleSelection(id){
+  selected=id;
+  multiSelected=[];
+}
+function toggleMultiSelection(id){
+  const set=new Set((multiSelected&&multiSelected.length)?multiSelected:(selected?[selected]:[]));
+  if(set.has(id)) set.delete(id); else set.add(id);
+  multiSelected=[...set];
+  selected=multiSelected[multiSelected.length-1]||null;
+}
+function handleObjectSelectionClick(e,id){
+  if(e.ctrlKey || e.metaKey){
+    toggleMultiSelection(id);
+  }else{
+    setSingleSelection(id);
+  }
+  render();
+}
+function moveSelectedByKeyboard(dxPx,dyPx){
+  const ids=getSelectedMovableIds();
+  if(!ids.length) return;
+  const rect=getArrowLayerRect();
+  const dx=(dxPx/rect.width)*100;
+  const dy=(dyPx/rect.height)*100;
+  pushHistory();
+  ids.forEach(id=>{
+    const o=findAnyObject(id);
+    if(!o || o.point) return;
+    o.x=Math.max(0,Math.min(98,(Number(o.x)||0)+dx));
+    o.y=Math.max(0,Math.min(98,(Number(o.y)||0)+dy));
+  });
+  render();
+}
 function findAnyObject(id){return cur().actors.find(x=>x.id===id)||(cur().props||[]).find(x=>x.id===id)||(cur().stageMemos||[]).find(x=>x.id===id)||(cur().arrowPoints||[]).find(x=>x.id===id)}
 function getSelectedMovableIds(){
   const ids=(multiSelected&&multiSelected.length)?multiSelected:(selected?[selected]:[]);
@@ -3304,10 +3344,10 @@ function actorClick(e){
   e.stopPropagation();
   const id=e.currentTarget.dataset.id;
   if(tool==='arrow'){
-    if(!arrowFrom){arrowFrom=id; selected=id; render(); return;}
-    if(arrowFrom!==id){pushHistory(); cur().arrows.push({from:arrowFrom,to:id}); arrowFrom=null; selected=id; setTool('select'); render(); return;}
+    if(!arrowFrom){arrowFrom=id; setSingleSelection(id); render(); return;}
+    if(arrowFrom!==id){pushHistory(); cur().arrows.push({from:arrowFrom,to:id}); arrowFrom=null; setTool('select'); setSingleSelection(id); render(); return;}
   }
-  selected=id; render();
+  handleObjectSelectionClick(e,id);
 }
 
 function moveIdsTogether(ids, e){
@@ -3339,6 +3379,7 @@ function dragStart(e){
   if(e.detail>=2) return;
   e.stopPropagation();
   if(tool==='arrow')return;
+  if(e.ctrlKey || e.metaKey) return;
   const id=e.currentTarget.dataset.id;
   selected=id;
 
@@ -3416,16 +3457,16 @@ function propClick(e){
   e.stopPropagation();
   const id=e.currentTarget.dataset.id;
   if(tool==='arrow'){
-    if(!arrowFrom){arrowFrom=id; selected=id; render(); return;}
-    if(arrowFrom!==id){pushHistory(); cur().arrows.push({from:arrowFrom,to:id}); arrowFrom=null; setTool('select'); selected=id; render(); return;}
+    if(!arrowFrom){arrowFrom=id; setSingleSelection(id); render(); return;}
+    if(arrowFrom!==id){pushHistory(); cur().arrows.push({from:arrowFrom,to:id}); arrowFrom=null; setTool('select'); setSingleSelection(id); render(); return;}
   }
-  selected=id;
-  render();
+  handleObjectSelectionClick(e,id);
 }
 function propDragStart(e){
   if(e.detail>=2) return;
   e.stopPropagation();
   if(tool==='arrow')return;
+  if(e.ctrlKey || e.metaKey) return;
   const id=e.currentTarget.dataset.id;
   selected=id;
 
@@ -3472,14 +3513,13 @@ function quickAddStageMemo(){
 }
 function stageMemoClick(e){
   e.stopPropagation();
-  selected=e.currentTarget.dataset.id;
-  multiSelected=[];
-  render();
+  handleObjectSelectionClick(e,e.currentTarget.dataset.id);
 }
 function stageMemoDragStart(e){
   if(e.detail>=2) return;
   e.stopPropagation();
   if(tool==='arrow')return;
+  if(e.ctrlKey || e.metaKey) return;
   if(e.target && e.target.classList && e.target.classList.contains('stageMemoResize')) return;
   const id=e.currentTarget.dataset.id;
   selected=id;
@@ -3655,8 +3695,9 @@ function getGroupMoveIds(clickedId){
 }
 function enableGroupDrag(){
   stage.addEventListener('mousedown',function(e){
-    const target=e.target.closest('.actor,.prop');
+    const target=e.target.closest('.actor,.prop,.stageMemo');
     if(!target) return;
+    if(e.ctrlKey || e.metaKey) return;
     if(tool==='arrow') return;
     const id=target.dataset.id;
     const ids=getGroupMoveIds(id);
@@ -3904,6 +3945,7 @@ function enableBoxSelect(){
 
     const rect=stage.getBoundingClientRect();
     const sx=e.clientX, sy=e.clientY;
+    const additive=e.ctrlKey || e.metaKey;
     let moved=false;
 
     function draw(ev){
@@ -3925,9 +3967,11 @@ function enableBoxSelect(){
       box.style.display='none';
 
       if(!moved){
-        selected=null;
-        multiSelected=[];
-        render();
+        if(!additive){
+          selected=null;
+          multiSelected=[];
+          render();
+        }
         return;
       }
 
@@ -3949,9 +3993,18 @@ function enableBoxSelect(){
         const cy=p.y+((p.h||44)/2/rect.height*100);
         if(cx>=x1&&cx<=x2&&cy>=y1&&cy<=y2) picked.push(p.id);
       });
+      (cur().stageMemos||[]).forEach(m=>{
+        const cx=(Number(m.x)||0)+((m.w||150)/2/rect.width*100);
+        const cy=(Number(m.y)||0)+((m.h||56)/2/rect.height*100);
+        if(cx>=x1&&cx<=x2&&cy>=y1&&cy<=y2) picked.push(m.id);
+      });
 
-      multiSelected=picked;
-      selected=picked[picked.length-1]||null;
+      if(additive){
+        multiSelected=[...new Set([...(multiSelected&&multiSelected.length?multiSelected:(selected?[selected]:[])),...picked])];
+      }else{
+        multiSelected=picked;
+      }
+      selected=multiSelected[multiSelected.length-1]||null;
       suppressBoxClick=true;
       render();
     }
@@ -3963,8 +4016,9 @@ function enableBoxSelect(){
 
 function enableGroupDrag(){
   stage.addEventListener('mousedown', function(e){
-    const target=e.target.closest('.actor,.prop');
+    const target=e.target.closest('.actor,.prop,.stageMemo');
     if(!target) return;
+    if(e.ctrlKey || e.metaKey) return;
     if(!multiSelected || multiSelected.length<2) return;
     const id=target.dataset.id;
     if(!multiSelected.includes(id)) return;
@@ -4096,11 +4150,13 @@ function copySelection(){
   clipboardItems=ids.map(id=>{
     const actor=cur().actors.find(a=>a.id===id);
     const prop=(cur().props||[]).find(p=>p.id===id);
-    const o=actor||prop;
+    const memo=(cur().stageMemos||[]).find(m=>m.id===id);
+    const o=actor||prop||memo;
+    if(!o) return null;
     const item=JSON.parse(JSON.stringify(o));
-    item.__kind=actor?'actor':'prop';
+    item.__kind=actor?'actor':(prop?'prop':'memo');
     return item;
-  });
+  }).filter(Boolean);
 }
 
 function pasteSelection(){
@@ -4116,7 +4172,16 @@ function pasteSelection(){
     copy.x=Math.max(0, Math.min(100, Number(copy.x)||0));
     copy.y=Math.max(0, Math.min(100, Number(copy.y)||0));
 
-    if(copy.__kind==='actor' || (copy.id||'').startsWith('a') || copy.color || copy.type==='actor'){
+    if(copy.__kind==='memo'){
+      cur().stageMemos=cur().stageMemos||[];
+      copy.id='m'+Date.now()+Math.floor(Math.random()*1000);
+      copy.text=copy.text||'메모';
+      copy.w=copy.w||150;
+      copy.h=copy.h||56;
+      delete copy.__kind;
+      cur().stageMemos.push(copy);
+      newIds.push(copy.id);
+    }else if(copy.__kind==='actor' || (copy.id||'').startsWith('a') || copy.color || copy.type==='actor'){
       const nums=cur().actors.map(a=>Number(String(a.id).replace('a',''))||0);
       const next=1+Math.max(0,...nums);
       copy.id='a'+next;
@@ -4158,13 +4223,41 @@ function enableCopyPaste(){
       redo();
       return;
     }
+    if(e.ctrlKey && e.key.toLowerCase()==='a'){
+      e.preventDefault();
+      multiSelected=getSelectableIds();
+      selected=multiSelected[multiSelected.length-1]||null;
+      render();
+      return;
+    }
     if(e.ctrlKey && e.key.toLowerCase()==='c'){
       e.preventDefault();
       copySelection();
+      return;
     }
     if(e.ctrlKey && e.key.toLowerCase()==='v'){
       e.preventDefault();
       pasteSelection();
+      return;
+    }
+    if(e.key==='Escape'){
+      selected=null;
+      multiSelected=[];
+      render();
+      return;
+    }
+    if(e.key==='Delete' || e.key==='Backspace'){
+      e.preventDefault();
+      deleteSelected();
+      return;
+    }
+    if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)){
+      e.preventDefault();
+      const step=e.shiftKey?10:1;
+      const dx=e.key==='ArrowLeft'?-step:(e.key==='ArrowRight'?step:0);
+      const dy=e.key==='ArrowUp'?-step:(e.key==='ArrowDown'?step:0);
+      moveSelectedByKeyboard(dx,dy);
+      return;
     }
   });
 }
