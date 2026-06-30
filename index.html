@@ -869,7 +869,7 @@ body.mobile-view #mobileViewer{
   height:100%;
   object-fit:contain;
   object-position:center center;
-  transform:none;
+  transform:scale(1.055);
   transform-origin:center center;
   opacity:1;
 }
@@ -2227,6 +2227,15 @@ if(typeof renderThumbs==='function' && !window.__audioThumbHooked){
 window.addEventListener('load',()=>setTimeout(()=>{applyShowAudioSource(); renderAudioPanel(); renderMobileAudio();},300));
 
 </script>
+
+<style id="mobile-coordinate-align-css-v2">
+body.mobile-view .mobileStage img{transform:none!important;object-fit:contain!important;object-position:center center!important;}
+body.mobile-view .mobileStage{aspect-ratio:1616/1000!important;}
+body.mobile-view .mobileActor{width:12px!important;height:12px!important;min-width:12px!important;min-height:12px!important;border:1px solid rgba(255,255,255,.92)!important;font-size:5px!important;line-height:1!important;transform:translate(-50%,-50%)!important;overflow:visible!important;box-sizing:border-box!important;}
+body.mobile-view .mobileActorLabel{font-size:5px!important;font-weight:900!important;line-height:1!important;}
+body.mobile-view .mobileActorName{font-size:6px!important;top:calc(100% + 1px)!important;max-width:58px!important;}
+</style>
+
 </head>
 <body>
 <div class="top">
@@ -5877,6 +5886,95 @@ window.addEventListener('load',()=>{
     ['play','pause','ended','loadedmetadata'].forEach(ev=>audio.addEventListener(ev,updateMobileAudioButtonV177));
   }
 });
+
+
+
+/* ===== Mobile coordinate alignment fix v2: use same stage coordinate system as PC ===== */
+(function(){
+  function esc(s){
+    return String(s||'').replace(/[&<>"]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch];});
+  }
+  function actorLabelSafe(a){
+    try{
+      if(typeof ensureActorLabel==='function') return ensureActorLabel(a);
+      if(!a.label){
+        var m=String(a.name||'').match(/(\d+)/);
+        a.label=m?m[1]:String((a.id||'').replace(/\D/g,''))||'';
+      }
+      return a.label;
+    }catch(e){ return (a&&a.label)||''; }
+  }
+  function actorCenterPct(a){
+    var pcSize=Number(a.size || (window.state&&state.actorSize) || 54) || 54;
+    return {
+      x:(Number(a.x)||0) + (pcSize/2)/1616*100,
+      y:(Number(a.y)||0) + (pcSize/2)/1000*100
+    };
+  }
+  function propHtml(p){
+    var wPct=Math.max(4, ((Number(p.w)||80)/1616*100));
+    var hPct=Math.max(3, ((Number(p.h)||44)/1000*100));
+    return '<div class="mobileProp" style="left:'+(Number(p.x)||0)+'%;top:'+(Number(p.y)||0)+'%;width:'+wPct+'%;height:'+hPct+'%;transform:rotate('+((Number(p.rot)||0))+'deg);">'+esc(p.name||'')+'</div>';
+  }
+  function memoHtml(m){
+    var mw=Math.max(5, ((Number(m.w)||150)/1616*100));
+    var mh=m.h?Math.max(3, ((Number(m.h)||56)/1000*100)):null;
+    return '<div class="mobileStageMemo" style="left:'+(Number(m.x)||45)+'%;top:'+(Number(m.y)||45)+'%;width:'+mw+'%;'+(mh?'height:'+mh+'%;':'')+'">'+esc(m.text||'메모')+'</div>';
+  }
+  function arrowLineHtml(chart){
+    var lines=[];
+    (chart.arrows||[]).forEach(function(ar){
+      if(ar.x1!==undefined && ar.y1!==undefined && ar.x2!==undefined && ar.y2!==undefined){
+        lines.push('<line x1="'+ar.x1+'%" y1="'+ar.y1+'%" x2="'+ar.x2+'%" y2="'+ar.y2+'%" stroke="'+(ar.color||'#e8a04b')+'" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#mArrowHead)"/>');
+        return;
+      }
+      var from=(chart.actors||[]).find(function(a){return a.id===ar.from;}) || (chart.props||[]).find(function(p){return p.id===ar.from;});
+      var to=(chart.actors||[]).find(function(a){return a.id===ar.to;}) || (chart.props||[]).find(function(p){return p.id===ar.to;});
+      if(!from || !to || from.hidden || to.hidden) return;
+      function centerObj(o){
+        if((chart.actors||[]).some(function(a){return a.id===o.id;})) return actorCenterPct(o);
+        return {x:(Number(o.x)||0)+((Number(o.w)||80)/2)/1616*100, y:(Number(o.y)||0)+((Number(o.h)||44)/2)/1000*100};
+      }
+      var a=centerObj(from), b=centerObj(to);
+      lines.push('<line x1="'+a.x+'%" y1="'+a.y+'%" x2="'+b.x+'%" y2="'+b.y+'%" stroke="#e8a04b" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#mArrowHead)"/>');
+    });
+    if(!lines.length) return '';
+    return '<svg class="mobileArrowSvg" viewBox="0 0 100 100" preserveAspectRatio="none"><defs><marker id="mArrowHead" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#e8a04b"/></marker></defs>'+lines.join('')+'</svg>';
+  }
+  window.renderMobileView=function(){
+    var viewer=document.getElementById('mobileViewer');
+    if(!viewer || !window.state || !state.charts) return;
+    var chart=state.charts[state.current] || state.charts[0];
+    if(!chart) return;
+    var nameEl=document.getElementById('mobileChartName');
+    var subEl=document.getElementById('mobileSub');
+    var stageEl=document.getElementById('mobileStage');
+    var cueEl=document.getElementById('mobileCueText');
+    var pageEl=document.getElementById('mobileCuePage');
+    if(nameEl) nameEl.textContent=(chart.name || chart.code || ('Chart '+(state.current+1)));
+    if(subEl) subEl.textContent=(state.current+1)+' / '+state.charts.length;
+    var cue=(chart.cueLocal || null);
+    if(pageEl) pageEl.textContent=cue&&cue.page ? 'p.'+cue.page : '';
+    if(cueEl){
+      if(cue && (cue.text || cue.preview)){ cueEl.classList.remove('mobileCueEmpty'); cueEl.textContent=cue.text || cue.preview; }
+      else{ cueEl.classList.add('mobileCueEmpty'); cueEl.textContent='현재 큐 없음'; }
+    }
+    if(!stageEl) return;
+    var bg=document.getElementById('bg');
+    var html='';
+    if(bg && bg.src) html += '<img src="'+bg.src+'">';
+    html += arrowLineHtml(chart);
+    (chart.props||[]).forEach(function(p){ html += propHtml(p); });
+    (chart.stageMemos||[]).forEach(function(m){ html += memoHtml(m); });
+    (chart.actors||[]).forEach(function(a){
+      if(a.hidden) return;
+      var c=actorCenterPct(a);
+      var label=actorLabelSafe(a);
+      html += '<div class="mobileActor" style="left:'+c.x+'%;top:'+c.y+'%;background:'+(a.color||'#777')+';"><span class="mobileActorLabel">'+esc(label)+'</span><span class="mobileActorName">'+esc(a.name||('Actor '+label))+'</span></div>';
+    });
+    stageEl.innerHTML=html;
+  };
+})();
 
 </script>
 
