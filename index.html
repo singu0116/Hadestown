@@ -151,7 +151,7 @@ textarea{width:100%;height:120px;background:#111;color:#eee;border:1px solid #44
 .stageMemo.multi{outline:2px solid rgba(75,151,229,.95)!important}
 .stageMemoResize{position:absolute;right:2px;bottom:2px;width:12px;height:12px;border-right:2px solid rgba(36,23,10,.45);border-bottom:2px solid rgba(36,23,10,.45);cursor:nwse-resize;z-index:3}
 .stageMemoResize:hover{border-color:#24170a}
-.mobileStageMemo{position:absolute;min-width:42px;max-width:160px;background:rgba(255,246,179,.88);color:#24170a;border:1px solid rgba(120,80,20,.25);border-radius:6px;padding:4px 5px;font-size:9px;font-weight:800;line-height:1.25;box-shadow:0 2px 8px rgba(0,0,0,.36);white-space:pre-wrap;overflow:hidden;overflow-wrap:anywhere;word-break:break-word}
+.mobileStageMemo{position:absolute;z-index:30;display:block;box-sizing:border-box;min-width:42px;max-width:160px;background:rgba(255,246,179,.88);color:#24170a;border:1px solid rgba(120,80,20,.25);border-radius:6px;padding:4px 5px;font-size:9px;font-weight:800;line-height:1.25;box-shadow:0 2px 8px rgba(0,0,0,.36);white-space:pre-wrap;overflow:hidden;overflow-wrap:anywhere;word-break:break-word;pointer-events:none}
 .actor.multi,.prop.multi{outline:4px solid #5db7ff !important}
 .selectionBox{position:absolute;border:2px dashed #5db7ff;background:rgba(93,183,255,.18);z-index:60;display:none;pointer-events:none}
 .actor.groupedItem,.prop.groupedItem{outline:3px dashed #c77dff}
@@ -1576,12 +1576,19 @@ function renderMobileView(){
     html += '<div class="mobileStageMemo" style="'+memoStyle+'">'+mobileEscapeHtml(m.text||'메모')+'</div>';
   });
 
-  (chart.actors||[]).forEach(a=>{
-    if(a.hidden) return;
-    const size=Math.max(18, Math.min(42, (a.size||state.actorSize||54)*0.52));
-    const cx=a.x + (((a.size||state.actorSize||54)/2)/1616*100);
-    const cy=a.y + (((a.size||state.actorSize||54)/2)/1000*100);
-    html += '<div class="mobileActor" style="left:'+cx+'%;top:'+cy+'%;width:'+size+'px;height:'+size+'px;background:'+(a.color||'#777')+';">'+mobileEscapeHtml(a.name||'')+'</div>';
+  const mobileVisibleActors=(chart.actors||[]).filter(a=>!a.hidden);
+  let mobileActorPx=30;
+  if(mobileVisibleActors.length>=13) mobileActorPx=20;
+  else if(mobileVisibleActors.length>=7) mobileActorPx=24;
+  mobileActorPx=Math.max(18, Math.min(34, mobileActorPx));
+
+  mobileVisibleActors.forEach(a=>{
+    const originalSize=(a.size||state.actorSize||54);
+    const size=mobileActorPx;
+    const cx=a.x + ((originalSize/2)/1616*100);
+    const cy=a.y + ((originalSize/2)/1000*100);
+    const fontSize=Math.max(7, Math.round(size*0.34));
+    html += '<div class="mobileActor" style="left:'+cx+'%;top:'+cy+'%;width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px;background:'+(a.color||'#777')+';">'+mobileEscapeHtml(a.name||'')+'</div>';
   });
 
   stageEl.innerHTML=html;
@@ -4589,12 +4596,19 @@ function renderMobileView(){
     html += '<div class="mobileProp" style="left:'+p.x+'%;top:'+p.y+'%;width:'+w+'%;height:'+h+'%;transform:rotate('+((p.rot||0))+'deg);">'+mobileEscapeHtml(p.name||'')+'</div>';
   });
 
-  (chart.actors||[]).forEach(a=>{
-    if(a.hidden) return;
-    const size=Math.max(18, Math.min(42, (a.size||state.actorSize||54)*0.52));
-    const cx=a.x + (((a.size||state.actorSize||54)/2)/1616*100);
-    const cy=a.y + (((a.size||state.actorSize||54)/2)/1000*100);
-    html += '<div class="mobileActor" style="left:'+cx+'%;top:'+cy+'%;width:'+size+'px;height:'+size+'px;background:'+(a.color||'#777')+';">'+mobileEscapeHtml(a.name||'')+'</div>';
+  const mobileVisibleActors=(chart.actors||[]).filter(a=>!a.hidden);
+  let mobileActorPx=30;
+  if(mobileVisibleActors.length>=13) mobileActorPx=20;
+  else if(mobileVisibleActors.length>=7) mobileActorPx=24;
+  mobileActorPx=Math.max(18, Math.min(34, mobileActorPx));
+
+  mobileVisibleActors.forEach(a=>{
+    const originalSize=(a.size||state.actorSize||54);
+    const size=mobileActorPx;
+    const cx=a.x + ((originalSize/2)/1616*100);
+    const cy=a.y + ((originalSize/2)/1000*100);
+    const fontSize=Math.max(7, Math.round(size*0.34));
+    html += '<div class="mobileActor" style="left:'+cx+'%;top:'+cy+'%;width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px;background:'+(a.color||'#777')+';">'+mobileEscapeHtml(a.name||'')+'</div>';
   });
 
   stageEl.innerHTML=html;
@@ -5857,20 +5871,6 @@ window.addEventListener('load',()=>{
   font-size:10px;
   pointer-events:none;
 }
-
-/* ===== Mobile memo visibility safe fix ===== */
-.mobileStageMemo{
-  z-index:45!important;
-  box-sizing:border-box!important;
-  border:1px solid rgba(120,80,20,.35)!important;
-  background:rgba(255,246,179,.92)!important;
-  color:#24170a!important;
-  white-space:pre-wrap!important;
-  overflow:hidden!important;
-  overflow-wrap:anywhere!important;
-  word-break:break-word!important;
-  pointer-events:none!important;
-}
 </style>
 <script>
 /* ===== Mobile readability patch: auto size + pinch zoom + visual spread ===== */
@@ -5996,7 +5996,7 @@ window.addEventListener('load',()=>{
       if(!m) return;
       const w=Math.max(6, Math.min(35, ((m.w||160)/1616*100)));
       const h=Math.max(3, Math.min(22, ((m.h||70)/1000*100)));
-      html += '<div class="mobileStageMemo" style="left:'+(m.x||5)+'%;top:'+(m.y||5)+'%;width:'+w+'%;min-height:'+h+'%;z-index:45;">'+mobileEscapeHtmlLocal(m.text||'메모')+'</div>';
+      html += '<div class="mobileStageMemo" style="left:'+(m.x||5)+'%;top:'+(m.y||5)+'%;width:'+w+'%;height:'+h+'%;">'+mobileEscapeHtmlLocal(m.text||'메모')+'</div>';
     });
 
     const visibleActors=(chart.actors||[]).filter(a=>!a.hidden);
