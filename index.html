@@ -151,7 +151,7 @@ textarea{width:100%;height:120px;background:#111;color:#eee;border:1px solid #44
 .stageMemo.multi{outline:2px solid rgba(75,151,229,.95)!important}
 .stageMemoResize{position:absolute;right:2px;bottom:2px;width:12px;height:12px;border-right:2px solid rgba(36,23,10,.45);border-bottom:2px solid rgba(36,23,10,.45);cursor:nwse-resize;z-index:3}
 .stageMemoResize:hover{border-color:#24170a}
-.mobileStageMemo{position:absolute;min-width:42px;max-width:160px;background:rgba(255,246,179,.88);color:#24170a;border:1px solid rgba(120,80,20,.25);border-radius:6px;padding:4px 5px;font-size:9px;font-weight:800;line-height:1.25;box-shadow:0 2px 8px rgba(0,0,0,.36);white-space:pre-wrap;overflow:hidden;overflow-wrap:anywhere;word-break:break-word}
+.mobileStageMemo{position:absolute;z-index:24;display:block;box-sizing:border-box;min-width:42px;max-width:180px;background:rgba(255,246,179,.92);color:#24170a;border:1px solid rgba(120,80,20,.22);border-radius:6px;padding:4px 5px;font-size:9px;font-weight:800;line-height:1.25;box-shadow:0 2px 8px rgba(0,0,0,.36);white-space:pre-wrap;overflow:hidden;overflow-wrap:anywhere;word-break:break-word;pointer-events:none}
 .actor.multi,.prop.multi{outline:4px solid #5db7ff !important}
 .selectionBox{position:absolute;border:2px dashed #5db7ff;background:rgba(93,183,255,.18);z-index:60;display:none;pointer-events:none}
 .actor.groupedItem,.prop.groupedItem{outline:3px dashed #c77dff}
@@ -5820,6 +5820,283 @@ window.addEventListener('load',()=>{
     <button onclick="mobileNextChart()">다음</button>
   </div>
 </div>
+
+
+
+<style>
+/* ===== Mobile readability patch: auto size + pinch zoom + visual spread ===== */
+.mobileStage{
+  touch-action:none;
+}
+.mobileStageInner{
+  position:absolute;
+  inset:0;
+  transform-origin:50% 50%;
+  will-change:transform;
+}
+.mobileActor{
+  box-sizing:border-box;
+  min-width:14px;
+  min-height:14px;
+  line-height:1;
+  padding:1px;
+}
+.mobileActor.smallText{
+  font-size:8px!important;
+}
+.mobileZoomHint{
+  position:absolute;
+  right:8px;
+  bottom:8px;
+  z-index:30;
+  padding:3px 6px;
+  border-radius:7px;
+  border:1px solid rgba(255,236,210,.14);
+  background:rgba(0,0,0,.38);
+  color:#cdbfa9;
+  font-size:10px;
+  pointer-events:none;
+}
+</style>
+<script>
+/* ===== Mobile readability patch: auto size + pinch zoom + visual spread ===== */
+(function(){
+  window.__mobileZoomState = window.__mobileZoomState || {scale:1, x:0, y:0};
+
+  function clamp(v,min,max){ return Math.max(min, Math.min(max, v)); }
+  function getMobileActorSize(count, base){
+    base = Number(base || 54);
+    if(count <= 6) return clamp(base * 0.56, 24, 32);
+    if(count <= 12) return clamp(base * 0.46, 20, 26);
+    if(count <= 18) return clamp(base * 0.38, 17, 22);
+    return clamp(base * 0.32, 15, 19);
+  }
+  function getSpreadOffsets(items){
+    // 화면 표시 전용: 가까운 배우끼리만 좌표를 살짝 벌림. 실제 데이터는 바꾸지 않음.
+    const groups = [];
+    const threshold = 3.0; // percent 기준. 모바일에서 겹쳐 보이는 거리
+    items.forEach((item, idx)=>{
+      let group = null;
+      for(const g of groups){
+        const dx = item.cx - g.cx;
+        const dy = item.cy - g.cy;
+        if(Math.sqrt(dx*dx + dy*dy) < threshold){ group = g; break; }
+      }
+      if(!group){
+        group = {cx:item.cx, cy:item.cy, list:[]};
+        groups.push(group);
+      }
+      group.list.push(idx);
+      const n = group.list.length;
+      group.cx = (group.cx*(n-1) + item.cx) / n;
+      group.cy = (group.cy*(n-1) + item.cy) / n;
+    });
+    const offsets = new Array(items.length).fill(0).map(()=>({dx:0,dy:0}));
+    const pattern = [
+      [0,0], [1,0], [-1,0], [0,1], [0,-1],
+      [0.74,0.74], [-0.74,0.74], [0.74,-0.74], [-0.74,-0.74],
+      [1.45,0], [-1.45,0], [0,1.45], [0,-1.45]
+    ];
+    groups.forEach(g=>{
+      if(g.list.length <= 1) return;
+      const radius = g.list.length <= 4 ? 1.55 : 2.05;
+      g.list.forEach((idx, order)=>{
+        const p = pattern[order];
+        if(p){
+          offsets[idx] = {dx:p[0]*radius, dy:p[1]*radius};
+        }else{
+          const ang = (Math.PI*2*order)/g.list.length;
+          offsets[idx] = {dx:Math.cos(ang)*radius*1.25, dy:Math.sin(ang)*radius*1.25};
+        }
+      });
+    });
+    return offsets;
+  }
+  function mobileEscapeHtmlLocal(s){
+    if(typeof mobileEscapeHtml === 'function') return mobileEscapeHtml(s);
+    return String(s||'').replace(/[&<>\"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[ch]||ch));
+  }
+  function applyMobileZoomTransform(){
+    const inner=document.getElementById('mobileStageInner');
+    if(!inner) return;
+    const z=window.__mobileZoomState || {scale:1,x:0,y:0};
+    inner.style.transform='translate('+z.x+'px,'+z.y+'px) scale('+z.scale+')';
+    const hint=document.getElementById('mobileZoomHint');
+    if(hint) hint.textContent=(Math.round(z.scale*100))+'%';
+  }
+
+  window.renderMobileView = function(){
+    const viewer=document.getElementById('mobileViewer');
+    if(!viewer || !window.state || !state.charts) return;
+
+    const chart=state.charts[state.current] || state.charts[0];
+    if(!chart) return;
+
+    const nameEl=document.getElementById('mobileChartName');
+    const subEl=document.getElementById('mobileSub');
+    const stageEl=document.getElementById('mobileStage');
+    const cueEl=document.getElementById('mobileCueText');
+    const pageEl=document.getElementById('mobileCuePage');
+
+    if(nameEl) nameEl.textContent=(chart.name || chart.code || ('Chart '+(state.current+1)));
+    if(subEl) subEl.textContent=(state.current+1)+' / '+state.charts.length+' · 두 손가락 확대 가능';
+
+    const cue=(chart.cueLocal || null);
+    if(pageEl) pageEl.textContent=cue&&cue.page ? 'p.'+cue.page : '';
+    if(cueEl){
+      if(cue && (cue.text || cue.preview)){
+        cueEl.classList.remove('mobileCueEmpty');
+        cueEl.textContent=cue.text || cue.preview;
+      }else{
+        cueEl.classList.add('mobileCueEmpty');
+        cueEl.textContent='현재 큐 없음';
+      }
+    }
+
+    if(!stageEl) return;
+    const bg=document.getElementById('bg');
+    let html='<div id="mobileStageInner" class="mobileStageInner">';
+    if(bg && bg.src){
+      html += '<img src="'+bg.src+'">';
+    }
+
+    const arrowEls=[];
+    if(chart.arrows && chart.arrows.length){
+      chart.arrows.forEach(ar=>{
+        if(ar.x1!==undefined && ar.y1!==undefined && ar.x2!==undefined && ar.y2!==undefined){
+          arrowEls.push('<line x1="'+ar.x1+'%" y1="'+ar.y1+'%" x2="'+ar.x2+'%" y2="'+ar.y2+'%" stroke="'+(ar.color||'#e8a04b')+'" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#mArrowHead)"/>');
+        }
+      });
+    }
+    if(arrowEls.length){
+      html += '<svg class="mobileArrowSvg" viewBox="0 0 100 100" preserveAspectRatio="none"><defs><marker id="mArrowHead" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#e8a04b"/></marker></defs>'+arrowEls.join('')+'</svg>';
+    }
+
+    (chart.props||[]).forEach(p=>{
+      const w=Math.max(4,((p.w||80)/1616*100));
+      const h=Math.max(3,((p.h||44)/1000*100));
+      html += '<div class="mobileProp" style="left:'+p.x+'%;top:'+p.y+'%;width:'+w+'%;height:'+h+'%;transform:rotate('+((p.rot||0))+'deg);">'+mobileEscapeHtmlLocal(p.name||'')+'</div>';
+    });
+
+    const visibleActors=(chart.actors||[]).filter(a=>!a.hidden);
+    const mobileSize=getMobileActorSize(visibleActors.length, state.actorSize||54);
+    const actorItems=visibleActors.map(a=>{
+      const rawSize=(a.size||state.actorSize||54);
+      return {
+        a,
+        cx:a.x + ((rawSize/2)/1616*100),
+        cy:a.y + ((rawSize/2)/1000*100)
+      };
+    });
+    const offsets=getSpreadOffsets(actorItems);
+    actorItems.forEach((item,i)=>{
+      const a=item.a;
+      const off=offsets[i] || {dx:0,dy:0};
+      const size=mobileSize;
+      const fontSize=clamp(size*0.34, 7, 10);
+      const cx=clamp(item.cx + off.dx, 1, 99);
+      const cy=clamp(item.cy + off.dy, 1, 99);
+      const textCls=size<21?' smallText':'';
+      html += '<div class="mobileActor'+textCls+'" style="left:'+cx+'%;top:'+cy+'%;width:'+size+'px;height:'+size+'px;font-size:'+fontSize+'px;background:'+(a.color||'#777')+';">'+mobileEscapeHtmlLocal(a.name||'')+'</div>';
+    });
+
+    // 모바일 메모는 배우/소품 위에 다시 그려서 겹쳐도 보이게 함
+    (chart.stageMemos||chart.memos||[]).forEach(m=>{
+      if(!m) return;
+      const w=Math.max(7, Math.min(38, ((m.w||160)/1616*100)));
+      const h=Math.max(4, Math.min(24, ((m.h||70)/1000*100)));
+      const x=clamp(Number(m.x||5), 0, 99);
+      const y=clamp(Number(m.y||5), 0, 99);
+      html += '<div class="mobileStageMemo" style="left:'+x+'%;top:'+y+'%;width:'+w+'%;height:'+h+'%;">'+mobileEscapeHtmlLocal(m.text||'메모')+'</div>';
+    });
+
+    html += '</div><div id="mobileZoomHint" class="mobileZoomHint"></div>';
+    stageEl.innerHTML=html;
+    applyMobileZoomTransform();
+    setupMobilePinchZoom();
+  };
+
+  window.setupMobilePinchZoom = function(){
+    const stage=document.getElementById('mobileStage');
+    if(!stage || stage.dataset.pinchReady==='1') return;
+    stage.dataset.pinchReady='1';
+    let mode=null;
+    let startDist=0, startScale=1;
+    let startX=0, startY=0, baseX=0, baseY=0;
+    function dist(t1,t2){
+      const dx=t1.clientX-t2.clientX, dy=t1.clientY-t2.clientY;
+      return Math.sqrt(dx*dx+dy*dy);
+    }
+    function limitPan(){
+      const z=window.__mobileZoomState;
+      if(z.scale<=1.01){ z.x=0; z.y=0; z.scale=1; return; }
+      const rect=stage.getBoundingClientRect();
+      const maxX=rect.width*(z.scale-1)*0.5;
+      const maxY=rect.height*(z.scale-1)*0.5;
+      z.x=clamp(z.x,-maxX,maxX);
+      z.y=clamp(z.y,-maxY,maxY);
+    }
+    stage.addEventListener('touchstart',e=>{
+      if(e.touches.length===2){
+        mode='pinch';
+        startDist=dist(e.touches[0], e.touches[1]);
+        startScale=window.__mobileZoomState.scale;
+        e.preventDefault();
+      }else if(e.touches.length===1 && window.__mobileZoomState.scale>1.01){
+        mode='pan';
+        startX=e.touches[0].clientX;
+        startY=e.touches[0].clientY;
+        baseX=window.__mobileZoomState.x;
+        baseY=window.__mobileZoomState.y;
+        e.preventDefault();
+      }
+    },{passive:false});
+    stage.addEventListener('touchmove',e=>{
+      const z=window.__mobileZoomState;
+      if(mode==='pinch' && e.touches.length===2){
+        z.scale=clamp(startScale*(dist(e.touches[0],e.touches[1])/(startDist||1)),1,3.2);
+        limitPan();
+        applyMobileZoomTransform();
+        e.preventDefault();
+      }else if(mode==='pan' && e.touches.length===1){
+        z.x=baseX+(e.touches[0].clientX-startX);
+        z.y=baseY+(e.touches[0].clientY-startY);
+        limitPan();
+        applyMobileZoomTransform();
+        e.preventDefault();
+      }
+    },{passive:false});
+    stage.addEventListener('touchend',e=>{
+      if(e.touches.length===0) mode=null;
+      if(e.touches.length===1 && mode==='pinch'){
+        mode='pan';
+        startX=e.touches[0].clientX;
+        startY=e.touches[0].clientY;
+        baseX=window.__mobileZoomState.x;
+        baseY=window.__mobileZoomState.y;
+      }
+    },{passive:true});
+    stage.addEventListener('dblclick',()=>{
+      window.__mobileZoomState={scale:1,x:0,y:0};
+      applyMobileZoomTransform();
+    });
+  };
+
+  const __oldMobileNext = window.mobileNextChart;
+  window.mobileNextChart=function(){
+    if(typeof __oldMobileNext==='function') __oldMobileNext.apply(this,arguments);
+    setTimeout(()=>{ try{ renderMobileView(); }catch(e){} },0);
+  };
+  const __oldMobilePrev = window.mobilePrevChart;
+  window.mobilePrevChart=function(){
+    if(typeof __oldMobilePrev==='function') __oldMobilePrev.apply(this,arguments);
+    setTimeout(()=>{ try{ renderMobileView(); }catch(e){} },0);
+  };
+
+  window.addEventListener('load',()=>setTimeout(()=>{ try{ renderMobileView(); }catch(e){} },180));
+  window.addEventListener('resize',()=>setTimeout(()=>{ try{ renderMobileView(); }catch(e){} },80));
+})();
+</script>
 
 </body>
 </html>
