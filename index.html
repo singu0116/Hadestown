@@ -869,7 +869,7 @@ body.mobile-view #mobileViewer{
   height:100%;
   object-fit:contain;
   object-position:center center;
-  transform:none!important;
+  transform:scale(1.055);
   transform-origin:center center;
   opacity:1;
 }
@@ -5913,105 +5913,6 @@ window.addEventListener('load',()=>{
     <button onclick="mobileNextChart()">다음</button>
   </div>
 </div>
-
-
-
-<!-- ===== FINAL MOBILE COORDINATE FIX: use the same stage coordinate system as PC ===== -->
-<style>
-  .mobileStage img{transform:none!important;}
-  .mobileActor{
-    width:12px!important;height:12px!important;min-width:12px!important;min-height:12px!important;
-    border:1px solid rgba(255,255,255,.92)!important;
-    font-size:5px!important;line-height:1!important;overflow:visible!important;
-    transform:translate(-50%,-50%)!important;
-  }
-  .mobileActorName{font-size:7px!important;top:calc(100% + 1px)!important;max-width:62px!important;}
-</style>
-<script>
-(function(){
-  function escMobileFinal(s){
-    return String(s||'').replace(/[&<>\"]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[ch]||ch;});
-  }
-  function actorLabelFinal(a, idx){
-    try{ if(typeof ensureActorLabel==='function') return ensureActorLabel(a); }catch(e){}
-    if(a && a.label) return a.label;
-    var m=String((a&&a.name)||'').match(/(\d+)/);
-    return m ? m[1] : String((idx||0)+1);
-  }
-  window.renderMobileView=function(){
-    var viewer=document.getElementById('mobileViewer');
-    if(!viewer || !window.state || !state.charts) return;
-    var chart=state.charts[state.current] || state.charts[0];
-    if(!chart) return;
-
-    var nameEl=document.getElementById('mobileChartName');
-    var subEl=document.getElementById('mobileSub');
-    var stageEl=document.getElementById('mobileStage');
-    var cueEl=document.getElementById('mobileCueText');
-    var pageEl=document.getElementById('mobileCuePage');
-    if(nameEl) nameEl.textContent=(chart.name || chart.code || ('Chart '+((state.current||0)+1)));
-    if(subEl) subEl.textContent=((state.current||0)+1)+' / '+(state.charts||[]).length;
-
-    var cue=(chart.cueLocal || null);
-    if(pageEl) pageEl.textContent=cue&&cue.page ? 'p.'+cue.page : '';
-    if(cueEl){
-      if(cue && (cue.text || cue.preview)){
-        cueEl.classList.remove('mobileCueEmpty');
-        cueEl.textContent=cue.text || cue.preview;
-      }else{
-        cueEl.classList.add('mobileCueEmpty');
-        cueEl.textContent='현재 큐 없음';
-      }
-    }
-    if(!stageEl) return;
-
-    var bg=document.getElementById('bg');
-    var html='';
-    if(bg && bg.src) html += '<img src="'+bg.src+'">';
-
-    var arrowEls=[];
-    (chart.arrows||[]).forEach(function(ar){
-      if(ar.x1!==undefined && ar.y1!==undefined && ar.x2!==undefined && ar.y2!==undefined){
-        arrowEls.push('<line x1="'+ar.x1+'%" y1="'+ar.y1+'%" x2="'+ar.x2+'%" y2="'+ar.y2+'%" stroke="'+(ar.color||'#e8a04b')+'" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#mArrowHead)"/>');
-      }
-    });
-    if(arrowEls.length){
-      html += '<svg class="mobileArrowSvg" viewBox="0 0 100 100" preserveAspectRatio="none"><defs><marker id="mArrowHead" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#e8a04b"/></marker></defs>'+arrowEls.join('')+'</svg>';
-    }
-
-    (chart.props||[]).forEach(function(p){
-      var w=Math.max(4,((p.w||80)/1616*100));
-      var h=Math.max(3,((p.h||44)/1000*100));
-      html += '<div class="mobileProp" style="left:'+p.x+'%;top:'+p.y+'%;width:'+w+'%;height:'+h+'%;transform:rotate('+((p.rot||0))+'deg);">'+escMobileFinal(p.name||'')+'</div>';
-    });
-
-    (chart.stageMemos||[]).forEach(function(m){
-      var mw=Math.max(5,((m.w||150)/1616*100));
-      var mh=m.h?Math.max(3,((m.h||56)/1000*100)):null;
-      var memoStyle='left:'+m.x+'%;top:'+m.y+'%;width:'+mw+'%;'+(mh?'height:'+mh+'%;':'');
-      html += '<div class="mobileStageMemo" style="'+memoStyle+'">'+escMobileFinal(m.text||'메모')+'</div>';
-    });
-
-    (chart.actors||[]).forEach(function(a, idx){
-      if(a.hidden) return;
-      var pcSize=(a.size||state.actorSize||54);
-      // PC stores actor x/y as the top-left of the actor box. Mobile draws the circle from its center.
-      // Therefore the mobile center must be the PC top-left plus half of the PC actor size in stage-percent units.
-      var cx=(Number(a.x)||0) + ((pcSize/2)/1616*100);
-      var cy=(Number(a.y)||0) + ((pcSize/2)/1000*100);
-      var label=actorLabelFinal(a, idx);
-      var nm=a.name || ('Actor '+label);
-      html += '<div class="mobileActor" style="left:'+cx+'%;top:'+cy+'%;background:'+(a.color||'#777')+';">'
-        + '<span class="mobileActorLabel">'+escMobileFinal(label)+'</span>'
-        + '<span class="mobileActorName">'+escMobileFinal(nm)+'</span>'
-        + '</div>';
-    });
-
-    stageEl.innerHTML=html;
-  };
-  window.addEventListener('load',function(){setTimeout(function(){try{window.renderMobileView();}catch(e){}},80);});
-})();
-</script>
 
 </body>
 </html>
