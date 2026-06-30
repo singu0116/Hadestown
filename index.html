@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Stage Blocking v1.77</title>
+<title>Stage Blocking v1.78 Mobile Align</title>
 <style>
 :root {
   --bg:#080808;--panel:#121212;--panel2:#181818;--line:#333;--text:#eee;--muted:#aaa;--yellow:#ffe94a;--red:#ff4d4d;
@@ -1317,6 +1317,21 @@ body.mobile-view #mobileViewer{
   margin-left:5px;
   padding:3px 5px!important;
   text-align:center;
+}
+
+
+/* ===== Mobile coordinate alignment fix v1.78 ===== */
+.mobileActor.mobileAlignFix{
+  transform:none!important;
+  overflow:visible!important;
+  width:var(--mw)!important;
+  height:var(--mh)!important;
+}
+.mobileProp.mobileAlignFix{
+  transform-origin:center center;
+}
+.mobileStageMemo.mobileAlignFix{
+  transform:none!important;
 }
 
 </style>
