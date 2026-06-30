@@ -19,7 +19,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "5"
         },
         {
           "id": "a7",
@@ -30,7 +31,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "4"
         },
         {
           "id": "a8",
@@ -41,7 +43,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "3"
         },
         {
           "id": "a9",
@@ -52,7 +55,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "9"
         },
         {
           "id": "a10",
@@ -63,7 +67,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "10"
         },
         {
           "id": "a11",
@@ -74,7 +79,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "11"
         },
         {
           "id": "a12",
@@ -85,7 +91,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "12"
         },
         {
           "id": "a13",
@@ -96,7 +103,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "13"
         },
         {
           "id": "a14",
@@ -107,7 +115,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "14"
         },
         {
           "id": "a15",
@@ -118,7 +127,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "6"
         },
         {
           "id": "a16",
@@ -129,7 +139,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "7"
         },
         {
           "id": "a17",
@@ -140,7 +151,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "8"
         },
         {
           "id": "a18",
@@ -151,51 +163,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a19",
-          "name": "Hades",
-          "x": 45.228344438017146,
-          "y": 26.365135281439514,
-          "color": "#3db7bd",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a20",
-          "name": "Pers",
-          "x": 49.56688876034294,
-          "y": 26.457387086976944,
-          "color": "#5dbb52",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a21",
-          "name": "F2",
-          "x": 32.72648645657836,
-          "y": 36.328330279481754,
-          "color": "#9c42c6",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a22",
-          "name": "F3",
-          "x": 35.18118916526269,
-          "y": 32.08474722476006,
-          "color": "#9c42c6",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "2"
         }
       ],
       "props": [
@@ -265,28 +234,6 @@
       "date": "2026.06.30",
       "actors": [
         {
-          "id": "a6",
-          "name": "Hades",
-          "x": 45.228344438017146,
-          "y": 26.365135281439514,
-          "color": "#3db7bd",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a7",
-          "name": "Pers",
-          "x": 49.56688876034294,
-          "y": 26.457387086976944,
-          "color": "#5dbb52",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
           "id": "a8",
           "name": "Hermes",
           "x": 27.817081039209697,
@@ -295,7 +242,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "3"
         },
         {
           "id": "a9",
@@ -306,7 +254,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "9"
         },
         {
           "id": "a10",
@@ -317,7 +266,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "10"
         },
         {
           "id": "a11",
@@ -328,7 +278,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "11"
         },
         {
           "id": "a12",
@@ -339,7 +290,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "12"
         },
         {
           "id": "a13",
@@ -350,7 +302,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "13"
         },
         {
           "id": "a14",
@@ -361,18 +314,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a18",
-          "name": "Eur",
-          "x": 62.639607836824595,
-          "y": 56.71597930325338,
-          "color": "#e6d83f",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "14"
         },
         {
           "id": "a19",
@@ -383,7 +326,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "6"
         },
         {
           "id": "a20",
@@ -394,7 +338,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "7"
         },
         {
           "id": "a21",
@@ -405,7 +350,44 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "8"
+        },
+        {
+          "id": "a22",
+          "name": "Hades",
+          "x": 45.228344438017146,
+          "y": 26.365135281439514,
+          "color": "#3db7bd",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "5"
+        },
+        {
+          "id": "a23",
+          "name": "Pers",
+          "x": 49.56688876034294,
+          "y": 26.457387086976944,
+          "color": "#5dbb52",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "4"
+        },
+        {
+          "id": "a24",
+          "name": "Eur",
+          "x": 62.639607836824595,
+          "y": 56.71597930325338,
+          "color": "#e6d83f",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "2"
         }
       ],
       "props": [
@@ -487,28 +469,6 @@
       "date": "2026.06.30",
       "actors": [
         {
-          "id": "a6",
-          "name": "Hades",
-          "x": 45.228344438017146,
-          "y": 26.365135281439514,
-          "color": "#3db7bd",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a7",
-          "name": "Pers",
-          "x": 49.56688876034294,
-          "y": 26.457387086976944,
-          "color": "#5dbb52",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
           "id": "a8",
           "name": "Hermes",
           "x": 47.683047146701476,
@@ -517,7 +477,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "3"
         },
         {
           "id": "a9",
@@ -528,7 +489,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "9"
         },
         {
           "id": "a10",
@@ -539,7 +501,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "10"
         },
         {
           "id": "a11",
@@ -550,7 +513,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "11"
         },
         {
           "id": "a12",
@@ -561,7 +525,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "12"
         },
         {
           "id": "a13",
@@ -572,7 +537,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "13"
         },
         {
           "id": "a14",
@@ -583,18 +549,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a18",
-          "name": "Eur",
-          "x": 62.639607836824595,
-          "y": 56.71597930325338,
-          "color": "#e6d83f",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "14"
         },
         {
           "id": "a19",
@@ -605,7 +561,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "6"
         },
         {
           "id": "a20",
@@ -616,7 +573,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "7"
         },
         {
           "id": "a21",
@@ -627,7 +585,44 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "8"
+        },
+        {
+          "id": "a22",
+          "name": "Hades",
+          "x": 45.228344438017146,
+          "y": 26.365135281439514,
+          "color": "#3db7bd",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "5"
+        },
+        {
+          "id": "a23",
+          "name": "Pers",
+          "x": 49.56688876034294,
+          "y": 26.457387086976944,
+          "color": "#5dbb52",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "4"
+        },
+        {
+          "id": "a24",
+          "name": "Eur",
+          "x": 62.639607836824595,
+          "y": 56.71597930325338,
+          "color": "#e6d83f",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "2"
         }
       ],
       "props": [
@@ -716,7 +711,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "5"
         },
         {
           "id": "a7",
@@ -727,7 +723,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "4"
         },
         {
           "id": "a8",
@@ -738,7 +735,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "3"
         },
         {
           "id": "a9",
@@ -749,7 +747,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "9"
         },
         {
           "id": "a10",
@@ -760,7 +759,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "10"
         },
         {
           "id": "a11",
@@ -771,7 +771,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "11"
         },
         {
           "id": "a12",
@@ -782,7 +783,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "12"
         },
         {
           "id": "a13",
@@ -793,7 +795,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "13"
         },
         {
           "id": "a14",
@@ -804,7 +807,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "14"
         },
         {
           "id": "a18",
@@ -815,7 +819,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "2"
         },
         {
           "id": "a19",
@@ -826,7 +831,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "6"
         },
         {
           "id": "a20",
@@ -837,7 +843,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "7"
         },
         {
           "id": "a21",
@@ -848,7 +855,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "8"
         }
       ],
       "props": [
@@ -956,7 +964,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "5"
         },
         {
           "id": "a7",
@@ -967,18 +976,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a8",
-          "name": "Hermes",
-          "x": 47.683047146701476,
-          "y": 67.04818152344532,
-          "color": "#aaa",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "4"
         },
         {
           "id": "a9",
@@ -989,7 +988,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "9"
         },
         {
           "id": "a10",
@@ -1000,7 +1000,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "10"
         },
         {
           "id": "a11",
@@ -1011,7 +1012,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "11"
         },
         {
           "id": "a12",
@@ -1022,7 +1024,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "12"
         },
         {
           "id": "a13",
@@ -1033,7 +1036,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "13"
         },
         {
           "id": "a14",
@@ -1044,7 +1048,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "14"
         },
         {
           "id": "a15",
@@ -1055,7 +1060,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "6"
         },
         {
           "id": "a16",
@@ -1066,7 +1072,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "7"
         },
         {
           "id": "a17",
@@ -1077,7 +1084,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "8"
         },
         {
           "id": "a18",
@@ -1088,7 +1096,20 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "2"
+        },
+        {
+          "id": "a19",
+          "name": "Hermes",
+          "x": 47.683047146701476,
+          "y": 67.04818152344532,
+          "color": "#aaa",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "3"
         }
       ],
       "props": [
@@ -1197,17 +1218,6 @@
       "date": "2026.06.30",
       "actors": [
         {
-          "id": "a6",
-          "name": "Hades",
-          "x": 45.228344438017146,
-          "y": 26.365135281439514,
-          "color": "#3db7bd",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
           "id": "a7",
           "name": "Pers",
           "x": 51.793247031010125,
@@ -1216,18 +1226,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a8",
-          "name": "Hermes",
-          "x": 47.683047146701476,
-          "y": 67.04818152344532,
-          "color": "#aaa",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "4"
         },
         {
           "id": "a9",
@@ -1238,7 +1238,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "9"
         },
         {
           "id": "a10",
@@ -1249,7 +1250,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "10"
         },
         {
           "id": "a11",
@@ -1260,7 +1262,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "11"
         },
         {
           "id": "a12",
@@ -1271,7 +1274,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "12"
         },
         {
           "id": "a13",
@@ -1282,7 +1286,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "13"
         },
         {
           "id": "a14",
@@ -1293,18 +1298,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a18",
-          "name": "Eur",
-          "x": 62.639607836824595,
-          "y": 56.71597930325338,
-          "color": "#e6d83f",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "14"
         },
         {
           "id": "a19",
@@ -1315,7 +1310,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "6"
         },
         {
           "id": "a20",
@@ -1326,7 +1322,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "7"
         },
         {
           "id": "a21",
@@ -1337,7 +1334,44 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "8"
+        },
+        {
+          "id": "a22",
+          "name": "Hades",
+          "x": 45.228344438017146,
+          "y": 26.365135281439514,
+          "color": "#3db7bd",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "5"
+        },
+        {
+          "id": "a23",
+          "name": "Eur",
+          "x": 62.639607836824595,
+          "y": 56.71597930325338,
+          "color": "#e6d83f",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "2"
+        },
+        {
+          "id": "a24",
+          "name": "Hermes",
+          "x": 47.683047146701476,
+          "y": 67.04818152344532,
+          "color": "#aaa",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "3"
         }
       ],
       "props": [
@@ -1419,17 +1453,6 @@
       "date": "2026.06.30",
       "actors": [
         {
-          "id": "a6",
-          "name": "Hades",
-          "x": 45.228344438017146,
-          "y": 26.365135281439514,
-          "color": "#3db7bd",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
           "id": "a7",
           "name": "Pers",
           "x": 47.740133256205766,
@@ -1438,18 +1461,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a8",
-          "name": "Hermes",
-          "x": 47.683047146701476,
-          "y": 67.04818152344532,
-          "color": "#aaa",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "4"
         },
         {
           "id": "a9",
@@ -1460,7 +1473,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "9"
         },
         {
           "id": "a10",
@@ -1471,7 +1485,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "10"
         },
         {
           "id": "a11",
@@ -1482,7 +1497,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "11"
         },
         {
           "id": "a12",
@@ -1493,7 +1509,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "12"
         },
         {
           "id": "a13",
@@ -1504,7 +1521,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "13"
         },
         {
           "id": "a14",
@@ -1515,18 +1533,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a18",
-          "name": "Eur",
-          "x": 62.639607836824595,
-          "y": 56.71597930325338,
-          "color": "#e6d83f",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "14"
         },
         {
           "id": "a19",
@@ -1537,7 +1545,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "6"
         },
         {
           "id": "a20",
@@ -1548,7 +1557,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "7"
         },
         {
           "id": "a21",
@@ -1559,7 +1569,44 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "8"
+        },
+        {
+          "id": "a22",
+          "name": "Hades",
+          "x": 45.228344438017146,
+          "y": 26.365135281439514,
+          "color": "#3db7bd",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "5"
+        },
+        {
+          "id": "a23",
+          "name": "Eur",
+          "x": 62.639607836824595,
+          "y": 56.71597930325338,
+          "color": "#e6d83f",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "2"
+        },
+        {
+          "id": "a24",
+          "name": "Hermes",
+          "x": 47.683047146701476,
+          "y": 67.04818152344532,
+          "color": "#aaa",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "3"
         }
       ],
       "props": [
@@ -1641,17 +1688,6 @@
       "date": "2026.06.30",
       "actors": [
         {
-          "id": "a6",
-          "name": "Hades",
-          "x": 45.228344438017146,
-          "y": 26.365135281439514,
-          "color": "#3db7bd",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
           "id": "a7",
           "name": "Pers",
           "x": 54.70463861572875,
@@ -1660,18 +1696,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a8",
-          "name": "Hermes",
-          "x": 47.683047146701476,
-          "y": 67.04818152344532,
-          "color": "#aaa",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "4"
         },
         {
           "id": "a9",
@@ -1682,7 +1708,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "9"
         },
         {
           "id": "a10",
@@ -1693,7 +1720,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "10"
         },
         {
           "id": "a11",
@@ -1704,7 +1732,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "11"
         },
         {
           "id": "a12",
@@ -1715,7 +1744,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "12"
         },
         {
           "id": "a13",
@@ -1726,7 +1756,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "13"
         },
         {
           "id": "a14",
@@ -1737,18 +1768,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a18",
-          "name": "Eur",
-          "x": 62.639607836824595,
-          "y": 56.71597930325338,
-          "color": "#e6d83f",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "14"
         },
         {
           "id": "a19",
@@ -1759,7 +1780,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "6"
         },
         {
           "id": "a20",
@@ -1770,7 +1792,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "7"
         },
         {
           "id": "a21",
@@ -1781,7 +1804,44 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "8"
+        },
+        {
+          "id": "a22",
+          "name": "Hades",
+          "x": 45.228344438017146,
+          "y": 26.365135281439514,
+          "color": "#3db7bd",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "5"
+        },
+        {
+          "id": "a23",
+          "name": "Eur",
+          "x": 62.639607836824595,
+          "y": 56.71597930325338,
+          "color": "#e6d83f",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "2"
+        },
+        {
+          "id": "a24",
+          "name": "Hermes",
+          "x": 47.683047146701476,
+          "y": 67.04818152344532,
+          "color": "#aaa",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "3"
         }
       ],
       "props": [
@@ -1863,17 +1923,6 @@
       "date": "2026.06.30",
       "actors": [
         {
-          "id": "a6",
-          "name": "Hades",
-          "x": 45.228344438017146,
-          "y": 26.365135281439514,
-          "color": "#3db7bd",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
           "id": "a7",
           "name": "Pers",
           "x": 51.50781648348869,
@@ -1882,18 +1931,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a8",
-          "name": "Hermes",
-          "x": 47.683047146701476,
-          "y": 67.04818152344532,
-          "color": "#aaa",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "4"
         },
         {
           "id": "a9",
@@ -1904,7 +1943,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "9"
         },
         {
           "id": "a10",
@@ -1915,7 +1955,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "10"
         },
         {
           "id": "a11",
@@ -1926,7 +1967,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "11"
         },
         {
           "id": "a12",
@@ -1937,7 +1979,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "12"
         },
         {
           "id": "a13",
@@ -1948,7 +1991,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "13"
         },
         {
           "id": "a14",
@@ -1959,18 +2003,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a18",
-          "name": "Eur",
-          "x": 62.639607836824595,
-          "y": 56.71597930325338,
-          "color": "#e6d83f",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "14"
         },
         {
           "id": "a19",
@@ -1981,7 +2015,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "15"
         },
         {
           "id": "a20",
@@ -1992,7 +2027,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "6"
         },
         {
           "id": "a21",
@@ -2003,7 +2039,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "7"
         },
         {
           "id": "a22",
@@ -2014,7 +2051,44 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "8"
+        },
+        {
+          "id": "a23",
+          "name": "Hades",
+          "x": 45.228344438017146,
+          "y": 26.365135281439514,
+          "color": "#3db7bd",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "5"
+        },
+        {
+          "id": "a24",
+          "name": "Eur",
+          "x": 62.639607836824595,
+          "y": 56.71597930325338,
+          "color": "#e6d83f",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "2"
+        },
+        {
+          "id": "a25",
+          "name": "Hermes",
+          "x": 47.683047146701476,
+          "y": 67.04818152344532,
+          "color": "#aaa",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "3"
         }
       ],
       "props": [
@@ -2106,17 +2180,6 @@
       "date": "2026.06.30",
       "actors": [
         {
-          "id": "a6",
-          "name": "Hades",
-          "x": 45.228344438017146,
-          "y": 26.365135281439514,
-          "color": "#3db7bd",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
           "id": "a7",
           "name": "Pers",
           "x": 51.50781648348869,
@@ -2125,18 +2188,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a8",
-          "name": "Hermes",
-          "x": 47.683047146701476,
-          "y": 67.04818152344532,
-          "color": "#aaa",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "4"
         },
         {
           "id": "a9",
@@ -2147,7 +2200,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "9"
         },
         {
           "id": "a10",
@@ -2158,7 +2212,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "10"
         },
         {
           "id": "a11",
@@ -2169,7 +2224,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "11"
         },
         {
           "id": "a12",
@@ -2180,7 +2236,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "12"
         },
         {
           "id": "a13",
@@ -2191,7 +2248,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "13"
         },
         {
           "id": "a14",
@@ -2202,7 +2260,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "14"
         },
         {
           "id": "a18",
@@ -2213,7 +2272,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "2"
         },
         {
           "id": "a19",
@@ -2224,7 +2284,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "15"
         },
         {
           "id": "a20",
@@ -2235,7 +2296,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "6"
         },
         {
           "id": "a21",
@@ -2246,7 +2308,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "7"
         },
         {
           "id": "a22",
@@ -2257,7 +2320,32 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "8"
+        },
+        {
+          "id": "a23",
+          "name": "Hades",
+          "x": 45.228344438017146,
+          "y": 26.365135281439514,
+          "color": "#3db7bd",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "5"
+        },
+        {
+          "id": "a24",
+          "name": "Hermes",
+          "x": 47.683047146701476,
+          "y": 67.04818152344532,
+          "color": "#aaa",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "3"
         }
       ],
       "props": [
@@ -2339,17 +2427,6 @@
       "date": "2026.06.30",
       "actors": [
         {
-          "id": "a6",
-          "name": "Hades",
-          "x": 45.228344438017146,
-          "y": 26.365135281439514,
-          "color": "#3db7bd",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
           "id": "a7",
           "name": "Pers",
           "x": 51.50781648348869,
@@ -2358,18 +2435,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a8",
-          "name": "Hermes",
-          "x": 47.683047146701476,
-          "y": 67.04818152344532,
-          "color": "#aaa",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "4"
         },
         {
           "id": "a9",
@@ -2380,7 +2447,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "9"
         },
         {
           "id": "a10",
@@ -2391,7 +2459,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "10"
         },
         {
           "id": "a11",
@@ -2402,7 +2471,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "11"
         },
         {
           "id": "a12",
@@ -2413,7 +2483,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "12"
         },
         {
           "id": "a13",
@@ -2424,7 +2495,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "13"
         },
         {
           "id": "a14",
@@ -2435,40 +2507,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a20",
-          "name": "F1",
-          "x": 30.32886985739831,
-          "y": 40.66416513974088,
-          "color": "#9c42c6",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a21",
-          "name": "F2",
-          "x": 32.72648645657836,
-          "y": 36.328330279481754,
-          "color": "#9c42c6",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a22",
-          "name": "F3",
-          "x": 35.18118916526269,
-          "y": 32.08474722476006,
-          "color": "#9c42c6",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "14"
         },
         {
           "id": "a23",
@@ -2479,7 +2519,68 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "15"
+        },
+        {
+          "id": "a24",
+          "name": "F1",
+          "x": 30.32886985739831,
+          "y": 40.66416513974088,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "6"
+        },
+        {
+          "id": "a25",
+          "name": "F2",
+          "x": 32.72648645657836,
+          "y": 36.328330279481754,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "7"
+        },
+        {
+          "id": "a26",
+          "name": "F3",
+          "x": 35.18118916526269,
+          "y": 32.08474722476006,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "8"
+        },
+        {
+          "id": "a27",
+          "name": "Hades",
+          "x": 45.228344438017146,
+          "y": 26.365135281439514,
+          "color": "#3db7bd",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "5"
+        },
+        {
+          "id": "a28",
+          "name": "Hermes",
+          "x": 47.683047146701476,
+          "y": 67.04818152344532,
+          "color": "#aaa",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "3"
         }
       ],
       "props": [
@@ -2561,17 +2662,6 @@
       "date": "2026.06.30",
       "actors": [
         {
-          "id": "a6",
-          "name": "Hades",
-          "x": 45.228344438017146,
-          "y": 26.365135281439514,
-          "color": "#3db7bd",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
           "id": "a7",
           "name": "Pers",
           "x": 51.50781648348869,
@@ -2580,18 +2670,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a8",
-          "name": "Hermes",
-          "x": 47.683047146701476,
-          "y": 67.04818152344532,
-          "color": "#aaa",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "4"
         },
         {
           "id": "a9",
@@ -2602,7 +2682,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "9"
         },
         {
           "id": "a10",
@@ -2613,7 +2694,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "10"
         },
         {
           "id": "a11",
@@ -2624,7 +2706,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "11"
         },
         {
           "id": "a12",
@@ -2635,7 +2718,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "12"
         },
         {
           "id": "a13",
@@ -2646,7 +2730,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "13"
         },
         {
           "id": "a14",
@@ -2657,40 +2742,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a20",
-          "name": "F1",
-          "x": 30.32886985739831,
-          "y": 40.66416513974088,
-          "color": "#9c42c6",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a21",
-          "name": "F2",
-          "x": 32.72648645657836,
-          "y": 36.328330279481754,
-          "color": "#9c42c6",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a22",
-          "name": "F3",
-          "x": 35.18118916526269,
-          "y": 32.08474722476006,
-          "color": "#9c42c6",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "14"
         },
         {
           "id": "a1",
@@ -2701,7 +2754,68 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "1"
+        },
+        {
+          "id": "a15",
+          "name": "F1",
+          "x": 30.32886985739831,
+          "y": 40.66416513974088,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "6"
+        },
+        {
+          "id": "a16",
+          "name": "F2",
+          "x": 32.72648645657836,
+          "y": 36.328330279481754,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "7"
+        },
+        {
+          "id": "a17",
+          "name": "F3",
+          "x": 35.18118916526269,
+          "y": 32.08474722476006,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "8"
+        },
+        {
+          "id": "a18",
+          "name": "Hades",
+          "x": 45.228344438017146,
+          "y": 26.365135281439514,
+          "color": "#3db7bd",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "5"
+        },
+        {
+          "id": "a19",
+          "name": "Hermes",
+          "x": 47.683047146701476,
+          "y": 67.04818152344532,
+          "color": "#aaa",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "3"
         }
       ],
       "props": [
@@ -2793,39 +2907,6 @@
       "date": "2026.06.30",
       "actors": [
         {
-          "id": "a6",
-          "name": "Hades",
-          "x": 45.228344438017146,
-          "y": 26.365135281439514,
-          "color": "#3db7bd",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a7",
-          "name": "Pers",
-          "x": 51.50781648348869,
-          "y": 32.91501347459691,
-          "color": "#5dbb52",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a8",
-          "name": "Hermes",
-          "x": 47.683047146701476,
-          "y": 67.04818152344532,
-          "color": "#aaa",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
           "id": "a9",
           "name": "W1",
           "x": 56.531394119865936,
@@ -2834,7 +2915,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "9"
         },
         {
           "id": "a10",
@@ -2845,7 +2927,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "10"
         },
         {
           "id": "a11",
@@ -2856,7 +2939,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "11"
         },
         {
           "id": "a12",
@@ -2867,7 +2951,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "12"
         },
         {
           "id": "a13",
@@ -2878,7 +2963,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "13"
         },
         {
           "id": "a14",
@@ -2889,40 +2975,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a20",
-          "name": "F1",
-          "x": 30.32886985739831,
-          "y": 40.66416513974088,
-          "color": "#9c42c6",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a21",
-          "name": "F2",
-          "x": 32.72648645657836,
-          "y": 36.328330279481754,
-          "color": "#9c42c6",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a22",
-          "name": "F3",
-          "x": 35.18118916526269,
-          "y": 32.08474722476006,
-          "color": "#9c42c6",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "14"
         },
         {
           "id": "a1",
@@ -2933,7 +2987,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "1"
         },
         {
           "id": "a23",
@@ -2944,7 +2999,80 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "2"
+        },
+        {
+          "id": "a24",
+          "name": "F1",
+          "x": 30.32886985739831,
+          "y": 40.66416513974088,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "6"
+        },
+        {
+          "id": "a25",
+          "name": "F2",
+          "x": 32.72648645657836,
+          "y": 36.328330279481754,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "7"
+        },
+        {
+          "id": "a26",
+          "name": "F3",
+          "x": 35.18118916526269,
+          "y": 32.08474722476006,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "8"
+        },
+        {
+          "id": "a27",
+          "name": "Hades",
+          "x": 45.228344438017146,
+          "y": 26.365135281439514,
+          "color": "#3db7bd",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "5"
+        },
+        {
+          "id": "a28",
+          "name": "Pers",
+          "x": 51.50781648348869,
+          "y": 32.91501347459691,
+          "color": "#5dbb52",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "4"
+        },
+        {
+          "id": "a29",
+          "name": "Hermes",
+          "x": 47.683047146701476,
+          "y": 67.04818152344532,
+          "color": "#aaa",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "3"
         }
       ],
       "props": [
@@ -3030,39 +3158,6 @@
       "date": "2026.06.30",
       "actors": [
         {
-          "id": "a6",
-          "name": "Hades",
-          "x": 45.228344438017146,
-          "y": 26.365135281439514,
-          "color": "#3db7bd",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a7",
-          "name": "Pers",
-          "x": 51.50781648348869,
-          "y": 32.91501347459691,
-          "color": "#5dbb52",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a8",
-          "name": "Hermes",
-          "x": 47.683047146701476,
-          "y": 67.04818152344532,
-          "color": "#aaa",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
           "id": "a9",
           "name": "W1",
           "x": 56.531394119865936,
@@ -3071,7 +3166,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "9"
         },
         {
           "id": "a10",
@@ -3082,7 +3178,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "10"
         },
         {
           "id": "a11",
@@ -3093,7 +3190,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "11"
         },
         {
           "id": "a12",
@@ -3104,7 +3202,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "12"
         },
         {
           "id": "a13",
@@ -3115,7 +3214,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "13"
         },
         {
           "id": "a14",
@@ -3126,40 +3226,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a20",
-          "name": "F1",
-          "x": 30.32886985739831,
-          "y": 40.66416513974088,
-          "color": "#9c42c6",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a21",
-          "name": "F2",
-          "x": 32.72648645657836,
-          "y": 36.328330279481754,
-          "color": "#9c42c6",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a22",
-          "name": "F3",
-          "x": 35.18118916526269,
-          "y": 32.08474722476006,
-          "color": "#9c42c6",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "14"
         },
         {
           "id": "a24",
@@ -3170,7 +3238,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "1"
         },
         {
           "id": "a25",
@@ -3181,7 +3250,80 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "2"
+        },
+        {
+          "id": "a26",
+          "name": "F1",
+          "x": 30.32886985739831,
+          "y": 40.66416513974088,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "6"
+        },
+        {
+          "id": "a27",
+          "name": "F2",
+          "x": 32.72648645657836,
+          "y": 36.328330279481754,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "7"
+        },
+        {
+          "id": "a28",
+          "name": "F3",
+          "x": 35.18118916526269,
+          "y": 32.08474722476006,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "8"
+        },
+        {
+          "id": "a29",
+          "name": "Hades",
+          "x": 45.228344438017146,
+          "y": 26.365135281439514,
+          "color": "#3db7bd",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "5"
+        },
+        {
+          "id": "a30",
+          "name": "Pers",
+          "x": 51.50781648348869,
+          "y": 32.91501347459691,
+          "color": "#5dbb52",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "4"
+        },
+        {
+          "id": "a31",
+          "name": "Hermes",
+          "x": 47.683047146701476,
+          "y": 67.04818152344532,
+          "color": "#aaa",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "3"
         }
       ],
       "props": [
@@ -3272,39 +3414,6 @@
       "date": "2026.06.30",
       "actors": [
         {
-          "id": "a6",
-          "name": "Hades",
-          "x": 45.228344438017146,
-          "y": 26.365135281439514,
-          "color": "#3db7bd",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a7",
-          "name": "Pers",
-          "x": 51.50781648348869,
-          "y": 32.91501347459691,
-          "color": "#5dbb52",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a8",
-          "name": "Hermes",
-          "x": 47.683047146701476,
-          "y": 67.04818152344532,
-          "color": "#aaa",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
           "id": "a9",
           "name": "W1",
           "x": 56.531394119865936,
@@ -3313,7 +3422,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "9"
         },
         {
           "id": "a10",
@@ -3324,7 +3434,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "10"
         },
         {
           "id": "a11",
@@ -3335,7 +3446,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "11"
         },
         {
           "id": "a12",
@@ -3346,7 +3458,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "12"
         },
         {
           "id": "a13",
@@ -3357,7 +3470,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "13"
         },
         {
           "id": "a14",
@@ -3368,40 +3482,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a20",
-          "name": "F1",
-          "x": 30.32886985739831,
-          "y": 40.66416513974088,
-          "color": "#9c42c6",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a21",
-          "name": "F2",
-          "x": 32.72648645657836,
-          "y": 36.328330279481754,
-          "color": "#9c42c6",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a22",
-          "name": "F3",
-          "x": 35.18118916526269,
-          "y": 32.08474722476006,
-          "color": "#9c42c6",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "14"
         },
         {
           "id": "a24",
@@ -3412,7 +3494,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "1"
         },
         {
           "id": "a25",
@@ -3423,7 +3506,80 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "2"
+        },
+        {
+          "id": "a26",
+          "name": "F1",
+          "x": 30.32886985739831,
+          "y": 40.66416513974088,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "6"
+        },
+        {
+          "id": "a27",
+          "name": "F2",
+          "x": 32.72648645657836,
+          "y": 36.328330279481754,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "7"
+        },
+        {
+          "id": "a28",
+          "name": "F3",
+          "x": 35.18118916526269,
+          "y": 32.08474722476006,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "8"
+        },
+        {
+          "id": "a29",
+          "name": "Hades",
+          "x": 45.228344438017146,
+          "y": 26.365135281439514,
+          "color": "#3db7bd",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "5"
+        },
+        {
+          "id": "a30",
+          "name": "Pers",
+          "x": 51.50781648348869,
+          "y": 32.91501347459691,
+          "color": "#5dbb52",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "4"
+        },
+        {
+          "id": "a31",
+          "name": "Hermes",
+          "x": 47.683047146701476,
+          "y": 67.04818152344532,
+          "color": "#aaa",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "3"
         }
       ],
       "props": [
@@ -3505,17 +3661,6 @@
       "date": "2026.06.30",
       "actors": [
         {
-          "id": "a6",
-          "name": "Hades",
-          "x": 45.228344438017146,
-          "y": 26.365135281439514,
-          "color": "#3db7bd",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
           "id": "a7",
           "name": "Pers",
           "x": 51.50781648348869,
@@ -3524,18 +3669,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a8",
-          "name": "Hermes",
-          "x": 47.683047146701476,
-          "y": 67.04818152344532,
-          "color": "#aaa",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "4"
         },
         {
           "id": "a9",
@@ -3546,7 +3681,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "9"
         },
         {
           "id": "a10",
@@ -3557,7 +3693,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "10"
         },
         {
           "id": "a11",
@@ -3568,7 +3705,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "11"
         },
         {
           "id": "a12",
@@ -3579,7 +3717,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "12"
         },
         {
           "id": "a13",
@@ -3590,7 +3729,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "13"
         },
         {
           "id": "a14",
@@ -3601,40 +3741,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a20",
-          "name": "F1",
-          "x": 30.32886985739831,
-          "y": 40.66416513974088,
-          "color": "#9c42c6",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a21",
-          "name": "F2",
-          "x": 32.72648645657836,
-          "y": 36.328330279481754,
-          "color": "#9c42c6",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
-        },
-        {
-          "id": "a22",
-          "name": "F3",
-          "x": 35.18118916526269,
-          "y": 32.08474722476006,
-          "color": "#9c42c6",
-          "hidden": false,
-          "size": 54,
-          "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "14"
         },
         {
           "id": "a24",
@@ -3645,7 +3753,8 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "1"
         },
         {
           "id": "a25",
@@ -3656,7 +3765,68 @@
           "hidden": false,
           "size": 54,
           "shape": "circle",
-          "z": 10
+          "z": 10,
+          "label": "2"
+        },
+        {
+          "id": "a26",
+          "name": "F1",
+          "x": 30.32886985739831,
+          "y": 40.66416513974088,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "6"
+        },
+        {
+          "id": "a27",
+          "name": "F2",
+          "x": 32.72648645657836,
+          "y": 36.328330279481754,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "7"
+        },
+        {
+          "id": "a28",
+          "name": "F3",
+          "x": 35.18118916526269,
+          "y": 32.08474722476006,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "8"
+        },
+        {
+          "id": "a29",
+          "name": "Hades",
+          "x": 45.228344438017146,
+          "y": 26.365135281439514,
+          "color": "#3db7bd",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "5"
+        },
+        {
+          "id": "a30",
+          "name": "Hermes",
+          "x": 47.683047146701476,
+          "y": 67.04818152344532,
+          "color": "#aaa",
+          "hidden": false,
+          "size": 54,
+          "shape": "circle",
+          "z": 10,
+          "label": "3"
         }
       ],
       "props": [
