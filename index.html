@@ -1250,202 +1250,73 @@ body.mobile-view #mobileViewer{
 
 
 
-/* ===== MOBILE STAGE PRIORITY STEP 3: layout only, no JS changes ===== */
-@media (max-width: 820px){
-  body.mobile-view #mobileViewer{
-    height:100dvh !important;
-    max-height:100dvh !important;
-    overflow:hidden !important;
-  }
-  body.mobile-view .mobileHeader{
-    padding:6px 8px !important;
-    min-height:44px !important;
-  }
-  body.mobile-view .mobileBtn{
-    padding:7px 9px !important;
-    min-width:38px !important;
-    border-radius:9px !important;
-  }
-  body.mobile-view .mobileChartName{font-size:13px !important;}
-  body.mobile-view .mobileSub{font-size:10px !important;}
-  body.mobile-view .mobileSearchBox{
-    padding:6px 8px !important;
-    gap:6px !important;
-  }
-  body.mobile-view .mobileSearchBox input{
-    padding:8px 9px !important;
-    font-size:13px !important;
-  }
-  body.mobile-view .mobileSearchBox button{
-    padding:8px 9px !important;
-    font-size:12px !important;
-  }
-  body.mobile-view .mobileChartStrip{
-    padding:6px 8px !important;
-    gap:6px !important;
-  }
-  body.mobile-view .mobileChartChip{
-    min-width:52px !important;
-    padding:6px 7px !important;
-    font-size:12px !important;
-    border-radius:9px !important;
-  }
-  body.mobile-view .mobileChartChip .sub{
-    font-size:9px !important;
-    margin-top:1px !important;
-  }
-  body.mobile-view .mobileStageWrap{
-    flex:1 1 auto !important;
-    min-height:0 !important;
-    padding:4px 0 !important;
-    align-items:center !important;
-    justify-content:center !important;
-    background:#080706 !important;
-  }
-  body.mobile-view .mobileStage{
-    width:100vw !important;
-    max-width:100vw !important;
-    border-left:0 !important;
-    border-right:0 !important;
-    border-radius:0 !important;
-  }
-  body.mobile-view .mobileAudio{
-    padding:6px 8px !important;
-    min-height:40px !important;
-  }
-  body.mobile-view .mobileCue{
-    padding:7px 8px !important;
-    max-height:72px !important;
-  }
-  body.mobile-view .mobileCueLabel{
-    font-size:11px !important;
-    margin-bottom:3px !important;
-  }
-  body.mobile-view .mobileCueText{
-    font-size:12px !important;
-    line-height:1.35 !important;
-    max-height:36px !important;
-    overflow:auto !important;
-  }
-  body.mobile-view .mobileNav{
-    padding:6px 8px 7px !important;
-    gap:6px !important;
-  }
-  body.mobile-view .mobileNav button{
-    padding:9px 10px !important;
-    font-size:13px !important;
-    border-radius:10px !important;
-  }
+/* ===== Actor label + name display (PC/Mobile reference style) ===== */
+.actor .actorLabel{
+  position:relative;
+  z-index:3;
+  font-weight:900;
+  font-size:18px;
+  line-height:1;
+  text-shadow:0 1px 3px rgba(0,0,0,.75);
+  pointer-events:none;
 }
-
-/* Landscape: make the stage visible first. Controls become minimal. */
-@media (max-width: 920px) and (orientation: landscape){
-  body.mobile-view #mobileViewer{
-    display:grid !important;
-    grid-template-columns:minmax(0, 1fr) 168px !important;
-    grid-template-rows:auto 1fr auto !important;
-    height:100dvh !important;
-    overflow:hidden !important;
-  }
-  body.mobile-view .mobileHeader{
-    grid-column:1 / 3 !important;
-    grid-row:1 !important;
-    padding:4px 7px !important;
-    min-height:34px !important;
-  }
-  body.mobile-view .mobileSearchBox,
-  body.mobile-view .mobileSearchResult{
-    display:none !important;
-  }
-  body.mobile-view .mobileChartStrip{
-    grid-column:1 / 3 !important;
-    grid-row:3 !important;
-    padding:4px 6px !important;
-    min-height:43px !important;
-  }
-  body.mobile-view .mobileStageWrap{
-    grid-column:1 !important;
-    grid-row:2 !important;
-    height:calc(100dvh - 78px) !important;
-    min-height:0 !important;
-    padding:0 !important;
-  }
-  body.mobile-view .mobileStage{
-    width:min(100vw, calc((100dvh - 78px) * 1.616)) !important;
-    max-width:100% !important;
-    max-height:calc(100dvh - 78px) !important;
-    aspect-ratio:1616/1000 !important;
-  }
-  body.mobile-view .mobileAudio{
-    grid-column:2 !important;
-    grid-row:2 !important;
-    align-self:start !important;
-    padding:6px !important;
-    border-left:1px solid rgba(255,236,210,.10) !important;
-    border-top:0 !important;
-    grid-template-columns:1fr !important;
-  }
-  body.mobile-view .mobileCue{
-    grid-column:2 !important;
-    grid-row:2 !important;
-    align-self:end !important;
-    max-height:calc(100dvh - 132px) !important;
-    padding:6px !important;
-    border-left:1px solid rgba(255,236,210,.10) !important;
-  }
-  body.mobile-view .mobileCueText{
-    max-height:calc(100dvh - 182px) !important;
-    font-size:11px !important;
-  }
-  body.mobile-view .mobileNav{
-    display:none !important;
-  }
+.actor .actorBelowName{
+  position:absolute;
+  left:50%;
+  top:calc(100% + 3px);
+  transform:translateX(-50%);
+  z-index:20;
+  max-width:112px;
+  padding:1px 4px;
+  border-radius:5px;
+  background:rgba(0,0,0,.48);
+  color:#f3ead9;
+  font-size:10px;
+  font-weight:800;
+  line-height:1.15;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  text-shadow:0 1px 2px rgba(0,0,0,.85);
+  pointer-events:none;
 }
-
-
-
-/* ===== MOBILE REFERENCE STYLE ACTORS safe step ===== */
-.mobileActor.mobileActorRef{
+.mobileActor{
   width:22px!important;
   height:22px!important;
   min-width:22px!important;
   min-height:22px!important;
-  border:1.5px solid rgba(255,255,255,.95)!important;
-  font-size:8px!important;
+  overflow:visible!important;
+  font-size:11px!important;
   line-height:1!important;
   font-weight:900!important;
-  z-index:24!important;
-  overflow:hidden!important;
 }
-.mobileActorNameRef{
+.mobileActorLabel{
+  pointer-events:none;
+}
+.mobileActorName{
   position:absolute;
-  z-index:24;
-  transform:translate(-50%, 12px);
+  left:50%;
+  top:calc(100% + 2px);
+  transform:translateX(-50%);
+  max-width:74px;
+  padding:1px 3px;
+  border-radius:4px;
+  background:rgba(0,0,0,.50);
   color:#f3ead9;
   font-size:7px;
-  line-height:1.05;
   font-weight:800;
-  text-align:center;
-  max-width:58px;
+  line-height:1.1;
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
-  text-shadow:0 1px 3px rgba(0,0,0,.95),0 0 2px rgba(0,0,0,.95);
+  text-shadow:0 1px 2px rgba(0,0,0,.9);
   pointer-events:none;
 }
-#selectedInfo input.mobileNoInput{
-  width:84px;
-  margin-top:4px;
-  padding:5px 6px;
-  background:rgba(0,0,0,.24);
-  border:1px solid rgba(255,236,210,.18);
-  color:#f3ead9;
-  border-radius:7px;
-  font-size:12px;
-}
-@media (max-width:820px) and (orientation:landscape){
-  .mobileActor.mobileActorRef{width:20px!important;height:20px!important;font-size:7px!important;}
-  .mobileActorNameRef{font-size:6.5px;transform:translate(-50%, 11px);max-width:54px;}
+.actorLabelInput{
+  width:58px!important;
+  margin-left:5px;
+  padding:3px 5px!important;
+  text-align:center;
 }
 
 </style>
@@ -1776,15 +1647,13 @@ function renderMobileView(){
     html += '<div class="mobileStageMemo" style="'+memoStyle+'">'+mobileEscapeHtml(m.text||'메모')+'</div>';
   });
 
-  (chart.actors||[]).forEach((a,idx)=>{
+  (chart.actors||[]).forEach(a=>{
     if(a.hidden) return;
-    const baseSize=(a.size||state.actorSize||54);
-    const cx=a.x + ((baseSize/2)/1616*100);
-    const cy=a.y + ((baseSize/2)/1000*100);
-    const no=getMobileActorNoSafe(a,idx);
-    const nm=String(a.name||'');
-    html += '<div class="mobileActor mobileActorRef" style="left:'+cx+'%;top:'+cy+'%;background:'+(a.color||'#777')+';">'+mobileEscapeHtml(no)+'</div>';
-    html += '<div class="mobileActorNameRef" style="left:'+cx+'%;top:'+cy+'%;">'+mobileEscapeHtml(nm)+'</div>';
+    const size=Math.max(18, Math.min(42, (a.size||state.actorSize||54)*0.52));
+    const cx=a.x + (((a.size||state.actorSize||54)/2)/1616*100);
+    const cy=a.y + (((a.size||state.actorSize||54)/2)/1000*100);
+    ensureActorLabel(a);
+    html += '<div class="mobileActor" style="left:'+cx+'%;top:'+cy+'%;background:'+(a.color||'#777')+';"><span class="mobileActorLabel">'+mobileEscapeHtml(ensureActorLabel(a))+'</span><span class="mobileActorName">'+mobileEscapeHtml(a.name||('Actor '+ensureActorLabel(a)))+'</span></div>';
   });
 
   stageEl.innerHTML=html;
@@ -2605,26 +2474,6 @@ window.addEventListener('load',()=>setTimeout(()=>{applyShowAudioSource(); rende
 </div>
 
 <script>
-
-/* ===== mobile actor number helpers safe ===== */
-function escapeAttrMobileSafe(s){return String(s||'').replace(/[&<>"]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]||ch;});}
-function makeMobileActorAutoNoSafe(name, idx){
-  const raw=String(name||'').trim();
-  const m=raw.match(/([A-Za-z가-힣]+)\s*([0-9]+)$/);
-  if(m) return (m[1].slice(0,1)+m[2]).slice(0,3);
-  const compact=raw.replace(/[^A-Za-z0-9가-힣]/g,'');
-  return compact ? compact.slice(0,2) : String((idx||0)+1);
-}
-function getMobileActorNoSafe(a, idx){
-  return String((a&&(a.mobileNo||a.mobileLabel||a.mobileNumber))||'').trim().slice(0,3) || makeMobileActorAutoNoSafe(a&&a.name, idx);
-}
-function updateActorMobileNoSafe(id, val){
-  const a=cur().actors.find(function(x){return x.id===id;});
-  if(!a) return;
-  a.mobileNo=String(val||'').trim();
-  try{renderMobileView();}catch(e){}
-}
-
 const colors=['#d96b7d','#1e88e5','#5dbb52','#e6d83f','#9c42c6','#e77b22','#3db7bd','#aaa'];
 let state={project:'Hadestown', actorSize:54, current:0, charts:[{code:'RTH-01',name:'차트 제목을 입력하세요',scene:'',page:'',date:'',actors:[],props:[],stageMemos:[],arrowPoints:[],arrows:[],groups:[],notes:''}]};
 let selected=null, multiSelected=[], tool='select', arrowFrom=null, idSeq=1, history=[];
@@ -2686,6 +2535,25 @@ function getSelectedMovableIds(){
 }
 function pushHistory(){history.push(JSON.stringify(state)); if(history.length>80)history.shift(); future=[];}
 function pct(n){return n.toFixed(3)+'%'}
+
+function ensureActorLabel(a){
+  if(!a) return '';
+  if(a.label===undefined || a.label===null || String(a.label).trim()===''){
+    const idMatch=String(a.id||'').match(/\d+/);
+    const nameMatch=String(a.name||'').match(/^Actor\s*(\d+)$/i);
+    a.label=nameMatch?nameMatch[1]:(idMatch?idMatch[0]:String(a.name||'?').slice(0,2));
+  }
+  return String(a.label);
+}
+function actorLabelText(a){ return escapeHtml(ensureActorLabel(a)); }
+function actorNameText(a){ return escapeHtml(String((a && a.name) || ('Actor '+ensureActorLabel(a)))); }
+function setActorLabel(v){
+  const a=cur().actors.find(x=>x.id===selected);
+  if(!a) return;
+  a.label=String(v||'').trim() || ensureActorLabel(a);
+  render();
+}
+
 function center(a){ if(a.point) return {x:a.x,y:a.y}; const s=a.size||state.actorSize||54; return {x:a.x+(s/2/stage.clientWidth*100),y:a.y+(s/2/stage.clientHeight*100)}}
 function findArrowObj(id){
   const actor=cur().actors.find(x=>x.id===id);
@@ -3538,7 +3406,7 @@ function render(){
     el.style.left=pct(a.x); el.style.top=pct(a.y); el.style.zIndex=a.z||10;
     const actorSize=(a.size||state.actorSize||54); el.style.width=actorSize+"px"; el.style.height=actorSize+"px"; el.style.background=(a.shape==='triangle'?'transparent':a.color); el.style.setProperty("--actor-color", a.color);
     el.dataset.id=a.id;
-    const ag=getGroupByMember(a.id); el.innerHTML='<span class="name">'+(document.getElementById('showNames').checked?a.name:'')+'</span>'+(ag?'<span class="groupNameBadge">'+ag.name+'</span>':'');
+    ensureActorLabel(a); const ag=getGroupByMember(a.id); el.innerHTML='<span class="actorLabel">'+actorLabelText(a)+'</span>'+(document.getElementById('showNames').checked?'<span class="actorBelowName">'+actorNameText(a)+'</span>':'')+(ag?'<span class="groupNameBadge">'+ag.name+'</span>':'');
     el.addEventListener('mousedown',dragStart);
     el.addEventListener('click',actorClick);
     el.addEventListener('dblclick',actorDblClick);
@@ -3796,9 +3664,10 @@ function renameStageMemo(e){
 }
 
 function quickAddActor(){
-  const name=prompt('배우/배역 이름을 입력하세요','Actor '+idSeq); if(!name)return;
+  const label=String(idSeq);
+  const name=prompt('배우/배역 이름을 입력하세요','Actor '+label); if(!name)return;
   pushHistory();
-  cur().actors.push({id:'a'+idSeq,name,x:45,y:45,color:colors[(idSeq-1)%colors.length],hidden:false,size:state.actorSize||54,shape:'circle',z:10});
+  cur().actors.push({id:'a'+idSeq,label,name,x:45,y:45,color:colors[(idSeq-1)%colors.length],hidden:false,size:state.actorSize||54,shape:'circle',z:10});
   idSeq++; render();
 }
 function deleteSelected(){
@@ -3807,7 +3676,7 @@ function deleteSelected(){
 }
 function duplicateActor(){
   const a=cur().actors.find(x=>x.id===selected); if(!a)return; pushHistory();
-  cur().actors.push({...JSON.parse(JSON.stringify(a)),id:'a'+idSeq++,x:a.x+3,y:a.y+3,name:a.name+' copy'}); render();
+  const nextLabel=String(idSeq); cur().actors.push({...JSON.parse(JSON.stringify(a)),id:'a'+idSeq++,label:nextLabel,x:a.x+3,y:a.y+3,name:(a.name||'Actor')+' copy'}); render();
 }
 function alignActors(){
   const acts=cur().actors.filter(a=>!a.hidden); if(!acts.length)return; pushHistory();
@@ -4037,7 +3906,7 @@ function renderCast(){
     rows.push({
       id:a.id,
       type:'actor',
-      name:a.name||'배우',
+      name:(ensureActorLabel(a)+' '+(a.name||'배우')),
       color:a.color||'#777',
       hidden:!!a.hidden,
       group:g?g.name:'',
@@ -4134,7 +4003,7 @@ function renderSelected(){
     return;
   }
 
-  if(box){ const g=getGroupByMember(a.id); box.innerHTML=`선택됨: <b>${a.name}</b>${g?' / 그룹: '+g.name:''}<br>위치: ${Math.round(a.x)}, ${Math.round(a.y)}<br>구역: ${getObjectZone(a)}<br>레이어: ${a.z||10}<br>모바일 번호: <input class="mobileNoInput" value="${escapeAttrMobileSafe(a.mobileNo||'')}" placeholder="예: 1, W3" oninput="updateActorMobileNoSafe('${a.id}', this.value)">`; }
+  if(box){ const g=getGroupByMember(a.id); ensureActorLabel(a); box.innerHTML=`선택됨: <b>${a.name}</b>${g?' / 그룹: '+g.name:''}<br>원 안 라벨: <input class="actorLabelInput" value="${escapeHtml(ensureActorLabel(a))}" onchange="setActorLabel(this.value)" onkeydown="event.stopPropagation()"><br>위치: ${Math.round(a.x)}, ${Math.round(a.y)}<br>구역: ${getObjectZone(a)}<br>레이어: ${a.z||10}<br><span style="color:#8d7e6a">더블클릭하면 이름을 수정합니다.</span>`; }
   colors.forEach(c=>{
     const d=document.createElement('div');
     d.className='color';
@@ -4153,7 +4022,7 @@ function toggleDirs(){document.querySelectorAll('.dir').forEach(d=>d.style.displ
 function saveFile(){
   const bg=document.getElementById('bg'); if(bg && !state.backgroundData) state.backgroundData=bg.src;const pn=document.getElementById('projectName'); if(pn) state.project=pn.value||'Hadestown'; const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='project.json';a.click();}
 function loadFileClick(){fileInput.click();}
-function loadFile(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{state=JSON.parse(r.result); state.charts.forEach(c=>{c.groups=c.groups||[]; c.props=c.props||[]; c.stageMemos=c.stageMemos||[]; c.stageMemos.forEach(m=>{m.w=m.w||150; m.h=m.h||56;}); c.props.forEach(p=>{p.w=p.w||80; p.h=p.h||44; p.rot=p.rot||0; p.z=p.z||9;}); c.arrowPoints=c.arrowPoints||[];}); state.project=state.project||'Hadestown'; state.actorSize=state.actorSize||54; state.charts.forEach(c=>c.actors.forEach(a=>{a.size=a.size||state.actorSize||54; a.shape=a.shape||'circle'; a.z=a.z||10; a.shape=a.shape||'circle';})); idSeq=1+Math.max(0,...state.charts.flatMap(c=>c.actors.map(a=>Number(String(a.id).replace('a',''))||0)));selected=null;render();};r.readAsText(f);}
+function loadFile(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{state=JSON.parse(r.result); state.charts.forEach(c=>{c.groups=c.groups||[]; c.props=c.props||[]; c.stageMemos=c.stageMemos||[]; c.stageMemos.forEach(m=>{m.w=m.w||150; m.h=m.h||56;}); c.props.forEach(p=>{p.w=p.w||80; p.h=p.h||44; p.rot=p.rot||0; p.z=p.z||9;}); c.arrowPoints=c.arrowPoints||[];}); state.project=state.project||'Hadestown'; state.actorSize=state.actorSize||54; state.charts.forEach(c=>c.actors.forEach(a=>{a.size=a.size||state.actorSize||54; a.shape=a.shape||'circle'; a.z=a.z||10; a.shape=a.shape||'circle'; ensureActorLabel(a);})); idSeq=1+Math.max(0,...state.charts.flatMap(c=>c.actors.map(a=>Number(String(a.id).replace('a',''))||0)));selected=null;render();};r.readAsText(f);}
 function preview(){alert('현재는 브라우저 캡처(Win+Shift+S)로 공유하는 게 가장 안정적이야.');}
 const projectInput=document.getElementById('projectName'); if(projectInput){projectInput.addEventListener('input',()=>{state.project=projectInput.value;});}
 
@@ -4812,15 +4681,13 @@ function renderMobileView(){
     html += '<div class="mobileProp" style="left:'+p.x+'%;top:'+p.y+'%;width:'+w+'%;height:'+h+'%;transform:rotate('+((p.rot||0))+'deg);">'+mobileEscapeHtml(p.name||'')+'</div>';
   });
 
-  (chart.actors||[]).forEach((a,idx)=>{
+  (chart.actors||[]).forEach(a=>{
     if(a.hidden) return;
-    const baseSize=(a.size||state.actorSize||54);
-    const cx=a.x + ((baseSize/2)/1616*100);
-    const cy=a.y + ((baseSize/2)/1000*100);
-    const no=getMobileActorNoSafe(a,idx);
-    const nm=String(a.name||'');
-    html += '<div class="mobileActor mobileActorRef" style="left:'+cx+'%;top:'+cy+'%;background:'+(a.color||'#777')+';">'+mobileEscapeHtml(no)+'</div>';
-    html += '<div class="mobileActorNameRef" style="left:'+cx+'%;top:'+cy+'%;">'+mobileEscapeHtml(nm)+'</div>';
+    const size=Math.max(18, Math.min(42, (a.size||state.actorSize||54)*0.52));
+    const cx=a.x + (((a.size||state.actorSize||54)/2)/1616*100);
+    const cy=a.y + (((a.size||state.actorSize||54)/2)/1000*100);
+    ensureActorLabel(a);
+    html += '<div class="mobileActor" style="left:'+cx+'%;top:'+cy+'%;background:'+(a.color||'#777')+';"><span class="mobileActorLabel">'+mobileEscapeHtml(ensureActorLabel(a))+'</span><span class="mobileActorName">'+mobileEscapeHtml(a.name||('Actor '+ensureActorLabel(a)))+'</span></div>';
   });
 
   stageEl.innerHTML=html;
