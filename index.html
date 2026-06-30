@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Stage Blocking v1.75</title>
+<title>Stage Blocking v1.76</title>
 <style>
 :root {
   --bg:#080808;--panel:#121212;--panel2:#181818;--line:#333;--text:#eee;--muted:#aaa;--yellow:#ffe94a;--red:#ff4d4d;
@@ -5028,7 +5028,7 @@ async function publishProjectToGitHub(){
     const jsonB64=btoa(unescape(encodeURIComponent(jsonText)));
     await putGitHubContentV173(s.owner,s.repo,branch,s.token,projectPath,jsonB64,'Update project.json from Stage Blocking App');
     setGitHubPublishStatus('게시 완료. 오디오와 project.json이 적용되었습니다.', 'ok');
-    setTimeout(()=>loadRemoteProject(true),900);
+    /* 게시 직후 자동 다시불러오기 금지: GitHub 캐시가 예전 파일을 줄 수 있음 */
   }catch(err){
     console.error(err);
     setGitHubPublishStatus(String(err.message||err), 'fail');
@@ -5184,7 +5184,7 @@ async function publishProjectToGitHub(){
       if(!putRes.ok){ const t=await putRes.text(); throw new Error('게시 실패: '+putRes.status+' '+t.slice(0,220)); }
     }
     setGitHubPublishStatus('게시 완료. Dropbox/외부 오디오 링크와 project.json이 저장되었습니다.', 'ok');
-    setTimeout(()=>loadRemoteProject(true),900);
+    /* 게시 직후 자동 다시불러오기 금지: GitHub 캐시가 예전 파일을 줄 수 있음 */
   }catch(err){
     console.error(err);
     setGitHubPublishStatus(String(err.message||err), 'fail');
@@ -5270,6 +5270,30 @@ function getGitHubSettings(){
   }catch(e){
     return {};
   }
+}
+
+
+/* ===== Publish keep-current-state fix v1.76 ===== */
+function markLocalProjectSavedV176(){
+  try{
+    localStorage.setItem('stageBlockingLastPublishedProject', JSON.stringify(getPublishSafeState ? getPublishSafeState() : state));
+    localStorage.setItem('stageBlockingLastPublishedAt', String(Date.now()));
+  }catch(e){}
+}
+if(typeof publishProjectToGitHub==='function' && !window.__publishKeepStateHookedV176){
+  window.__publishKeepStateHookedV176=true;
+  const __oldPublishV176=publishProjectToGitHub;
+  publishProjectToGitHub=async function(){
+    const beforeStateRef=state;
+    await __oldPublishV176.apply(this,arguments);
+    // 게시 함수 내부에서 혹시 다시불러오기를 예약했더라도, 현재 작업 상태를 유지하도록 백업
+    markLocalProjectSavedV176();
+    try{
+      render();
+      if(typeof renderAudioPanel==='function') renderAudioPanel();
+      if(typeof renderMobileView==='function') renderMobileView();
+    }catch(e){}
+  };
 }
 
 </script>
