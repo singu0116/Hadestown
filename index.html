@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Stage Blocking v1.76</title>
+<title>Stage Blocking v1.77</title>
 <style>
 :root {
   --bg:#080808;--panel:#121212;--panel2:#181818;--line:#333;--text:#eee;--muted:#aaa;--yellow:#ffe94a;--red:#ff4d4d;
@@ -1139,6 +1139,105 @@ body.mobile-view #mobileViewer{
 .audioSeekBtns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:8px}
 .audioSeekBtns button{background:rgba(0,0,0,.22);border:1px solid rgba(255,236,210,.13);color:#cdbfa9;border-radius:8px;padding:8px 6px;cursor:pointer;font-size:12px;font-weight:800}
 .audioSeekBtns button:hover{background:rgba(255,236,210,.07);color:#f3ead9;border-color:rgba(232,160,75,.45)}
+
+
+/* ===== Mobile viewer usability v1.77 ===== */
+.mobileSearchBox{
+  flex:0 0 auto;
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+  padding:9px 12px;
+  background:#120f0c;
+  border-bottom:1px solid rgba(255,236,210,.10);
+}
+.mobileSearchBox input{
+  min-width:0;
+  background:rgba(0,0,0,.24);
+  border:1px solid rgba(255,236,210,.14);
+  color:#f3ead9;
+  border-radius:10px;
+  padding:10px 11px;
+  font-size:14px;
+}
+.mobileSearchBox input::placeholder{color:#7f705f}
+.mobileSearchBox button{
+  border:1px solid rgba(232,160,75,.35);
+  background:rgba(232,160,75,.10);
+  color:#f3ead9;
+  border-radius:10px;
+  padding:10px 12px;
+  font-size:13px;
+  font-weight:900;
+}
+.mobileChartStrip{
+  flex:0 0 auto;
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding:9px 12px;
+  background:#17130f;
+  border-bottom:1px solid rgba(255,236,210,.10);
+  -webkit-overflow-scrolling:touch;
+}
+.mobileChartChip{
+  flex:0 0 auto;
+  min-width:58px;
+  max-width:120px;
+  border:1px solid rgba(255,236,210,.14);
+  background:rgba(255,236,210,.045);
+  color:#cdbfa9;
+  border-radius:11px;
+  padding:7px 8px;
+  text-align:center;
+  font-size:12px;
+  font-weight:800;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.mobileChartChip.active{
+  background:rgba(232,160,75,.18);
+  border-color:rgba(232,160,75,.65);
+  color:#f3ead9;
+  box-shadow:0 0 0 2px rgba(232,160,75,.12);
+}
+.mobileChartChip .sub{
+  display:block;
+  margin-top:2px;
+  font-size:10px;
+  color:#8d7e6a;
+  font-weight:700;
+}
+.mobileSearchResult{
+  flex:0 0 auto;
+  display:none;
+  max-height:32vh;
+  overflow:auto;
+  background:#120f0c;
+  border-bottom:1px solid rgba(255,236,210,.10);
+  padding:6px 12px 10px;
+}
+.mobileSearchResult.active{display:block}
+.mobileSearchItem{
+  border:1px solid rgba(255,236,210,.12);
+  background:rgba(255,236,210,.04);
+  border-radius:10px;
+  padding:9px 10px;
+  margin-top:6px;
+  color:#f3ead9;
+  font-size:13px;
+  line-height:1.35;
+}
+.mobileSearchItem .meta{
+  color:#e8a04b;
+  font-size:11px;
+  margin-bottom:3px;
+}
+#mobileAudioPlayBtn.playing{
+  background:rgba(229,86,75,.16);
+  border-color:rgba(229,86,75,.38);
+}
 
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js">
@@ -5296,6 +5395,146 @@ if(typeof publishProjectToGitHub==='function' && !window.__publishKeepStateHooke
   };
 }
 
+
+/* ===== Mobile viewer usability controller v1.77 ===== */
+var mobileViewInitializedV177=false;
+
+function mobileShouldStartAtFirstChartV177(){
+  const q=new URLSearchParams(location.search);
+  return document.body.classList.contains('mobile-view') || q.has('view') || q.has('mobile') || window.innerWidth<=820;
+}
+function mobileInitFirstChartV177(){
+  if(mobileViewInitializedV177) return;
+  if(mobileShouldStartAtFirstChartV177() && state && state.charts && state.charts.length){
+    state.current=0;
+    mobileViewInitializedV177=true;
+    setTimeout(()=>{ try{ render(); renderMobileView(); }catch(e){} },20);
+  }
+}
+function mobileGoChart(i){
+  if(!state || !state.charts || !state.charts[i]) return;
+  state.current=i;
+  selected=null;
+  multiSelected=[];
+  if(typeof render==='function') render();
+  if(typeof renderMobileView==='function') renderMobileView();
+  if(typeof jumpToChartAudioSilentlyV173==='function') setTimeout(jumpToChartAudioSilentlyV173,60);
+}
+function mobileChartSearchText(c,i){
+  const cue=c.cueLocal ? (c.cueLocal.text || c.cueLocal.preview || '') : '';
+  return [
+    String(i+1),
+    c.code||'',
+    c.name||'',
+    c.scene||'',
+    c.page||'',
+    c.notes||'',
+    cue,
+    (c.actors||[]).map(a=>a.name||'').join(' ')
+  ].join(' ').toLowerCase();
+}
+function mobileSearchCharts(q){
+  const box=document.getElementById('mobileSearchResult');
+  if(!box) return;
+  const query=String(q||'').trim().toLowerCase();
+  if(!query){
+    box.classList.remove('active');
+    box.innerHTML='';
+    return;
+  }
+  const hits=(state.charts||[]).map((c,i)=>({c,i})).filter(({c,i})=>mobileChartSearchText(c,i).includes(query)).slice(0,30);
+  box.classList.add('active');
+  if(!hits.length){
+    box.innerHTML='<div class="mobileSearchItem">검색 결과 없음</div>';
+    return;
+  }
+  box.innerHTML=hits.map(({c,i})=>{
+    const cue=c.cueLocal ? (c.cueLocal.preview || c.cueLocal.text || '') : '';
+    const sub=(cue || c.notes || c.scene || '').slice(0,48);
+    return '<div class="mobileSearchItem" onclick="mobileGoChart('+i+'); mobileClearSearch(false);"><div class="meta">'+(i+1)+' / '+state.charts.length+' · '+(c.code||'')+'</div><b>'+mobileEscapeHtml(c.name||'차트')+'</b>'+(sub?'<br><span style="color:#a99a86">'+mobileEscapeHtml(sub)+'</span>':'')+'</div>';
+  }).join('');
+}
+function mobileSearchKey(e){
+  if(e.key==='Enter'){
+    const first=document.querySelector('.mobileSearchItem');
+    if(first) first.click();
+  }
+  if(e.key==='Escape') mobileClearSearch();
+}
+function mobileClearSearch(focus){
+  const input=document.getElementById('mobileSearchInput');
+  const box=document.getElementById('mobileSearchResult');
+  if(input) input.value='';
+  if(box){box.classList.remove('active'); box.innerHTML='';}
+  if(focus) input?.focus();
+}
+function renderMobileChartStripV177(){
+  const strip=document.getElementById('mobileChartStrip');
+  if(!strip || !state || !state.charts) return;
+  strip.innerHTML=state.charts.map((c,i)=>{
+    const active=i===state.current;
+    const title=(c.name && c.name!=='차트 제목을 입력하세요') ? c.name : (c.code || ('Chart '+(i+1)));
+    const audio=(c.audioTime!==undefined && c.audioTime!==null) ? '♪ '+formatTime(c.audioTime) : '';
+    return '<div class="mobileChartChip '+(active?'active':'')+'" data-mobile-chart="'+i+'" onclick="mobileGoChart('+i+')">'+(i+1)+'<span class="sub">'+mobileEscapeHtml(audio || title).slice(0,12)+'</span></div>';
+  }).join('');
+  setTimeout(()=>{
+    const active=strip.querySelector('.mobileChartChip.active');
+    if(active) active.scrollIntoView({inline:'center', block:'nearest', behavior:'smooth'});
+  },20);
+}
+function updateMobileAudioButtonV177(){
+  const btn=document.getElementById('mobileAudioPlayBtn');
+  const audio=getAudioElement && getAudioElement();
+  if(!btn || !audio) return;
+  if(audio.paused){
+    btn.textContent='▶ 재생';
+    btn.classList.remove('playing');
+  }else{
+    btn.textContent='⏸ 정지';
+    btn.classList.add('playing');
+  }
+}
+function mobileToggleAudio(){
+  const audio=getAudioElement && getAudioElement();
+  if(!audio) return;
+  applyShowAudioSource();
+  if(cur().audioTime!==undefined && cur().audioTime!==null && Math.abs((audio.currentTime||0)-Number(cur().audioTime))>2){
+    audio.currentTime=Number(cur().audioTime)||0;
+  }
+  if(audio.paused) audio.play().catch(()=>{});
+  else audio.pause();
+  setTimeout(updateMobileAudioButtonV177,80);
+}
+if(typeof renderMobileView==='function' && !window.__mobileViewV177Hooked){
+  window.__mobileViewV177Hooked=true;
+  const __oldRenderMobileV177=renderMobileView;
+  renderMobileView=function(){
+    const result=__oldRenderMobileV177.apply(this,arguments);
+    try{
+      renderMobileChartStripV177();
+      updateMobileAudioButtonV177();
+    }catch(e){}
+    return result;
+  };
+}
+if(typeof applyMobileViewMode==='function' && !window.__mobileModeV177Hooked){
+  window.__mobileModeV177Hooked=true;
+  const __oldApplyMobileV177=applyMobileViewMode;
+  applyMobileViewMode=function(){
+    const result=__oldApplyMobileV177.apply(this,arguments);
+    try{ mobileInitFirstChartV177(); renderMobileChartStripV177(); }catch(e){}
+    return result;
+  };
+}
+window.addEventListener('load',()=>{
+  setTimeout(mobileInitFirstChartV177,250);
+  setTimeout(renderMobileChartStripV177,400);
+  const audio=getAudioElement && getAudioElement();
+  if(audio){
+    ['play','pause','ended','loadedmetadata'].forEach(ev=>audio.addEventListener(ev,updateMobileAudioButtonV177));
+  }
+});
+
 </script>
 
 <div id="mobileViewer">
@@ -5307,13 +5546,19 @@ if(typeof publishProjectToGitHub==='function' && !window.__publishKeepStateHooke
     </div>
     <button class="mobileBtn" onclick="mobileNextChart()">▶</button>
   </div>
+  <div class="mobileSearchBox">
+    <input id="mobileSearchInput" placeholder="차트 검색: 번호, 제목, 큐, 메모" oninput="mobileSearchCharts(this.value)" onkeydown="mobileSearchKey(event)">
+    <button onclick="mobileClearSearch()">취소</button>
+  </div>
+  <div id="mobileSearchResult" class="mobileSearchResult"></div>
+  <div id="mobileChartStrip" class="mobileChartStrip"></div>
   <div id="mobileStageWrap" class="mobileStageWrap">
     <div id="mobileStage" class="mobileStage"></div>
   </div>
   
   <div class="mobileAudio">
     <div id="mobileAudioInfo" class="mobileAudioInfo">오디오 연결 없음</div>
-    <button onclick="mobileToggleAudio()">▶ / ⏸</button>
+    <button id="mobileAudioPlayBtn" onclick="mobileToggleAudio()">▶ 재생</button>
   </div>
 
   <div class="mobileCue">
