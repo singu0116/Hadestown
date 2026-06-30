@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Stage Blocking v1.77</title>
+<title>Stage Blocking v1.78 Multi Size Sort</title>
 <style>
 :root {
   --bg:#080808;--panel:#121212;--panel2:#181818;--line:#333;--text:#eee;--muted:#aaa;--yellow:#ffe94a;--red:#ff4d4d;
@@ -1318,6 +1318,14 @@ body.mobile-view #mobileViewer{
   padding:3px 5px!important;
   text-align:center;
 }
+
+
+/* ===== Multi actor size + numeric cast sort v1.78 ===== */
+.castSortBarV178{display:flex;gap:6px;margin:6px 0 8px;align-items:center}
+.castSortBarV178 button{flex:1;background:rgba(0,0,0,.22);border:1px solid rgba(255,236,210,.13);color:#cdbfa9;border-radius:8px;padding:7px 6px;cursor:pointer;font-size:12px;font-weight:800}
+.castSortBarV178 button.active{background:rgba(232,160,75,.16);border-color:rgba(232,160,75,.55);color:#f3ead9}
+.multiSizeBoxV178{margin-top:8px;padding:8px;border:1px solid rgba(232,160,75,.28);background:rgba(232,160,75,.06);border-radius:9px}
+.multiSizeBoxV178 input[type=range]{width:100%}
 
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js">
@@ -5913,6 +5921,193 @@ window.addEventListener('load',()=>{
     <button onclick="mobileNextChart()">다음</button>
   </div>
 </div>
+
+
+<script>
+/* ===== Multi actor size + numeric cast sort controller v1.78 ===== */
+(function(){
+  if(window.__multiActorSizeSortV178) return;
+  window.__multiActorSizeSortV178=true;
+
+  function getSortOn(){
+    const v=localStorage.getItem('stageBlockingCastNumericSort');
+    return v===null ? true : v==='1';
+  }
+  function setSortOn(v){
+    localStorage.setItem('stageBlockingCastNumericSort', v?'1':'0');
+  }
+  function actorNumber(a){
+    try{ if(typeof ensureActorLabel==='function') ensureActorLabel(a); }catch(e){}
+    const candidates=[a.label,a.name,a.id].map(x=>String(x||''));
+    for(const s of candidates){
+      const m=s.match(/\d+/);
+      if(m) return Number(m[0]);
+    }
+    return 999999;
+  }
+  function actorDisplayName(a){
+    try{ return (ensureActorLabel(a)+' '+(a.name||'배우')); }
+    catch(e){ return ((a.label||'')+' '+(a.name||'배우')).trim(); }
+  }
+  function getSelectedActorIdsV178(){
+    const ids=(Array.isArray(multiSelected)&&multiSelected.length)?multiSelected:(selected?[selected]:[]);
+    const set=new Set(ids);
+    return (cur().actors||[]).filter(a=>set.has(a.id)).map(a=>a.id);
+  }
+  function getSelectedActorsV178(){
+    const ids=new Set(getSelectedActorIdsV178());
+    return (cur().actors||[]).filter(a=>ids.has(a.id));
+  }
+
+  window.toggleCastNumericSortV178=function(){
+    setSortOn(!getSortOn());
+    renderCast();
+  };
+
+  window.setActorSize=function(v){
+    const size=Number(v)||54;
+    const actors=getSelectedActorsV178();
+    if(actors.length){
+      actors.forEach(a=>{a.size=size;});
+    }else{
+      state.actorSize=size;
+    }
+    try{ render(); }catch(e){}
+  };
+
+  window.renderCast=function(){
+    const el=document.getElementById('castList');
+    if(!el) return;
+    el.innerHTML='';
+    const q=(document.getElementById('castSearch')?.value||'').trim().toLowerCase();
+    const sortOn=getSortOn();
+
+    const rows=[];
+    (cur().actors||[]).forEach((a,idx)=>{
+      const g=typeof getGroupByMember==='function'?getGroupByMember(a.id):null;
+      rows.push({
+        id:a.id,type:'actor',idx,
+        num:actorNumber(a),
+        name:actorDisplayName(a),
+        color:a.color||'#777', hidden:!!a.hidden, group:g?g.name:'', obj:a
+      });
+    });
+    (cur().props||[]).forEach((p,idx)=>{
+      const g=typeof getGroupByMember==='function'?getGroupByMember(p.id):null;
+      rows.push({id:p.id,type:'prop',idx,num:999999,name:p.name||'소품',color:'#8a5a2b',hidden:false,group:g?g.name:'',obj:p});
+    });
+
+    const bar=document.createElement('div');
+    bar.className='castSortBarV178';
+    bar.innerHTML='<button class="'+(sortOn?'active':'')+'" onclick="toggleCastNumericSortV178()">배우 숫자순 '+(sortOn?'ON':'OFF')+'</button>';
+    el.appendChild(bar);
+
+    let filtered=rows.filter(r=>{
+      if(!q) return true;
+      return (r.name||'').toLowerCase().includes(q) || (r.group||'').toLowerCase().includes(q);
+    });
+    if(sortOn){
+      filtered=filtered.slice().sort((a,b)=>{
+        if(a.type!==b.type) return a.type==='actor'?-1:1;
+        if(a.type==='actor') return (a.num-b.num) || String(a.name).localeCompare(String(b.name),'ko') || (a.idx-b.idx);
+        return String(a.name).localeCompare(String(b.name),'ko') || (a.idx-b.idx);
+      });
+    }
+
+    filtered.forEach(r=>{
+      const row=document.createElement('div');
+      const isMulti=Array.isArray(multiSelected)&&multiSelected.includes(r.id);
+      row.className='castRow'+(r.id===selected?' selectedCast':'')+(isMulti?' multi':'');
+      row.dataset.id=r.id;
+      row.innerHTML=`
+        <div class="dot" style="background:${r.color}"></div>
+        <div>
+          <div class="castName">${escapeHtml?escapeHtml(r.name):r.name}<span class="castType">${r.type==='actor'?'배우':'소품'}</span></div>
+          ${r.group?`<div class="castGroup">👥 ${escapeHtml?escapeHtml(r.group):r.group}</div>`:''}
+        </div>
+        <div class="eye">${r.type==='actor'&&typeof eyeIcon==='function'?eyeIcon(r.hidden):''}</div>
+        <div class="menu">⋮</div>
+      `;
+
+      row.onclick=(ev)=>{
+        if(ev.ctrlKey || ev.metaKey){
+          if(typeof toggleMultiSelection==='function') toggleMultiSelection(r.id);
+          else{
+            const s=new Set((multiSelected&&multiSelected.length)?multiSelected:(selected?[selected]:[]));
+            if(s.has(r.id)) s.delete(r.id); else s.add(r.id);
+            multiSelected=[...s]; selected=multiSelected[multiSelected.length-1]||null;
+          }
+        }else{
+          selected=r.id; multiSelected=[r.id];
+        }
+        render();
+      };
+      row.ondblclick=(ev)=>{
+        ev.stopPropagation(); selected=r.id; multiSelected=[r.id];
+        if(r.type==='actor'){
+          if(typeof renameSelected==='function') renameSelected();
+        }else{
+          const n=prompt('소품 이름 수정', r.obj.name||'소품');
+          if(n){ if(typeof pushHistory==='function') pushHistory(); r.obj.name=n; render(); }
+        }
+      };
+      const eye=row.querySelector('.eye');
+      if(eye && r.type==='actor'){
+        eye.onclick=(ev)=>{ev.stopPropagation(); if(typeof pushHistory==='function') pushHistory(); r.obj.hidden=!r.obj.hidden; render();};
+      }
+      el.appendChild(row);
+    });
+  };
+
+  const oldRenderSelected=window.renderSelected;
+  window.renderSelected=function(){
+    const box=document.getElementById('selectedInfo'), cp=document.getElementById('colorPick');
+    if(cp) cp.innerHTML='';
+    const actors=getSelectedActorsV178();
+    if(actors.length>1){
+      const sizes=actors.map(a=>Number(a.size||state.actorSize||54));
+      const same=sizes.every(s=>s===sizes[0]);
+      const size=same?sizes[0]:Math.round(sizes.reduce((a,b)=>a+b,0)/sizes.length);
+      if(box){
+        box.innerHTML=`선택됨: <b>배우 ${actors.length}명</b><br>
+        ${actors.map(a=>escapeHtml?escapeHtml(actorDisplayName(a)):actorDisplayName(a)).join(', ')}
+        <div class="multiSizeBoxV178">
+          크기: <b>${same?size:(size+' 평균')}</b>
+          <input type="range" min="24" max="100" value="${size}" oninput="setActorSize(this.value)">
+          <div style="color:#8d7e6a;font-size:11px;margin-top:3px">선택된 배우 전체 크기가 함께 변경됩니다.</div>
+        </div>`;
+      }
+      (window.colors||[]).forEach(c=>{
+        const d=document.createElement('div');
+        d.className='color'; d.style.background=c;
+        d.onclick=()=>{ if(typeof pushHistory==='function') pushHistory(); actors.forEach(a=>a.color=c); render(); };
+        if(cp) cp.appendChild(d);
+      });
+      const sz=document.getElementById('actorSize');
+      if(sz) sz.value=size;
+      return;
+    }
+    if(typeof oldRenderSelected==='function') return oldRenderSelected.apply(this,arguments);
+  };
+
+  const oldRender=window.render;
+  if(typeof oldRender==='function' && !window.__multiActorSizeSortRenderHookV178){
+    window.__multiActorSizeSortRenderHookV178=true;
+    window.render=function(){
+      const r=oldRender.apply(this,arguments);
+      try{
+        const actors=getSelectedActorsV178();
+        const sz=document.getElementById('actorSize');
+        if(sz && actors.length>1){
+          const sizes=actors.map(a=>Number(a.size||state.actorSize||54));
+          sz.value=Math.round(sizes.reduce((a,b)=>a+b,0)/sizes.length);
+        }
+      }catch(e){}
+      return r;
+    };
+  }
+})();
+</script>
 
 </body>
 </html>
