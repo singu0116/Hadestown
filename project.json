@@ -1,7 +1,7 @@
 {
   "project": "Hadestown",
   "actorSize": 53,
-  "current": 48,
+  "current": 49,
   "charts": [
     {
       "code": "RTH-01",
@@ -12612,18 +12612,6 @@
           "label": "10"
         },
         {
-          "id": "a39",
-          "name": "Eur.",
-          "x": 47.911391584718636,
-          "y": 64.64963457947219,
-          "color": "#e6d83f",
-          "hidden": false,
-          "size": 37,
-          "shape": "circle",
-          "z": 10,
-          "label": "2"
-        },
-        {
           "id": "a42",
           "name": "Pers.",
           "x": 50.30900818389867,
@@ -12706,6 +12694,18 @@
           "shape": "circle",
           "z": 10,
           "label": "12"
+        },
+        {
+          "id": "a49",
+          "name": "Eur.",
+          "x": 38.77761406403276,
+          "y": 62.896850274261055,
+          "color": "#e6d83f",
+          "hidden": false,
+          "size": 37,
+          "shape": "circle",
+          "z": 10,
+          "label": "2"
         }
       ],
       "props": [
