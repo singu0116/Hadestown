@@ -6656,6 +6656,7 @@ window.addEventListener('load',()=>{
 <style>
 .arrowSeqBadgeText{font:900 11px Arial,'Noto Sans KR',sans-serif;fill:#211b15;pointer-events:none;dominant-baseline:middle;text-anchor:middle}
 .arrowSeqBadgeCircle{fill:#ffe94a;stroke:#211b15;stroke-width:1.5;pointer-events:none}
+body.arrowDrawingMode,body.arrowDrawingMode *{user-select:none!important;-webkit-user-select:none!important}
 </style>
 <script>
 (function(){
@@ -6665,8 +6666,9 @@ window.addEventListener('load',()=>{
   function newChain(){
     chainId='chain_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
     chainSeq=0;
+    document.body.classList.add('arrowDrawingMode');
   }
-  function finishChain(){ chainId=null; chainSeq=0; }
+  function finishChain(){ chainId=null; chainSeq=0; document.body.classList.remove('arrowDrawingMode'); }
   function ensureChain(){ if(!chainId) newChain(); }
 
   const oldSetTool=window.setTool;
@@ -6679,10 +6681,10 @@ window.addEventListener('load',()=>{
     };
   }
 
-  function addSegment(from,to){
+  function addSegment(from,to,withHistory=true){
     if(!from || !to || from===to) return false;
     ensureChain();
-    if(typeof pushHistory==='function') pushHistory();
+    if(withHistory && typeof pushHistory==='function') pushHistory();
     chainSeq += 1;
     cur().arrows.push({from:from,to:to,chainId:chainId,seq:chainSeq});
     arrowFrom=to;
@@ -6691,6 +6693,21 @@ window.addEventListener('load',()=>{
     if(typeof render==='function') render();
     return true;
   }
+
+  // 마지막 생성 점은 마우스를 누르는 즉시 그리기를 끝낸다.
+  // 이후 같은 mousedown 이벤트가 기존 점 드래그 핸들러로 이어져 바로 이동할 수 있다.
+  stage.addEventListener('mousedown',function(e){
+    if(tool!=='arrow' || !arrowFrom) return;
+    const pointEl=e.target.closest && e.target.closest('.arrowPoint');
+    if(!pointEl || pointEl.dataset.id!==arrowFrom) return;
+
+    finishChain();
+    arrowFrom=null;
+    if(typeof setTool==='function') setTool('select');
+    selected=pointEl.dataset.id;
+    if(typeof setSingleSelection==='function') setSingleSelection(pointEl.dataset.id);
+    // preventDefault/stopPropagation을 하지 않는다. 같은 동작으로 점 드래그를 시작해야 한다.
+  },true);
 
   // Arrow tool click handling in capture phase so the original one-segment handlers do not run.
   stage.addEventListener('click',function(e){
@@ -6705,24 +6722,36 @@ window.addEventListener('load',()=>{
 
     if(targetEl){
       const id=targetEl.dataset.id;
+      // 현재 마지막 점을 다시 누르면 그리기를 끝내고 선택 모드로 전환한다.
+      if(arrowFrom && arrowFrom===id){
+        finishChain();
+        arrowFrom=null;
+        if(typeof setTool==='function') setTool('select');
+        selected=id;
+        if(typeof setSingleSelection==='function') setSingleSelection(id);
+        if(typeof render==='function') render();
+        return;
+      }
       if(!arrowFrom){
         newChain();
         arrowFrom=id;
         selected=id;
         if(typeof setSingleSelection==='function') setSingleSelection(id);
         if(typeof render==='function') render();
-      }else if(arrowFrom!==id){
-        addSegment(arrowFrom,id);
+      }else{
+        addSegment(arrowFrom,id,true);
       }
       return;
     }
 
     if(arrowFrom){
+      // 점 생성과 선 생성을 하나의 실행 취소 단위로 묶는다.
+      if(typeof pushHistory==='function') pushHistory();
       const pt=getStagePoint(e);
       const id='pt'+Date.now()+Math.floor(Math.random()*1000);
       cur().arrowPoints=cur().arrowPoints||[];
       cur().arrowPoints.push({id:id,x:pt.x,y:pt.y});
-      addSegment(arrowFrom,id);
+      addSegment(arrowFrom,id,false);
     }
   },true);
 
@@ -6738,6 +6767,27 @@ window.addEventListener('load',()=>{
     }
   },true);
 
+
+  // 실행 취소·삭제 시 진행 중인 연속 동선 상태도 같이 정리한다.
+  const oldUndoMulti=window.undo;
+  if(typeof oldUndoMulti==='function'){
+    window.undo=function(){ finishChain(); arrowFrom=null; return oldUndoMulti.apply(this,arguments); };
+  }
+  const oldDeleteSelectedMulti=window.deleteSelected;
+  if(typeof oldDeleteSelectedMulti==='function'){
+    window.deleteSelected=function(){
+      const result=oldDeleteSelectedMulti.apply(this,arguments);
+      if(!(cur().arrows||[]).length){ finishChain(); arrowFrom=null; }
+      return result;
+    };
+  }
+  document.addEventListener('selectstart',function(e){
+    if(tool==='arrow' || document.body.classList.contains('arrowDrawingMode')) e.preventDefault();
+  },true);
+  document.addEventListener('dragstart',function(e){
+    if(tool==='arrow' || (e.target.closest && e.target.closest('.arrowPoint'))) e.preventDefault();
+  },true);
+
   // Replace desktop arrow renderer: all segments remain visible and are numbered by movement order.
   window.renderArrows=function(){
     const svg=document.getElementById('arrows');
@@ -6745,7 +6795,11 @@ window.addEventListener('load',()=>{
     svg.querySelectorAll('line,.arrowSeqBadge').forEach(e=>e.remove());
     const show=document.getElementById('showArrows');
     if(show && !show.checked) return;
+    const chainCounts=new Map();
     (cur().arrows||[]).forEach((ar,index)=>{
+      const chainKey=ar.chainId||('legacy_'+index);
+      const displaySeq=(chainCounts.get(chainKey)||0)+1;
+      chainCounts.set(chainKey,displaySeq);
       const a=findArrowObj(ar.from), b=findArrowObj(ar.to);
       if(!a||!b||a.hidden||b.hidden) return;
       const ca=center(a), cb=center(b);
@@ -6763,7 +6817,7 @@ window.addEventListener('load',()=>{
       c.setAttribute('class','arrowSeqBadgeCircle'); c.setAttribute('cx',mx+'%'); c.setAttribute('cy',my+'%'); c.setAttribute('r','9');
       const t=document.createElementNS('http://www.w3.org/2000/svg','text');
       t.setAttribute('class','arrowSeqBadgeText'); t.setAttribute('x',mx+'%'); t.setAttribute('y',my+'%');
-      t.textContent=String(ar.seq || (index+1));
+      t.textContent=String(displaySeq);
       g.appendChild(c); g.appendChild(t); svg.appendChild(g);
     });
   };
@@ -6798,7 +6852,11 @@ window.addEventListener('load',()=>{
         const defs=document.createElementNS(ns,'defs');
         defs.innerHTML='<marker id="multiMobileHead" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#e8a04b"/></marker>';
         svg.appendChild(defs);
+        const mobileChainCounts=new Map();
         arrows.forEach((ar,index)=>{
+          const mobileChainKey=ar.chainId||('legacy_'+index);
+          const mobileDisplaySeq=(mobileChainCounts.get(mobileChainKey)||0)+1;
+          mobileChainCounts.set(mobileChainKey,mobileDisplaySeq);
           const a=pos(ar.from),b=pos(ar.to); if(!a||!b) return;
           const line=document.createElementNS(ns,'line');
           line.setAttribute('x1',a.x);line.setAttribute('y1',a.y);line.setAttribute('x2',b.x);line.setAttribute('y2',b.y);
@@ -6806,7 +6864,7 @@ window.addEventListener('load',()=>{
           svg.appendChild(line);
           const mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
           const circle=document.createElementNS(ns,'circle');circle.setAttribute('cx',mx);circle.setAttribute('cy',my);circle.setAttribute('r','1.8');circle.setAttribute('fill','#ffe94a');circle.setAttribute('stroke','#211b15');circle.setAttribute('stroke-width','.35');svg.appendChild(circle);
-          const txt=document.createElementNS(ns,'text');txt.setAttribute('x',mx);txt.setAttribute('y',my+.65);txt.setAttribute('text-anchor','middle');txt.setAttribute('font-size','2.1');txt.setAttribute('font-weight','900');txt.setAttribute('fill','#211b15');txt.textContent=String(ar.seq||(index+1));svg.appendChild(txt);
+          const txt=document.createElementNS(ns,'text');txt.setAttribute('x',mx);txt.setAttribute('y',my+.65);txt.setAttribute('text-anchor','middle');txt.setAttribute('font-size','2.1');txt.setAttribute('font-weight','900');txt.setAttribute('fill','#211b15');txt.textContent=String(mobileDisplaySeq);svg.appendChild(txt);
         });
         stageEl.appendChild(svg);
       }catch(err){ console.error('multi movement mobile render failed',err); }
