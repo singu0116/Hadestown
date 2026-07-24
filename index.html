@@ -6274,6 +6274,26 @@ window.addEventListener('load',()=>{
   };
 })();
 
+/* ===== Performance patch step 2: skip mobile rendering on desktop ===== */
+(function(){
+  if(typeof window.renderMobileView !== 'function' || window.__perfMobileSkipStep2) return;
+  window.__perfMobileSkipStep2 = true;
+
+  function shouldRenderMobileVPerf2(){
+    const q = new URLSearchParams(location.search);
+    if(q.has('view') || q.has('mobile')) return true;
+    if(document.body && (document.body.classList.contains('mobile-view') || document.body.classList.contains('force-mobile-view'))) return true;
+    const viewport = Math.min(window.innerWidth || 99999, screen.width || 99999);
+    return viewport <= 820 || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '');
+  }
+
+  const originalRenderMobileVPerf2 = window.renderMobileView;
+  window.renderMobileView = function(){
+    if(!shouldRenderMobileVPerf2()) return;
+    return originalRenderMobileVPerf2.apply(this, arguments);
+  };
+})();
+
 </script>
 
 </body>
