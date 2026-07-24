@@ -1,7 +1,7 @@
 {
   "project": "Hadestown",
   "actorSize": 53,
-  "current": 148,
+  "current": 149,
   "charts": [
     {
       "code": "RTH-01",
@@ -32062,7 +32062,7 @@
       "groups": [],
       "notes": "",
       "scriptPage": 20,
-      "audioTime": 3256.399748,
+      "audioTime": 3260.515136,
       "prevSnapshot": null,
       "cueLocal": {
         "id": "cue_1784928283810_fqqg",
@@ -34230,12 +34230,203 @@
           "z": 9
         }
       ],
+      "arrowPoints": [
+        {
+          "id": "pt1784931383241834",
+          "x": 43.14868804664723,
+          "y": 97.97141748074868
+        }
+      ],
+      "arrows": [
+        {
+          "from": "a74",
+          "to": "pt1784931383241834",
+          "chainId": "chain_1784931382618_9t6p",
+          "seq": 1
+        }
+      ],
+      "groups": [],
+      "notes": "",
+      "scriptPage": 21,
+      "audioTime": 3465.278253,
+      "prevSnapshot": null,
+      "cueLocal": {
+        "id": "cue_1784930907910_kj3b",
+        "startLine": 903,
+        "endLine": 903,
+        "page": 21,
+        "preview": "오르페우스 퇴장 .",
+        "text": "오르페우스 퇴장 .",
+        "source": "하데스 타운 대본.pdf · 추출 텍스트"
+      },
+      "stageMemos": []
+    },
+    {
+      "code": "RTH-150",
+      "name": "Wall-01",
+      "scene": "Wait fWhy We Build the Wallor Me",
+      "page": "21/41",
+      "date": "2026.07.25",
+      "actors": [
+        {
+          "id": "a108",
+          "name": "Herm.",
+          "x": 27.988339367722556,
+          "y": 47.9520577771977,
+          "color": "#aaa",
+          "hidden": false,
+          "size": 38,
+          "shape": "circle",
+          "z": 10,
+          "label": "3"
+        },
+        {
+          "id": "a109",
+          "name": "F1",
+          "x": 63.062315734511316,
+          "y": 70.83050555047988,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 38,
+          "shape": "circle",
+          "z": 10,
+          "label": "6"
+        },
+        {
+          "id": "a110",
+          "name": "F2",
+          "x": 47.96847769422291,
+          "y": 43.062712083714004,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 38,
+          "shape": "circle",
+          "z": 10,
+          "label": "7"
+        },
+        {
+          "id": "a111",
+          "name": "F3",
+          "x": 32.02446265335312,
+          "y": 69.44672846741844,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 38,
+          "shape": "circle",
+          "z": 10,
+          "label": "8"
+        },
+        {
+          "id": "a112",
+          "name": "W4",
+          "x": 55.16004610883346,
+          "y": 60.97970141210653,
+          "color": "#e77b22",
+          "hidden": false,
+          "size": 37,
+          "shape": "circle",
+          "z": 10,
+          "label": "12"
+        },
+        {
+          "id": "a113",
+          "name": "W5",
+          "x": 58.1069323340291,
+          "y": 51.47776544175143,
+          "color": "#e77b22",
+          "hidden": false,
+          "size": 37,
+          "shape": "circle",
+          "z": 10,
+          "label": "13"
+        },
+        {
+          "id": "a114",
+          "name": "W6",
+          "x": 60.3687852451733,
+          "y": 66.33030613327736,
+          "color": "#e77b22",
+          "hidden": false,
+          "size": 37,
+          "shape": "circle",
+          "z": 10,
+          "label": "14"
+        },
+        {
+          "id": "a115",
+          "name": "W3",
+          "x": 40.910110201789045,
+          "y": 60.333938773344535,
+          "color": "#e77b22",
+          "hidden": false,
+          "size": 37,
+          "shape": "circle",
+          "z": 10,
+          "label": "11"
+        },
+        {
+          "id": "a116",
+          "name": "W2",
+          "x": 38.02031008609768,
+          "y": 51.47776544175143,
+          "color": "#e77b22",
+          "hidden": false,
+          "size": 37,
+          "shape": "circle",
+          "z": 10,
+          "label": "10"
+        },
+        {
+          "id": "a117",
+          "name": "W1",
+          "x": 35.13050997040633,
+          "y": 65.86904710559023,
+          "color": "#e77b22",
+          "hidden": false,
+          "size": 37,
+          "shape": "circle",
+          "z": 10,
+          "label": "9"
+        }
+      ],
+      "props": [
+        {
+          "id": "p1782812856310352",
+          "name": "TB",
+          "x": 26.827011875959524,
+          "y": 43.76004958534548,
+          "w": 30,
+          "h": 30,
+          "rot": 0,
+          "z": 9
+        },
+        {
+          "id": "p1782812856310354",
+          "name": "기타",
+          "x": 67.54901325419326,
+          "y": 48.32106499934741,
+          "w": 58,
+          "h": 44,
+          "rot": 313,
+          "z": 9
+        },
+        {
+          "id": "p1782812856310355",
+          "name": "Mic",
+          "x": 27.70290882020112,
+          "y": 53.025907081756245,
+          "w": 38,
+          "h": 32,
+          "rot": 0,
+          "z": 9
+        }
+      ],
       "arrowPoints": [],
       "arrows": [],
       "groups": [],
       "notes": "",
       "scriptPage": 21,
-      "audioTime": 3411.755097,
+      "audioTime": 3465.278253,
       "prevSnapshot": null,
       "cueLocal": null,
       "stageMemos": []
