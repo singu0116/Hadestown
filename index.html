@@ -6107,6 +6107,173 @@ window.addEventListener('load',()=>{
     };
   }
 })();
+
+/* ===== Performance patch v1: lightweight drag rendering ===== */
+(function(){
+  function pctValue(v){ return Math.max(0, Math.min(100, Number(v)||0)) + '%'; }
+  function getStageRectVPerf(){ return stage.getBoundingClientRect(); }
+  function updateObjectElementVPerf(obj){
+    if(!obj || !obj.id) return;
+    const el=stage.querySelector('[data-id="'+CSS.escape(String(obj.id))+'"]');
+    if(!el) return;
+    el.style.left=pctValue(obj.x);
+    el.style.top=pctValue(obj.y);
+  }
+  function rafMoverVPerf(callback){
+    let pending=null, raf=0;
+    return function(ev){
+      pending=ev;
+      if(raf) return;
+      raf=requestAnimationFrame(function(){
+        raf=0;
+        if(pending){ callback(pending); pending=null; }
+      });
+    };
+  }
+
+  window.moveIdsTogether=function(ids,e){
+    if(e && e.detail>=2) return;
+    const objs=ids.map(findAnyObject).filter(o=>o && !o.point);
+    if(!objs.length) return;
+    const rect=getStageRectVPerf();
+    const sx=e.clientX, sy=e.clientY;
+    const starts=objs.map(o=>({o,x:o.x,y:o.y}));
+    pushHistory();
+    const move=rafMoverVPerf(function(ev){
+      const d=getStageDeltaPercent(ev,sx,sy,rect);
+      starts.forEach(s=>{
+        s.o.x=Math.max(0,Math.min(98,s.x+d.dx));
+        s.o.y=Math.max(0,Math.min(98,s.y+d.dy));
+        updateObjectElementVPerf(s.o);
+      });
+    });
+    function up(){
+      window.removeEventListener('mousemove',move);
+      window.removeEventListener('mouseup',up);
+      render();
+    }
+    window.addEventListener('mousemove',move);
+    window.addEventListener('mouseup',up);
+  };
+
+  window.dragStart=function(e){
+    if(e.detail>=2) return;
+    e.stopPropagation();
+    if(tool==='arrow' || e.ctrlKey || e.metaKey) return;
+    const id=e.currentTarget.dataset.id;
+    selected=id;
+    const groupIds=typeof getGroupMoveIds==='function'?getGroupMoveIds(id):null;
+    if(groupIds && groupIds.length>1){
+      multiSelected=groupIds;
+      moveIdsTogether(groupIds,e);
+      return;
+    }
+    const a=cur().actors.find(x=>x.id===id);
+    if(!a) return;
+    const rect=getStageRectVPerf();
+    const sx=e.clientX, sy=e.clientY, ox=a.x, oy=a.y;
+    pushHistory();
+    const move=rafMoverVPerf(function(ev){
+      const d=getStageDeltaPercent(ev,sx,sy,rect);
+      a.x=Math.max(0,Math.min(96,ox+d.dx));
+      a.y=Math.max(0,Math.min(94,oy+d.dy));
+      updateObjectElementVPerf(a);
+    });
+    function up(){
+      window.removeEventListener('mousemove',move);
+      window.removeEventListener('mouseup',up);
+      render();
+    }
+    window.addEventListener('mousemove',move);
+    window.addEventListener('mouseup',up);
+  };
+
+  window.propDragStart=function(e){
+    if(e.detail>=2) return;
+    e.stopPropagation();
+    if(tool==='arrow' || e.ctrlKey || e.metaKey) return;
+    const id=e.currentTarget.dataset.id;
+    selected=id;
+    const groupIds=typeof getGroupMoveIds==='function'?getGroupMoveIds(id):null;
+    if(groupIds && groupIds.length>1){
+      multiSelected=groupIds;
+      moveIdsTogether(groupIds,e);
+      return;
+    }
+    const p=(cur().props||[]).find(x=>x.id===id);
+    if(!p) return;
+    const rect=getStageRectVPerf();
+    const sx=e.clientX, sy=e.clientY, ox=p.x, oy=p.y;
+    pushHistory();
+    const move=rafMoverVPerf(function(ev){
+      const d=getStageDeltaPercent(ev,sx,sy,rect);
+      p.x=Math.max(0,Math.min(98,ox+d.dx));
+      p.y=Math.max(0,Math.min(98,oy+d.dy));
+      updateObjectElementVPerf(p);
+    });
+    function up(){
+      window.removeEventListener('mousemove',move);
+      window.removeEventListener('mouseup',up);
+      render();
+    }
+    window.addEventListener('mousemove',move);
+    window.addEventListener('mouseup',up);
+  };
+
+  window.stageMemoDragStart=function(e){
+    if(e.detail>=2) return;
+    e.stopPropagation();
+    if(tool==='arrow' || e.ctrlKey || e.metaKey) return;
+    if(e.target && e.target.classList && e.target.classList.contains('stageMemoResize')) return;
+    const id=e.currentTarget.dataset.id;
+    selected=id;
+    const m=(cur().stageMemos||[]).find(x=>x.id===id);
+    if(!m) return;
+    const rect=getStageRectVPerf();
+    const sx=e.clientX, sy=e.clientY, ox=m.x||45, oy=m.y||45;
+    pushHistory();
+    const move=rafMoverVPerf(function(ev){
+      const d=getStageDeltaPercent(ev,sx,sy,rect);
+      m.x=Math.max(0,Math.min(98,ox+d.dx));
+      m.y=Math.max(0,Math.min(98,oy+d.dy));
+      updateObjectElementVPerf(m);
+    });
+    function up(){
+      window.removeEventListener('mousemove',move);
+      window.removeEventListener('mouseup',up);
+      render();
+    }
+    window.addEventListener('mousemove',move);
+    window.addEventListener('mouseup',up);
+  };
+
+  window.stageMemoResizeStart=function(e){
+    e.stopPropagation();
+    e.preventDefault();
+    const el=e.currentTarget.closest('.stageMemo');
+    const id=el&&el.dataset.id;
+    const m=(cur().stageMemos||[]).find(x=>x.id===id);
+    if(!m || !el) return;
+    selected=id;
+    const sx=e.clientX, sy=e.clientY;
+    const sw=m.w||el.offsetWidth||150, sh=m.h||el.offsetHeight||56;
+    pushHistory();
+    const move=rafMoverVPerf(function(ev){
+      m.w=Math.max(84,Math.min(360,sw+(ev.clientX-sx)));
+      m.h=Math.max(34,Math.min(240,sh+(ev.clientY-sy)));
+      el.style.width=m.w+'px';
+      el.style.height=m.h+'px';
+    });
+    function up(){
+      window.removeEventListener('mousemove',move);
+      window.removeEventListener('mouseup',up);
+      render();
+    }
+    window.addEventListener('mousemove',move);
+    window.addEventListener('mouseup',up);
+  };
+})();
+
 </script>
 
 </body>
