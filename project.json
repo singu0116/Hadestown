@@ -1,7 +1,7 @@
 {
   "project": "Hadestown",
   "actorSize": 53,
-  "current": 125,
+  "current": 126,
   "charts": [
     {
       "code": "RTH-01",
@@ -30152,6 +30152,159 @@
         "page": 17,
         "preview": "광산에 가면",
         "text": "광산에 가면",
+        "source": "하데스 타운 대본.pdf · 추출 텍스트"
+      },
+      "stageMemos": []
+    },
+    {
+      "code": "RTH-127",
+      "name": "HLS-05",
+      "scene": "Hey, Little Songbird",
+      "page": "17/41",
+      "date": "2026.07.25",
+      "actors": [
+        {
+          "id": "a74",
+          "name": "Orph.",
+          "x": 64.99101417369125,
+          "y": 50.54939959187133,
+          "color": "#d96b7d",
+          "hidden": false,
+          "size": 36,
+          "shape": "circle",
+          "z": 10,
+          "label": "1"
+        },
+        {
+          "id": "a96",
+          "name": "Herm.",
+          "x": 27.988339367722556,
+          "y": 47.9520577771977,
+          "color": "#aaa",
+          "hidden": false,
+          "size": 38,
+          "shape": "circle",
+          "z": 10,
+          "label": "3"
+        },
+        {
+          "id": "a97",
+          "name": "Eur.",
+          "x": 35.62938279671008,
+          "y": 72.30653443907875,
+          "color": "#e6d83f",
+          "hidden": false,
+          "size": 37,
+          "shape": "circle",
+          "z": 10,
+          "label": "2"
+        },
+        {
+          "id": "a98",
+          "name": "F1",
+          "x": 46.31298051859859,
+          "y": 50.44285652670826,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 38,
+          "shape": "circle",
+          "z": 10,
+          "label": "6"
+        },
+        {
+          "id": "a99",
+          "name": "F2",
+          "x": 48.425166570257204,
+          "y": 48.50556861042227,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 38,
+          "shape": "circle",
+          "z": 10,
+          "label": "7"
+        },
+        {
+          "id": "a100",
+          "name": "F3",
+          "x": 50.54584786650271,
+          "y": 50.442856526708255,
+          "color": "#9c42c6",
+          "hidden": false,
+          "size": 38,
+          "shape": "circle",
+          "z": 10,
+          "label": "8"
+        },
+        {
+          "id": "a101",
+          "name": "Hades",
+          "x": 33.63986420864694,
+          "y": 69.90798749510559,
+          "color": "#3db7bd",
+          "hidden": false,
+          "size": 38,
+          "shape": "circle",
+          "z": 10,
+          "label": "5"
+        }
+      ],
+      "props": [
+        {
+          "id": "p1782812856310352",
+          "name": "TB",
+          "x": 26.827011875959524,
+          "y": 43.76004958534548,
+          "w": 30,
+          "h": 30,
+          "rot": 0,
+          "z": 9
+        },
+        {
+          "id": "p1782812856310354",
+          "name": "기타",
+          "x": 67.54901325419326,
+          "y": 48.32106499934741,
+          "w": 58,
+          "h": 44,
+          "rot": 313,
+          "z": 9
+        },
+        {
+          "id": "p1782812856310355",
+          "name": "Mic",
+          "x": 27.70290882020112,
+          "y": 53.025907081756245,
+          "w": 38,
+          "h": 32,
+          "rot": 0,
+          "z": 9
+        }
+      ],
+      "arrowPoints": [
+        {
+          "id": "pt1784922437333132",
+          "x": 49.17395529640427,
+          "y": 73.24793359671794
+        }
+      ],
+      "arrows": [
+        {
+          "from": "a97",
+          "to": "pt1784922437333132"
+        }
+      ],
+      "groups": [],
+      "notes": "",
+      "scriptPage": 17,
+      "audioTime": 2816.783095,
+      "prevSnapshot": null,
+      "cueLocal": {
+        "id": "cue_1784922454427_zdz2",
+        "startLine": 729,
+        "endLine": 729,
+        "page": 17,
+        "preview": "나는 카나리아 하날 갖고",
+        "text": "나는 카나리아 하날 갖고",
         "source": "하데스 타운 대본.pdf · 추출 텍스트"
       },
       "stageMemos": []
