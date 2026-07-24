@@ -6294,6 +6294,310 @@ window.addEventListener('load',()=>{
   };
 })();
 
+
+/* ===== Performance patch step 3: avoid rebuilding all chart thumbnails on ordinary render ===== */
+(function(){
+  if(typeof window.render !== 'function' || typeof window.renderThumbs !== 'function' || window.__perfThumbSkipStep3) return;
+  window.__perfThumbSkipStep3 = true;
+
+  let insideMainRenderVPerf3 = false;
+  const originalRenderThumbsVPerf3 = window.renderThumbs;
+  const originalRenderVPerf3 = window.render;
+
+  function syncThumbActiveVPerf3(){
+    const list=document.getElementById('thumbs');
+    if(!list || !window.state || !state.charts) return;
+    const thumbs=Array.from(list.querySelectorAll('.thumb:not(.addThumb)'));
+    thumbs.forEach((el,i)=>{
+      el.classList.toggle('active', i===state.current);
+      const label=el.querySelector('.label');
+      if(label) label.textContent=i===state.current?'LIVE':'';
+    });
+  }
+
+  window.renderThumbs=function(){
+    if(insideMainRenderVPerf3){
+      syncThumbActiveVPerf3();
+      return;
+    }
+    return originalRenderThumbsVPerf3.apply(this,arguments);
+  };
+
+  window.render=function(){
+    insideMainRenderVPerf3=true;
+    try{
+      return originalRenderVPerf3.apply(this,arguments);
+    }finally{
+      insideMainRenderVPerf3=false;
+      try{ syncThumbActiveVPerf3(); }catch(e){}
+    }
+  };
+})();
+
+
+/* ===== Performance patch step 3.1: keep active chart thumbnail highlight ===== */
+(function(){
+  if(window.__perfThumbActiveFix31) return;
+  window.__perfThumbActiveFix31=true;
+
+  function syncActiveThumb31(){
+    const list=document.getElementById('thumbs');
+    if(!list || !window.state || !Array.isArray(state.charts)) return;
+    const thumbs=Array.from(list.children).filter(el=>el.classList && el.classList.contains('thumb') && !el.classList.contains('addThumb'));
+    thumbs.forEach((el,index)=>{
+      const active=index===Number(state.current);
+      el.classList.toggle('active',active);
+      const label=el.querySelector('.label');
+      if(label) label.textContent=active?'LIVE':'';
+      el.setAttribute('aria-current',active?'true':'false');
+    });
+  }
+
+  const list=document.getElementById('thumbs');
+  if(list){
+    list.addEventListener('click',function(e){
+      const thumb=e.target.closest('.thumb:not(.addThumb)');
+      if(!thumb || !list.contains(thumb)) return;
+      requestAnimationFrame(syncActiveThumb31);
+      setTimeout(syncActiveThumb31,0);
+    },true);
+  }
+
+  if(typeof window.render==='function'){
+    const oldRender31=window.render;
+    window.render=function(){
+      const result=oldRender31.apply(this,arguments);
+      syncActiveThumb31();
+      requestAnimationFrame(syncActiveThumb31);
+      return result;
+    };
+  }
+
+  window.syncActiveThumb31=syncActiveThumb31;
+  window.addEventListener('load',()=>setTimeout(syncActiveThumb31,50));
+})();
+
+
+
+/* ===== Performance patch step 3.2: force orange highlight on clicked bottom chart ===== */
+(function(){
+  if(window.__perfBottomOrangeFix32) return;
+  window.__perfBottomOrangeFix32=true;
+
+  function markClickedThumbActive32(thumb){
+    const list=document.getElementById('thumbs');
+    if(!list || !thumb) return;
+    const thumbs=Array.from(list.querySelectorAll('.thumb:not(.addThumb)'));
+    thumbs.forEach(el=>{
+      const active=el===thumb;
+      el.classList.toggle('active',active);
+      if(active){
+        el.style.border='2px solid #e8a04b';
+        el.style.boxShadow='0 0 0 2px rgba(232,160,75,.15),0 8px 18px rgba(0,0,0,.22)';
+      }else{
+        el.style.border='';
+        el.style.boxShadow='';
+      }
+      const label=el.querySelector('.label');
+      if(label) label.textContent=active?'LIVE':'';
+    });
+  }
+
+  document.addEventListener('click',function(e){
+    const list=document.getElementById('thumbs');
+    if(!list) return;
+    const thumb=e.target.closest && e.target.closest('.thumb:not(.addThumb)');
+    if(!thumb || !list.contains(thumb)) return;
+    markClickedThumbActive32(thumb);
+    requestAnimationFrame(()=>markClickedThumbActive32(thumb));
+    setTimeout(()=>markClickedThumbActive32(thumb),20);
+  },false);
+
+  function syncFromState32(){
+    const list=document.getElementById('thumbs');
+    if(!list || !window.state) return;
+    const thumbs=Array.from(list.querySelectorAll('.thumb:not(.addThumb)'));
+    const active=thumbs[Number(state.current)];
+    if(active) markClickedThumbActive32(active);
+  }
+
+  if(typeof window.render==='function'){
+    const oldRender32=window.render;
+    window.render=function(){
+      const result=oldRender32.apply(this,arguments);
+      syncFromState32();
+      requestAnimationFrame(syncFromState32);
+      return result;
+    };
+  }
+
+  setTimeout(syncFromState32,100);
+})();
+
+
+/* ===== Performance patch step 4: update only the edited object DOM ===== */
+(function(){
+  if(window.__perfPartialObjectStep4) return;
+  window.__perfPartialObjectStep4=true;
+
+  function escIdVPerf4(id){
+    try{return CSS.escape(String(id));}catch(e){return String(id).replace(/(["\\])/g,'\\$1');}
+  }
+  function getStageObjectElVPerf4(id){
+    const stageEl=document.getElementById('stage');
+    return stageEl ? stageEl.querySelector('[data-id="'+escIdVPerf4(id)+'"]') : null;
+  }
+  function getSelectedActorsVPerf4(){
+    const ids=(Array.isArray(multiSelected)&&multiSelected.length)?multiSelected:(selected?[selected]:[]);
+    const set=new Set(ids);
+    return (cur().actors||[]).filter(a=>set.has(a.id));
+  }
+  function updateActorDomVPerf4(a){
+    const el=getStageObjectElVPerf4(a.id); if(!el) return false;
+    const size=Number(a.size||state.actorSize||54);
+    el.style.width=size+'px'; el.style.height=size+'px';
+    el.style.background=a.color||'#777';
+    el.style.setProperty('--actor-color',a.color||'#777');
+    el.style.zIndex=String(a.z||10);
+    el.classList.toggle('hidden',!!a.hidden);
+    const label=el.querySelector('.actorLabel');
+    if(label && typeof ensureActorLabel==='function') label.textContent=ensureActorLabel(a);
+    const name=el.querySelector('.actorBelowName');
+    if(name) name.textContent=a.name||('Actor '+(typeof ensureActorLabel==='function'?ensureActorLabel(a):''));
+    return true;
+  }
+  function updatePropDomVPerf4(p){
+    const el=getStageObjectElVPerf4(p.id); if(!el) return false;
+    el.style.width=Number(p.w||80)+'px';
+    el.style.height=Number(p.h||44)+'px';
+    el.style.transform='rotate('+Number(p.rot||0)+'deg)';
+    el.style.zIndex=String(p.z||9);
+    el.textContent=p.name||'소품';
+    return true;
+  }
+  function updateMemoDomVPerf4(m){
+    const el=getStageObjectElVPerf4(m.id); if(!el) return false;
+    el.style.width=Number(m.w||150)+'px';
+    el.style.height=Number(m.h||56)+'px';
+    el.style.zIndex=String(m.z||12);
+    const txt=el.querySelector('.stageMemoText');
+    if(txt) txt.textContent=m.text||'메모';
+    return true;
+  }
+  function refreshSidePanelsVPerf4(){
+    try{ if(typeof renderCast==='function') renderCast(); }catch(e){}
+    try{ if(typeof renderSelected==='function') renderSelected(); }catch(e){}
+    try{ if(typeof updateStatus==='function') updateStatus(); }catch(e){}
+  }
+  function updateObjectsVPerf4(objs){
+    let allFound=true;
+    (objs||[]).forEach(o=>{
+      let ok=false;
+      if((cur().actors||[]).includes(o)) ok=updateActorDomVPerf4(o);
+      else if((cur().props||[]).includes(o)) ok=updatePropDomVPerf4(o);
+      else if((cur().stageMemos||[]).includes(o)) ok=updateMemoDomVPerf4(o);
+      allFound=allFound&&ok;
+    });
+    refreshSidePanelsVPerf4();
+    return allFound;
+  }
+
+  window.setActorSize=function(v){
+    const size=Number(v)||54;
+    const actors=getSelectedActorsVPerf4();
+    if(actors.length){
+      actors.forEach(a=>a.size=size);
+      if(!updateObjectsVPerf4(actors)) render();
+    }else{
+      state.actorSize=size;
+      refreshSidePanelsVPerf4();
+    }
+  };
+
+  window.setPropRotation=function(v){
+    const p=(cur().props||[]).find(x=>x.id===selected); if(!p) return;
+    if(typeof pushHistory==='function') pushHistory();
+    p.rot=Number(v)||0;
+    if(!updateObjectsVPerf4([p])) render();
+  };
+  window.setPropHeight=function(v){
+    const p=(cur().props||[]).find(x=>x.id===selected); if(!p) return;
+    if(typeof pushHistory==='function') pushHistory();
+    p.h=Number(v)||44;
+    if(!updateObjectsVPerf4([p])) render();
+  };
+  if(typeof window.setActorLabel==='function'){
+    window.setActorLabel=function(v){
+      const a=(cur().actors||[]).find(x=>x.id===selected); if(!a) return;
+      a.label=String(v||'').trim() || (typeof ensureActorLabel==='function'?ensureActorLabel(a):'');
+      if(!updateObjectsVPerf4([a])) render();
+    };
+  }
+  window.renameSelected=function(){
+    const obj=typeof findAnyObject==='function'?findAnyObject(selected):null;
+    if(!obj || obj.point) return;
+    const isProp=(cur().props||[]).some(p=>p.id===obj.id);
+    const n=prompt(isProp?'소품 이름 수정':'배우 이름 수정',obj.name||'');
+    if(!n) return;
+    if(typeof pushHistory==='function') pushHistory();
+    obj.name=n;
+    if(!updateObjectsVPerf4([obj])) render();
+  };
+  window.renameProp=function(e){
+    if(e){e.stopPropagation();}
+    const id=e&&e.currentTarget?e.currentTarget.dataset.id:selected;
+    const p=(cur().props||[]).find(x=>x.id===id); if(!p) return;
+    const n=prompt('소품 이름 수정',p.name||'소품'); if(!n) return;
+    if(typeof pushHistory==='function') pushHistory(); p.name=n;
+    if(!updateObjectsVPerf4([p])) render();
+  };
+
+  const oldRenderSelectedVPerf4=window.renderSelected;
+  if(typeof oldRenderSelectedVPerf4==='function'){
+    window.renderSelected=function(){
+      const result=oldRenderSelectedVPerf4.apply(this,arguments);
+      const cp=document.getElementById('colorPick');
+      const actors=getSelectedActorsVPerf4();
+      if(cp && actors.length){
+        Array.from(cp.querySelectorAll('.color')).forEach(sw=>{
+          const c=sw.style.background;
+          sw.onclick=function(){
+            if(typeof pushHistory==='function') pushHistory();
+            actors.forEach(a=>a.color=c);
+            if(!updateObjectsVPerf4(actors)) render();
+          };
+        });
+      }
+      return result;
+    };
+  }
+
+  const oldRenderCastVPerf4=window.renderCast;
+  if(typeof oldRenderCastVPerf4==='function'){
+    window.renderCast=function(){
+      const result=oldRenderCastVPerf4.apply(this,arguments);
+      const list=document.getElementById('castList');
+      if(list){
+        Array.from(list.querySelectorAll('.castRow')).forEach(row=>{
+          const id=row.dataset.id;
+          const a=(cur().actors||[]).find(x=>x.id===id);
+          const eye=row.querySelector('.eye');
+          if(a && eye){
+            eye.onclick=function(ev){
+              ev.stopPropagation();
+              if(typeof pushHistory==='function') pushHistory();
+              a.hidden=!a.hidden;
+              if(!updateObjectsVPerf4([a])) render();
+            };
+          }
+        });
+      }
+      return result;
+    };
+  }
+
+  window.updateObjectsVPerf4=updateObjectsVPerf4;
+})();
 </script>
 
 </body>
