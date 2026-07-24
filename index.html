@@ -6600,5 +6600,221 @@ window.addEventListener('load',()=>{
 })();
 </script>
 
+
+<script>
+/* ===== Performance stabilization: rebuild chart line only after structural chart changes ===== */
+(function(){
+  if(window.__perfChartStructureStableFix) return;
+  window.__perfChartStructureStableFix=true;
+
+  function rebuildChartLineStable(){
+    try{
+      if(typeof window.renderThumbs==='function') window.renderThumbs();
+      if(typeof window.syncActiveThumb31==='function') window.syncActiveThumb31();
+      const list=document.getElementById('thumbs');
+      if(list && window.state && Array.isArray(state.charts)){
+        const thumbs=Array.from(list.querySelectorAll('.thumb:not(.addThumb)'));
+        thumbs.forEach((el,index)=>{
+          const active=index===Number(state.current);
+          el.classList.toggle('active',active);
+          el.style.border=active?'2px solid #e8a04b':'';
+          el.style.boxShadow=active?'0 0 0 2px rgba(232,160,75,.15),0 8px 18px rgba(0,0,0,.22)':'';
+          const label=el.querySelector('.label');
+          if(label) label.textContent=active?'LIVE':'';
+        });
+        const active=thumbs[Number(state.current)];
+        if(active) active.scrollIntoView({inline:'center',block:'nearest'});
+      }
+    }catch(err){ console.error('chart line rebuild failed',err); }
+  }
+
+  function wrapStructuralFunction(name){
+    const original=window[name];
+    if(typeof original!=='function' || original.__stableChartWrapped) return;
+    function wrapped(){
+      const beforeLength=window.state&&Array.isArray(state.charts)?state.charts.length:null;
+      const result=original.apply(this,arguments);
+      const afterLength=window.state&&Array.isArray(state.charts)?state.charts.length:null;
+      if(beforeLength!==afterLength || name==='duplicateChart' || name==='addChart' || name==='deleteChart'){
+        rebuildChartLineStable();
+        requestAnimationFrame(rebuildChartLineStable);
+      }
+      return result;
+    }
+    wrapped.__stableChartWrapped=true;
+    window[name]=wrapped;
+  }
+
+  ['addChart','deleteChart','duplicateChart'].forEach(wrapStructuralFunction);
+  window.rebuildChartLineStable=rebuildChartLineStable;
+  window.addEventListener('load',()=>setTimeout(rebuildChartLineStable,120));
+})();
+</script>
+
+
+<!-- ===== Continuous multi-movement arrows patch v1.79 ===== -->
+<style>
+.arrowSeqBadgeText{font:900 11px Arial,'Noto Sans KR',sans-serif;fill:#211b15;pointer-events:none;dominant-baseline:middle;text-anchor:middle}
+.arrowSeqBadgeCircle{fill:#ffe94a;stroke:#211b15;stroke-width:1.5;pointer-events:none}
+</style>
+<script>
+(function(){
+  let chainId=null;
+  let chainSeq=0;
+
+  function newChain(){
+    chainId='chain_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+    chainSeq=0;
+  }
+  function finishChain(){ chainId=null; chainSeq=0; }
+  function ensureChain(){ if(!chainId) newChain(); }
+
+  const oldSetTool=window.setTool;
+  if(typeof oldSetTool==='function'){
+    window.setTool=function(t){
+      const result=oldSetTool.apply(this,arguments);
+      if(t!=='arrow') finishChain();
+      else if(!arrowFrom) finishChain();
+      return result;
+    };
+  }
+
+  function addSegment(from,to){
+    if(!from || !to || from===to) return false;
+    ensureChain();
+    if(typeof pushHistory==='function') pushHistory();
+    chainSeq += 1;
+    cur().arrows.push({from:from,to:to,chainId:chainId,seq:chainSeq});
+    arrowFrom=to;
+    selected=to;
+    if(typeof setSingleSelection==='function') setSingleSelection(to);
+    if(typeof render==='function') render();
+    return true;
+  }
+
+  // Arrow tool click handling in capture phase so the original one-segment handlers do not run.
+  stage.addEventListener('click',function(e){
+    if(tool!=='arrow') return;
+    const actorEl=e.target.closest && e.target.closest('.actor');
+    const pointEl=e.target.closest && e.target.closest('.arrowPoint');
+    const targetEl=actorEl||pointEl;
+
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+
+    if(targetEl){
+      const id=targetEl.dataset.id;
+      if(!arrowFrom){
+        newChain();
+        arrowFrom=id;
+        selected=id;
+        if(typeof setSingleSelection==='function') setSingleSelection(id);
+        if(typeof render==='function') render();
+      }else if(arrowFrom!==id){
+        addSegment(arrowFrom,id);
+      }
+      return;
+    }
+
+    if(arrowFrom){
+      const pt=getStagePoint(e);
+      const id='pt'+Date.now()+Math.floor(Math.random()*1000);
+      cur().arrowPoints=cur().arrowPoints||[];
+      cur().arrowPoints.push({id:id,x:pt.x,y:pt.y});
+      addSegment(arrowFrom,id);
+    }
+  },true);
+
+  // Esc/Enter ends continuous arrow drawing and returns to select mode.
+  window.addEventListener('keydown',function(e){
+    if(tool==='arrow' && (e.key==='Escape' || e.key==='Enter')){
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      finishChain();
+      arrowFrom=null;
+      if(typeof setTool==='function') setTool('select');
+      if(typeof render==='function') render();
+    }
+  },true);
+
+  // Replace desktop arrow renderer: all segments remain visible and are numbered by movement order.
+  window.renderArrows=function(){
+    const svg=document.getElementById('arrows');
+    if(!svg) return;
+    svg.querySelectorAll('line,.arrowSeqBadge').forEach(e=>e.remove());
+    const show=document.getElementById('showArrows');
+    if(show && !show.checked) return;
+    (cur().arrows||[]).forEach((ar,index)=>{
+      const a=findArrowObj(ar.from), b=findArrowObj(ar.to);
+      if(!a||!b||a.hidden||b.hidden) return;
+      const ca=center(a), cb=center(b);
+      const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1',ca.x+'%'); line.setAttribute('y1',ca.y+'%');
+      line.setAttribute('x2',cb.x+'%'); line.setAttribute('y2',cb.y+'%');
+      line.setAttribute('stroke','#ffe94a'); line.setAttribute('stroke-width','4');
+      line.setAttribute('stroke-linecap','round'); line.setAttribute('marker-end','url(#arrowhead)');
+      svg.appendChild(line);
+
+      const mx=(ca.x+cb.x)/2, my=(ca.y+cb.y)/2;
+      const g=document.createElementNS('http://www.w3.org/2000/svg','g');
+      g.setAttribute('class','arrowSeqBadge');
+      const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      c.setAttribute('class','arrowSeqBadgeCircle'); c.setAttribute('cx',mx+'%'); c.setAttribute('cy',my+'%'); c.setAttribute('r','9');
+      const t=document.createElementNS('http://www.w3.org/2000/svg','text');
+      t.setAttribute('class','arrowSeqBadgeText'); t.setAttribute('x',mx+'%'); t.setAttribute('y',my+'%');
+      t.textContent=String(ar.seq || (index+1));
+      g.appendChild(c); g.appendChild(t); svg.appendChild(g);
+    });
+  };
+
+  // Add from/to arrows and movement numbers to mobile without changing its existing layout.
+  const oldMobile=window.renderMobileView;
+  if(typeof oldMobile==='function'){
+    window.renderMobileView=function(){
+      const result=oldMobile.apply(this,arguments);
+      try{
+        const stageEl=document.getElementById('mobileStage');
+        const chart=state&&state.charts&&(state.charts[state.current]||state.charts[0]);
+        if(!stageEl||!chart) return result;
+        const old=stageEl.querySelector('.multiMovementMobileSvg');
+        if(old) old.remove();
+        const arrows=chart.arrows||[];
+        if(!arrows.length) return result;
+        const actorMap=new Map((chart.actors||[]).map(a=>[a.id,a]));
+        const propMap=new Map((chart.props||[]).map(p=>[p.id,p]));
+        const pointMap=new Map((chart.arrowPoints||[]).map(p=>[p.id,p]));
+        function pos(id){
+          const a=actorMap.get(id);
+          if(a){ const s=a.size||state.actorSize||54; return {x:a.x+(s/2/1616*100),y:a.y+(s/2/1000*100)}; }
+          const p=propMap.get(id); if(p) return {x:p.x,y:p.y};
+          const q=pointMap.get(id); if(q) return {x:q.x,y:q.y};
+          return null;
+        }
+        const ns='http://www.w3.org/2000/svg';
+        const svg=document.createElementNS(ns,'svg');
+        svg.setAttribute('class','mobileArrowSvg multiMovementMobileSvg');
+        svg.setAttribute('viewBox','0 0 100 100'); svg.setAttribute('preserveAspectRatio','none');
+        const defs=document.createElementNS(ns,'defs');
+        defs.innerHTML='<marker id="multiMobileHead" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="#e8a04b"/></marker>';
+        svg.appendChild(defs);
+        arrows.forEach((ar,index)=>{
+          const a=pos(ar.from),b=pos(ar.to); if(!a||!b) return;
+          const line=document.createElementNS(ns,'line');
+          line.setAttribute('x1',a.x);line.setAttribute('y1',a.y);line.setAttribute('x2',b.x);line.setAttribute('y2',b.y);
+          line.setAttribute('stroke','#e8a04b');line.setAttribute('stroke-width','0.7');line.setAttribute('stroke-dasharray','1.5 1.2');line.setAttribute('marker-end','url(#multiMobileHead)');
+          svg.appendChild(line);
+          const mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
+          const circle=document.createElementNS(ns,'circle');circle.setAttribute('cx',mx);circle.setAttribute('cy',my);circle.setAttribute('r','1.8');circle.setAttribute('fill','#ffe94a');circle.setAttribute('stroke','#211b15');circle.setAttribute('stroke-width','.35');svg.appendChild(circle);
+          const txt=document.createElementNS(ns,'text');txt.setAttribute('x',mx);txt.setAttribute('y',my+.65);txt.setAttribute('text-anchor','middle');txt.setAttribute('font-size','2.1');txt.setAttribute('font-weight','900');txt.setAttribute('fill','#211b15');txt.textContent=String(ar.seq||(index+1));svg.appendChild(txt);
+        });
+        stageEl.appendChild(svg);
+      }catch(err){ console.error('multi movement mobile render failed',err); }
+      return result;
+    };
+  }
+})();
+</script>
+
 </body>
 </html>
